@@ -1,0 +1,27 @@
+{
+	"name": "fol/http",
+	"type": "library",
+	"description": "Http library for FOL framework",
+	"homepage": "https://github.com/fol-project/fol-http",
+	"license": "AGPL-3.0",
+	"authors": [
+		{
+			"name": "Oscar Otero",
+			"email": "oom@oscarotero.com",
+			"homepage": "http://oscarotero.com",
+			"role": "Developer"
+		}
+	],
+	"support": {
+		"email": "oom@oscarotero.com",
+		"issues": "https://github.com/fol-project/fol-http/issues"
+	},
+	"require": {
+		"php": ">=5.5.0"
+	},
+	"autoload": {
+		"psr-4": {
+			"Fol\\Http\\": "src/"
+		}
+	}
+}
