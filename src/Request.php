@@ -6,12 +6,8 @@
  */
 namespace Fol\Http;
 
-use Fol\ServiceContainerTrait;
-
 class Request extends Message
 {
-    use ServiceContainerTrait;
-
     protected static $constructors = [];
 
     protected $method;
