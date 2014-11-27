@@ -1,7 +1,7 @@
 <?php
 use Fol\Http\Url;
 
-require_once dirname(__DIR__).'/src/autoloader.php';
+require_once dirname(__DIR__).'/vendor/autoload.php';
 
 class UrlTest extends PHPUnit_Framework_TestCase
 {

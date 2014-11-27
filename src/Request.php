@@ -15,7 +15,6 @@ class Request extends Message implements IncomingRequestInterface, OutgoingReque
 
     protected $method;
     protected $language;
-    private $protocol = '1.1';
 
     public $url;
     public $query;
@@ -154,49 +153,6 @@ class Request extends Message implements IncomingRequestInterface, OutgoingReque
         $text .= "\n\n".$this->read();
 
         return $text;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function setProtocolVersion($version)
-    {
-        $this->protocol = $version;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function setHeader($header, $value)
-    {
-        return $this->headers->set($header, $value);
-    }
-
-
-    /**
-     * {@inheritDoc}
-     */
-    public function addHeader($header, $value)
-    {
-        return $this->headers->set($header, $value, false);
-    }
-
-
-    /**
-     * {@inheritDoc}
-     */
-    public function removeHeader($header)
-    {
-        return $this->headers->delete($header);
-    }
-
-
-    /**
-     * {@inheritDoc}
-     */
-    public function setBody(StreamableInterface $body)
-    {
-        return $this->body = $body;
     }
 
     /**

@@ -1,7 +1,7 @@
 <?php
 use Fol\Http\RequestHeaders;
 
-require_once dirname(__DIR__).'/src/autoloader.php';
+require_once dirname(__DIR__).'/vendor/autoload.php';
 
 class HeadersTest extends PHPUnit_Framework_TestCase
 {

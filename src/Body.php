@@ -81,7 +81,7 @@ class Body implements StreamableInterface
     /**
      * {@inheritDoc}
      */
-    public function eot()
+    public function eof()
     {
         feof($this->stream);
     }
@@ -119,7 +119,7 @@ class Body implements StreamableInterface
      */
     public function write($string)
     {
-        return fwrite($this->stream, $string)
+        return fwrite($this->stream, $string);
     }
 
 

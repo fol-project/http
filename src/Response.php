@@ -8,7 +8,6 @@ namespace Fol\Http;
 
 use Psr\Http\Message\OutgoingResponseInterface;
 use Psr\Http\Message\IncomingResponseInterface;
-use Psr\Http\Message\StreamableInterface;
 
 class Response extends Message implements OutgoingResponseInterface, IncomingResponseInterface
 {
@@ -16,7 +15,6 @@ class Response extends Message implements OutgoingResponseInterface, IncomingRes
 
     public $cookies;
 
-    private $protocol = '1.1';
     private $statusCode;
     private $reasonPhrase;
     private $headersSent = false;
@@ -58,14 +56,6 @@ class Response extends Message implements OutgoingResponseInterface, IncomingRes
         $text .= "\n\n".$this->read();
 
         return $text;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function setProtocolVersion($version)
-    {
-        $this->protocol = $version;
     }
 
     /**
@@ -175,42 +165,6 @@ class Response extends Message implements OutgoingResponseInterface, IncomingRes
     public function getReasonPhrase($text = false)
     {
         return $this->reasonPhrase;
-    }
-
-
-    /**
-     * {@inheritDoc}
-     */
-    public function setHeader($header, $value)
-    {
-        return $this->headers->set($header, $value);
-    }
-
-
-    /**
-     * {@inheritDoc}
-     */
-    public function addHeader($header, $value)
-    {
-        return $this->headers->set($header, $value, false);
-    }
-
-
-    /**
-     * {@inheritDoc}
-     */
-    public function removeHeader($header)
-    {
-        return $this->headers->delete($header);
-    }
-
-
-    /**
-     * {@inheritDoc}
-     */
-    public function setBody(StreamableInterface $body)
-    {
-        return $this->body = $body;
     }
 
 
