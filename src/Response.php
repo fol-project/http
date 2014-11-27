@@ -6,13 +6,19 @@
  */
 namespace Fol\Http;
 
-class Response extends Message
+use Psr\Http\Message\OutgoingResponseInterface;
+use Psr\Http\Message\IncomingResponseInterface;
+use Psr\Http\Message\StreamableInterface;
+
+class Response extends Message implements OutgoingResponseInterface, IncomingResponseInterface
 {
     protected static $constructors = [];
 
     public $cookies;
 
-    private $status;
+    private $protocol = '1.1';
+    private $statusCode;
+    private $reasonPhrase;
     private $headersSent = false;
 
     /**
@@ -46,12 +52,20 @@ class Response extends Message
      */
     public function __toString()
     {
-        $text = sprintf('HTTP/1.1 %s', $this->status[0], $this->status[1]);
+        $text = sprintf('HTTP/%s %s %s', $this->protocol, $this->statusCode, $this->reasonPhrase);
         $text .= "\nCookies:\n".$this->cookies;
         $text .= "\nHeaders:\n".$this->headers;
         $text .= "\n\n".$this->read();
 
         return $text;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setProtocolVersion($version)
+    {
+        $this->protocol = $version;
     }
 
     /**
@@ -137,27 +151,66 @@ class Response extends Message
     }
 
     /**
-     * Sets the status code
-     *
-     * @param integer $code The status code (for example 404)
-     * @param string  $text The status text. If it's not defined, the text will be the defined in the Fol\Http\Headers:$status array
+     * {@inheritDoc}
      */
-    public function setStatus($code, $text = null)
+    public function setStatus($code, $reasonPhrase = null)
     {
-        $this->status = array($code, ($text ?: Headers::getStatusText($code)));
+        $this->status = $code;
+        $this->reasonPhrase = $reasonPhrase ?: Headers::getStatusText($code);
     }
 
 
     /**
-     * Gets current status
-     *
-     * @param string $text Set to TRUE to return the status text instead the status code
-     *
-     * @return integer The status code or the status text if $text parameter is true
+     * {@inheritDoc}
      */
-    public function getStatus($text = false)
+    public function getStatusCode()
     {
-        return $text ? $this->status[1] : $this->status[0];
+        return $this->statusCode;
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getReasonPhrase($text = false)
+    {
+        return $this->reasonPhrase;
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setHeader($header, $value)
+    {
+        return $this->headers->set($header, $value);
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public function addHeader($header, $value)
+    {
+        return $this->headers->set($header, $value, false);
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public function removeHeader($header)
+    {
+        return $this->headers->delete($header);
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setBody(StreamableInterface $body)
+    {
+        return $this->body = $body;
     }
 
 

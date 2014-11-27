@@ -17,7 +17,8 @@
 		"issues": "https://github.com/fol-project/fol-http/issues"
 	},
 	"require": {
-		"php": ">=5.5.0"
+		"php": ">=5.5.0",
+		"psr/http-message": "*"
 	},
 	"autoload": {
 		"psr-4": {

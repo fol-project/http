@@ -6,12 +6,13 @@
  */
 namespace Fol\Http;
 
-abstract class Message
+use Psr\Http\Message\MessageInterface;
+
+abstract class Message implements MessageInterface
 {
     public $headers;
 
     protected $body;
-    protected $bodyStream = false;
     protected $sendCallback;
     protected $prepareCallbacks = [];
     protected $functions = [];
@@ -50,6 +51,7 @@ abstract class Message
     {
         $this->services[$name] = $resolver;
     }
+
 
 
     /**
@@ -103,78 +105,61 @@ abstract class Message
 
 
     /**
-     * Sets the message body
-     *
-     * @param string|resource $body     The string or stream handler or stream filename
-     * @param boolean         $isStream True to define the body as stream.
+     * {inheritDoc}
      */
-    public function setBody($body, $isStream = false)
+    public function getProtocolVersion()
     {
-        $this->bodyStream = is_resource($body) ?: $isStream;
-        $this->body = $this->bodyStream ? $body : (string) $body;
+        return "1.1";
     }
 
     /**
-     * Gets the message body
-     *
-     * @return string|resource The body string or streaming resource
+     * {inheritDoc}
      */
     public function getBody()
     {
-        if ($this->isStream()) {
-            if (is_string($this->body)) {
-                return $this->body = fopen($this->body, 'r+');
-            }
-        }
-
         return $this->body;
     }
 
     /**
-     * Gets whether the body is stream or not
+     * Sets the message body
      *
-     * @return boolean
+     * @param Body $body
      */
-    public function isStream()
+    public function setBody(Body $body)
     {
-        return $this->bodyStream;
+        $this->body = $body;
     }
 
     /**
-     * Write content in the body
-     *
-     * @param string $content
-     * @param int    $length  Only used on streams
-     *
-     * @return int|null
+     * {inheritDoc}
      */
-    public function write($content, $length = null)
+    public function getHeaders()
     {
-        if ($content === '') {
-            return;
-        }
-
-        if ($this->isStream()) {
-            return fwrite($this->getBody(), $content, $length);
-        }
-
-        $this->body .= (string) $content;
+        return $this->headers->get();
     }
 
     /**
-     * Reads content from the body
-     *
-     * @return string
+     * {inheritDoc}
      */
-    public function read()
+    public function hasHeader($header)
     {
-        $body = $this->getBody();
+        return $this->headers->has($header);
+    }
 
-        if (is_string($body)) {
-            return $body;
-        }
+    /**
+     * {inheritDoc}
+     */
+    public function getHeader($header)
+    {
+        return implode(',', $this->getHeaderAsArray($header));
+    }
 
-        return stream_get_contents($body);
+    /**
+     * {inheritDoc}
+     */
+    public function getHeaderAsArray($header)
+    {
+        return $this->headers->get($header, false, []);
     }
 
     /**

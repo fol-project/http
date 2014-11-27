@@ -6,13 +6,16 @@
  */
 namespace Fol\Http;
 
-class Request extends Message
+use Psr\Http\Message\IncomingRequestInterface;
+use Psr\Http\Message\OutgoingRequestInterface;
+
+class Request extends Message implements IncomingRequestInterface, OutgoingRequestInterface
 {
     protected static $constructors = [];
 
     protected $method;
     protected $language;
-    protected $parent;
+    private $protocol = '1.1';
 
     public $url;
     public $query;
@@ -20,6 +23,7 @@ class Request extends Message
     public $files;
     public $cookies;
     public $route;
+    public $attributes;
 
     /**
      * Creates a new request object from global values
@@ -105,6 +109,7 @@ class Request extends Message
         $this->setMethod($method);
         $this->query->set($query);
 
+        $this->attributes = new RequestParameters();
         $this->data = new RequestParameters($data);
         $this->files = new RequestFiles($files);
 
@@ -121,51 +126,12 @@ class Request extends Message
         $this->url = clone $this->url;
         $this->query = $this->url->query;
         $this->data = clone $this->data;
+        $this->attributes = clone $this->attributes;
         $this->files = clone $this->files;
         $this->cookies = clone $this->cookies;
         $this->headers = clone $this->headers;
     }
 
-
-    /**
-     * Sets the parent request
-     *
-     * @param Request $request
-     */
-    public function setParent(Request $request)
-    {
-        $this->parent = $request;
-    }
-
-    /**
-     * Gets the parent request
-     *
-     * @return Request The parent request
-     */
-    public function getParent()
-    {
-        return $this->parent;
-    }
-
-    /**
-     * Gets the main parent request
-     *
-     * @return Request The main request or itself
-     */
-    public function getMain()
-    {
-        return $this->parent ? $this->parent->getMain() : $this;
-    }
-
-    /**
-     * Check whether the request is main or not
-     *
-     * @return boolean
-     */
-    public function isMain()
-    {
-        return empty($this->parent);
-    }
 
     /**
      * Magic function to convert the request to a string
@@ -191,6 +157,49 @@ class Request extends Message
     }
 
     /**
+     * {@inheritDoc}
+     */
+    public function setProtocolVersion($version)
+    {
+        $this->protocol = $version;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setHeader($header, $value)
+    {
+        return $this->headers->set($header, $value);
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public function addHeader($header, $value)
+    {
+        return $this->headers->set($header, $value, false);
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public function removeHeader($header)
+    {
+        return $this->headers->delete($header);
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setBody(StreamableInterface $body)
+    {
+        return $this->body = $body;
+    }
+
+    /**
      * Set a new url to the request
      *
      * @param string $url The new url
@@ -207,9 +216,95 @@ class Request extends Message
      *
      * @return string The current url
      */
-    public function getUrl($query = false)
+    public function getUrl()
     {
-        return $this->url->getUrl($query);
+        return $this->url->getUrl();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getServerParams()
+    {
+        return [
+            'REQUEST_METHOD' => $this->getMethod(),
+            'SERVER_PROTOCOL' => 'HTTP/1.1',
+            'SERVER_NAME' => $this->getHost(),
+            'REMOTE_ADDR' => $this->getIp(),
+            'HTTP_ACCEPT' => $this->headers->get('Accept'),
+            'HTTP_ACCEPT_CHARSET' => $this->headers->get('Accept-Charset'),
+            'HTTP_ACCEPT_ENCODING' => $this->headers->get('Accept-Encoding'),
+            'HTTP_ACCEPT_LANGUAGE' => $this->headers->get('Accept-Language'),
+            'HTTP_CONNECTION' => $this->headers->get('Accept-Connection'),
+            'HTTP_REFERER' => $this->headers->get('Referer'),
+            'HTTP_USER_AGENT' => $this->headers->get('User-Agent'),
+            'HTTPS' => ($this->url->getScheme() === 'https') ? 'on' : 'off',
+            'REQUEST_URI' => $this->url->getFullPath()
+        ];
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getCookieParams()
+    {
+        return $this->cookies->get();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getQueryParams()
+    {
+        return $this->url->query->get();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getFileParams()
+    {
+        return $this->files->get();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getBodyParams()
+    {
+        return $this->data->get();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getAttributes()
+    {
+        return $this->attributes->get();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getAttribute($attribute, $default = null)
+    {
+        return $this->attributes->get($attribute, $default);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setAttributes(array $attributes)
+    {
+        return $this->attributes->set($attributes);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setAttribute($attribute, $value)
+    {
+        return $this->attributes->set($attribute, $value);
     }
 
     /**
