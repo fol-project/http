@@ -89,7 +89,7 @@ class RegexRoute extends Route
             && $this->check('port', $request->url->getPort())
         );
 
-        if (!$match || ($matches = $this->checkRegex($request->url->getFullPath())) === false) {
+        if (!$match || ($matches = $this->checkRegex($request->url->getPath())) === false) {
             return false;
         }
 

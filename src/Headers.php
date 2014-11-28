@@ -6,7 +6,7 @@
  */
 namespace Fol\Http;
 
-class Headers implements \ArrayAccess
+abstract class Headers implements \ArrayAccess
 {
     use ContainerTrait;
 
@@ -29,53 +29,6 @@ class Headers implements \ArrayAccess
         'txt' => ['text/plain'],
         'xml' => ['text/xml', 'application/xml', 'application/x-xml'],
         'zip' => ['application/zip', 'application/x-zip', 'application/x-zip-compressed']
-    ];
-
-    /**
-     * List of standard http status codes
-     */
-    public static $status = [
-        100 => 'Continue',
-        101 => 'Switching Protocols',
-        200 => 'OK',
-        201 => 'Created',
-        202 => 'Accepted',
-        203 => 'Non-Authoritative Information',
-        204 => 'No Content',
-        205 => 'Reset Content',
-        206 => 'Partial Content',
-        300 => 'Multiple Choices',
-        301 => 'Moved Permanently',
-        302 => 'Found',
-        303 => 'See Other',
-        304 => 'Not Modified',
-        305 => 'Use Proxy',
-        307 => 'Temporary Redirect',
-        400 => 'Bad Request',
-        401 => 'Unauthorized',
-        402 => 'Payment Required',
-        403 => 'Forbidden',
-        404 => 'Not Found',
-        405 => 'Method Not Allowed',
-        406 => 'Not Acceptable',
-        407 => 'Proxy Authentication Required',
-        408 => 'Request Timeout',
-        409 => 'Conflict',
-        410 => 'Gone',
-        411 => 'Length Required',
-        412 => 'Precondition Failed',
-        413 => 'Request Entity Too Large',
-        414 => 'Request-URI Too Long',
-        415 => 'Unsupported Media Type',
-        416 => 'Requested Range Not Satisfiable',
-        417 => 'Expectation Failed',
-        418 => 'I\'m a teapot',
-        500 => 'Internal Server Error',
-        501 => 'Not Implemented',
-        502 => 'Bad Gateway',
-        503 => 'Service Unavailable',
-        504 => 'Gateway Timeout',
-        505 => 'HTTP Version Not Supported',
     ];
 
     /**
@@ -220,19 +173,6 @@ class Headers implements \ArrayAccess
         'zu' => 'Zulu'
     ];
 
-    /**
-     * Gets the status text related with a status code.
-     *
-     * Headers::getStatusText(404) Returns "Not Found"
-     *
-     * @param integer $code The Http code
-     *
-     * @return string The status text or false
-     */
-    public static function getStatusText($code)
-    {
-        return isset(self::$status[$code]) ? self::$status[$code] : false;
-    }
 
     /**
      * Gets the format related with a mimetype. Search in self::$formats array.
@@ -271,7 +211,7 @@ class Headers implements \ArrayAccess
     /**
      * Gets the language
      *
-     * Headers::getLanguageCode('gl-es') Returns "gl"
+     * Headers::getLanguage('gl-es') Returns "gl"
      *
      * @param string  $language   The raw language code
      * @param boolean $returnName Set true to return "Galician" instead "gl" (for example)
@@ -300,24 +240,6 @@ class Headers implements \ArrayAccess
     public static function normalize($string)
     {
         return str_replace(' ', '-', ucwords(strtolower(str_replace('-', ' ', $string))));
-    }
-
-    /**
-     * Sends the headers if don't have been send before
-     *
-     * @return boolean True if headers has been sent and false if headers had been sent before
-     */
-    public function send()
-    {
-        if (headers_sent()) {
-            return false;
-        }
-
-        foreach ($this->getAsString() as $header) {
-            header($header, false);
-        }
-
-        return true;
     }
 
 

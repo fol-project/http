@@ -2,6 +2,7 @@
 	"name": "fol/http",
 	"type": "library",
 	"description": "Http library for FOL framework",
+	"keywords": ["http", "psr-7"],
 	"homepage": "https://github.com/fol-project/fol-http",
 	"license": "AGPL-3.0",
 	"authors": [

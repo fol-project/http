@@ -34,60 +34,12 @@ class Request extends Message implements IncomingRequestInterface, OutgoingReque
         $request = new static(Globals::getUrl(), Globals::getMethod(), Globals::getHeaders(), Globals::getGet(), Globals::getPost(), Globals::getFiles(), Globals::getCookies());
 
         if (!$request->data->length()) {
-            $request->setBody('php://input', true);
+            $request->setBodySource('php://input', 'r');
         }
 
         return $request;
     }
 
-    /**
-     * Creates a subrequest based in this request
-     *
-     * @param Request     $request The request instance
-     * @param string|null $url     The request url
-     * @param string|null $method  The request method
-     * @param array|null  $headers The request headers
-     * @param array|null  $query   The url parameters
-     * @param array|null  $data    The request payload data
-     * @param array|null  $files   The FILES parameters
-     * @param array|null  $cookies The request cookies
-     *
-     * @return Request The object with the specified data
-     */
-    public static function createFromRequest(Request $request, $url = null, $method = null, array $headers = null, array $query = null, array $data = null, array $files = null, array $cookies = null)
-    {
-        $request = clone $request;
-
-        if ($url !== null) {
-            $request->setUrl($url);
-        }
-
-        if ($method !== null) {
-            $request->setMethod($method);
-        }
-
-        if ($headers !== null) {
-            $request->headers->set($headers);
-        }
-
-        if ($query !== null) {
-            $request->query->set($query);
-        }
-
-        if ($data !== null) {
-            $request->data->set($data);
-        }
-
-        if ($files !== null) {
-            $request->files->set($files);
-        }
-
-        if ($cookies !== null) {
-            $request->cookies->set($cookies);
-        }
-
-        return $request;
-    }
 
     /**
      * Constructor

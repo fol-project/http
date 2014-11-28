@@ -78,22 +78,14 @@ class ResponseCookies implements \ArrayAccess
 
     /**
      * Sends the cookies to the browser
-     *
-     * @return boolean True if all cookies have sent or false on error or if headers have been sent before
      */
     public function send()
     {
-        if (headers_sent()) {
-            return false;
-        }
-
         foreach ($this->items as $cookie) {
             if (!setcookie($cookie['name'], $cookie['value'], $cookie['expires'], $cookie['path'], $cookie['domain'], $cookie['secure'], $cookie['httponly'])) {
                 throw new \Exception('Error sending the cookie '.$cookie['name']);
             }
         }
-
-        return true;
     }
 
     /**

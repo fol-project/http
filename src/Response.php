@@ -17,7 +17,6 @@ class Response extends Message implements OutgoingResponseInterface, IncomingRes
 
     private $statusCode;
     private $reasonPhrase;
-    private $headersSent = false;
 
     /**
      * Constructor
@@ -146,7 +145,7 @@ class Response extends Message implements OutgoingResponseInterface, IncomingRes
     public function setStatus($code, $reasonPhrase = null)
     {
         $this->status = $code;
-        $this->reasonPhrase = $reasonPhrase ?: Headers::getStatusText($code);
+        $this->reasonPhrase = $reasonPhrase ?: ResponseHeaders::getDefaultReasonPhrase($code);
     }
 
 
@@ -186,63 +185,13 @@ class Response extends Message implements OutgoingResponseInterface, IncomingRes
      */
     public function send()
     {
-        if ($this->sendCallback) {
-            call_user_func($this->sendCallback, $this);
-        } else {
-            $this->sendHeaders();
-            $this->sendContent();
-        }
-
-        static::flush();
-    }
-
-
-    /**
-     * Sends the headers if don't have been sent before
-     *
-     * @return boolean TRUE if the headers are sent and false if headers had been sent before
-     */
-    public function sendHeaders()
-    {
-        if (!$this->headersSent) {
-            header(sprintf('HTTP/1.1 %s', $this->status[0], $this->status[1]));
+        if (!headers_sent()) {
+            header(sprintf('HTTP/%s %s %s', $this->protocol, $this->status[0], $this->status[1]));
 
             $this->headers->send();
             $this->cookies->send();
-            $this->headersSent = true;
         }
 
-        return true;
-    }
-
-    /**
-     * Sends the content
-     */
-    public function sendContent()
-    {
-        static::flush();
-
-        if ($this->isStream()) {
-            $body = $this->getBody();
-
-            rewind($body);
-
-            while (!feof($body)) {
-                echo fread($body, 1024);
-                flush();
-            }
-
-            fclose($body);
-        } else {
-            echo $this->body;
-        }
-    }
-
-    /**
-     * Send the output buffer and empty the response content
-     */
-    public static function flush()
-    {
         $level = ob_get_level();
 
         while ($level > 0) {
@@ -251,5 +200,15 @@ class Response extends Message implements OutgoingResponseInterface, IncomingRes
         }
 
         flush();
+
+        $body = $this->getBody();
+        $body->seek(0);
+
+        while (!$body->eof()) {
+            echo $body->read(1024);
+            flush();
+        }
+
+        $body->close();
     }
 }

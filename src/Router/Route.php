@@ -83,7 +83,7 @@ class Route implements \ArrayAccess
             && $this->check('scheme', $request->url->getScheme())
             && $this->check('host', $request->url->getHost())
             && $this->check('port', $request->url->getPort())
-            && $this->check('path', $request->url->getFullPath())
+            && $this->check('path', $request->url->getPath())
         );
     }
 

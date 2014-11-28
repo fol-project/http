@@ -15,7 +15,6 @@ abstract class Message implements MessageInterface
 
     protected $protocol = '1.1';
     protected $body;
-    protected $sendCallback;
     protected $prepareCallbacks = [];
     protected $functions = [];
     protected $services = [];
@@ -213,13 +212,6 @@ abstract class Message implements MessageInterface
         return $this->headers->delete($header);
     }
 
-    /**
-     * Set the content callback
-     */
-    public function setSendCallback(callable $callback = null)
-    {
-        $this->sendCallback = $callback;
-    }
 
     /**
      * Add a prepare callback

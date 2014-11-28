@@ -18,7 +18,7 @@ class Url
     protected $port;
     protected $user;
     protected $password;
-    protected $path;
+    protected $directory;
     protected $filename;
     protected $extension;
     protected $fragment;
@@ -92,7 +92,7 @@ class Url
         $this->setPort($url['port']);
         $this->setUser($url['user']);
         $this->setPassword($url['pass']);
-        $this->setFullPath($url['path']);
+        $this->setPath($url['path']);
         $this->setFragment($url['fragment']);
 
         if (isset($url['query'])) {
@@ -112,18 +112,56 @@ class Url
      * @return string
      */
     public function getUrl($query = false, $fragment = false) {
-        return self::build($this->getScheme(), $this->getHost(), $this->getPort(), $this->getUser(), $this->getPassword(), $this->getFullPath(), ($query ? $this->query->get() : []), ($fragment ? $this->getFragment() : ''));
+        return self::build($this->getScheme(), $this->getHost(), $this->getPort(), $this->getUser(), $this->getPassword(), $this->getPath(), ($query ? $this->query->get() : []), ($fragment ? $this->getFragment() : ''));
     }
 
 
     /**
-     * Gets the url path
+     * Gets the url directory
+     *
+     * @return string
+     */
+    public function getDirectory()
+    {
+        return $this->directory;
+    }
+
+
+    /**
+     * Sets the url directory
+     * 
+     * @param string $directory
+     */
+    public function setDirectory($directory)
+    {
+        $directory = str_replace('\\', '/', $directory);
+
+        if ($directory === '.') {
+            $directory = '/';
+        } else {
+            if ($directory[0] !== '/') {
+                $directory = "/{$path}";
+            }
+        }
+
+        $this->directory = $directory;
+    }
+
+
+    /**
+     * Gets the url path (directory + filename + extension)
      *
      * @return string
      */
     public function getPath()
     {
-        return $this->path;
+        $path = $this->directory;
+
+        if ($path && $this->filename) {
+            $path .= '/'.$this->filename.($this->extension ? ".{$this->extension}" : '');
+        }
+
+        return $path;
     }
 
 
@@ -134,47 +172,9 @@ class Url
      */
     public function setPath($path)
     {
-        $path = str_replace('\\', '/', $path);
+        $parts = pathinfo(urldecode($path)) + ['dirname' => '/', 'filename' => '', 'extension' => ''];
 
-        if ($path === '.') {
-            $path = '/';
-        } else {
-            if ($path[0] !== '/') {
-                $path = "/{$path}";
-            }
-        }
-
-        $this->path = $path;
-    }
-
-
-    /**
-     * Gets the url full path (path + filename + extension)
-     *
-     * @return string
-     */
-    public function getFullPath()
-    {
-        $fullPath = $this->path;
-
-        if ($fullPath && $this->filename) {
-            $fullPath .= '/'.$this->filename.($this->extension ? ".{$this->extension}" : '');
-        }
-
-        return $fullPath;
-    }
-
-
-    /**
-     * Sets the url full path
-     * 
-     * @param string $path
-     */
-    public function setFullPath($path)
-    {
-        $parts = pathinfo(urldecode($path)) + ['dirname' => '/', 'basename' => '', 'filename' => '', 'extension' => ''];
-
-        $this->setPath($parts['dirname']);
+        $this->setDirectory($parts['dirname']);
         $this->setFilename($parts['filename']);
         $this->setExtension($parts['extension']);
     }
