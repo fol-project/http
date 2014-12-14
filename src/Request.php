@@ -64,6 +64,7 @@ class Request extends Message implements IncomingRequestInterface, OutgoingReque
         $this->data = new RequestParameters($data);
         $this->files = new RequestFiles($files);
 
+        $this->events = new Events();
         $this->headers = new RequestHeaders($headers);
         $this->cookies = $this->headers->cookies;
         $this->cookies->set($cookies);

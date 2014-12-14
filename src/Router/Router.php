@@ -105,26 +105,29 @@ class Router
      */
     public function handle(Request $request, array $arguments = array())
     {
-        if (($route = $this->match($request))) {
-            try {
-                $response = $route->execute($request, $arguments);
-            } catch (HttpException $exception) {
-                if ($this->errorController) {
-                    return $this->errorController->execute($exception, $request, $arguments);
-                }
-
-                throw $exception;
+        try {
+            if (($route = $this->match($request))) {
+                $response = $route->execute($request, new Response(), $arguments);
+            } else {
+                throw new HttpException('Not found', 404);
             }
 
-            return $response;
+        } catch (HttpException $exception) {
+            $level = ob_get_level();
+
+            while ($level > 0) {
+                ob_get_clean();
+                $level--;
+            }
+
+            if ($this->errorController) {
+                $this->errorController->set('exception', $exception);
+                return $this->errorController->execute($request, new Response('', $exception->getCode() ?: 500), $arguments);
+            }
+
+            throw $exception;
         }
 
-        $exception = new HttpException('Not found', 404);
-
-        if ($this->errorController) {
-            return $this->errorController->execute($exception, $request, $arguments);
-        }
-
-        throw $exception;
+        return $response;
     }
 }

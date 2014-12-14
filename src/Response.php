@@ -32,7 +32,9 @@ class Response extends Message implements OutgoingResponseInterface, IncomingRes
 
         $this->headers = new ResponseHeaders($headers);
         $this->cookies = $this->headers->cookies;
-        $this->cookies->setDefaults([], BASE_URL);
+
+        $this->events = new Events();
+        $this->events->on('prepare', [$this, 'prepare']);
     }
 
     /**
@@ -107,37 +109,6 @@ class Response extends Message implements OutgoingResponseInterface, IncomingRes
         $this->headers->set('WWW-Authenticate', 'Digest realm="'.$realm.'",qop="auth",nonce="'.$nonce.'",opaque="'.md5($realm).'"');
     }
 
-    /**
-     * Prepare the Response according a request
-     *
-     * @param Request $request The original request
-     */
-    public function prepare(Request $request)
-    {
-        if (!$this->headers->has('Content-Type') && ($format = $request->getFormat())) {
-            $this->setFormat($format);
-        }
-
-        if (!$this->headers->has('Content-Language') && ($language = $request->getLanguage())) {
-            $this->setLanguage($language);
-        }
-
-        if ($this->headers->has('Transfer-Encoding')) {
-            $this->headers->delete('Content-Length');
-        }
-
-        if (!$this->headers->has('Date')) {
-            $this->headers->setDateTime('Date', new \DateTime());
-        }
-
-        if ($request->getMethod() === 'HEAD') {
-            $this->setBody('');
-        }
-
-        $this->executePrepare($request, $this);
-
-        $request->executePrepare($request, $this);
-    }
 
     /**
      * {@inheritDoc}
@@ -210,5 +181,36 @@ class Response extends Message implements OutgoingResponseInterface, IncomingRes
         }
 
         $body->close();
+    }
+
+
+    /**
+     * Default "prepare" listener for the response
+     *
+     * @param Request $request
+     * @param Response $response
+     * @param Router\Route $route
+     */
+    protected function prepare(Request $request, Response $response, Router\Route $route)
+    {
+        if (!$this->headers->has('Content-Type') && ($format = $request->getFormat())) {
+            $this->setFormat($format);
+        }
+
+        if (!$this->headers->has('Content-Language') && ($language = $request->getLanguage())) {
+            $this->setLanguage($language);
+        }
+
+        if ($this->headers->has('Transfer-Encoding')) {
+            $this->headers->delete('Content-Length');
+        }
+
+        if (!$this->headers->has('Date')) {
+            $this->headers->setDateTime('Date', new \DateTime());
+        }
+
+        if ($request->getMethod() === 'HEAD') {
+            $this->setBody(new Body(fopen('php://temp', 'r')));
+        }
     }
 }

@@ -2,7 +2,7 @@
 /**
  * Fol\Http\Url
  *
- * Class to represent and manipulate an url
+ * Class to represent and manipulate urls
  */
 namespace Fol\Http;
 
@@ -157,8 +157,12 @@ class Url
     {
         $path = $this->directory;
 
-        if ($path && $this->filename) {
-            $path .= '/'.$this->filename.($this->extension ? ".{$this->extension}" : '');
+        if ($this->filename) {
+            if ($path !== '/') {
+                $path .= '/';
+            }
+
+            $path .= $this->filename.($this->extension ? ".{$this->extension}" : '');
         }
 
         return $path;

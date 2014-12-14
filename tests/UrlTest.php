@@ -12,7 +12,8 @@ class UrlTest extends PHPUnit_Framework_TestCase
         $this->assertEquals($url->getScheme(), 'http');
         $this->assertEquals($url->getHost(), 'blog.com');
         $this->assertEquals($url->getPort(), 80);
-        $this->assertEquals($url->getPath(), '/categories');
+        $this->assertEquals($url->getDirectory(), '/categories');
+        $this->assertEquals($url->getPath(), '/categories/index.php');
         $this->assertEquals($url->getFilename(), 'index');
         $this->assertEquals($url->getExtension(), 'php');
         $this->assertEquals($url->getFragment(), 'main');
@@ -21,21 +22,21 @@ class UrlTest extends PHPUnit_Framework_TestCase
         $url->setHost('news.org');
         $url->setPort(433);
         $url->setPath('trending');
-        $url->setFilename('week');
         $url->setExtension('asp');
         $url->setFragment('#menu');
 
         $this->assertEquals($url->getScheme(), 'https');
         $this->assertEquals($url->getHost(), 'news.org');
         $this->assertEquals($url->getPort(), 433);
-        $this->assertEquals($url->getPath(), '/trending');
-        $this->assertEquals($url->getFilename(), 'week');
+        $this->assertEquals($url->getDirectory(), '/');
+        $this->assertEquals($url->getPath(), '/trending.asp');
+        $this->assertEquals($url->getFilename(), 'trending');
         $this->assertEquals($url->getExtension(), 'asp');
         $this->assertEquals($url->getFragment(), 'menu');
 
-        $this->assertEquals($url->getUrl(true, true), 'https://news.org/trending/week.asp?sort=latest#menu');
-        $this->assertEquals($url->getUrl(true), 'https://news.org/trending/week.asp?sort=latest');
-        $this->assertEquals($url->getUrl(), 'https://news.org/trending/week.asp');
+        $this->assertEquals($url->getUrl(true, true), 'https://news.org/trending.asp?sort=latest#menu');
+        $this->assertEquals($url->getUrl(true), 'https://news.org/trending.asp?sort=latest');
+        $this->assertEquals($url->getUrl(), 'https://news.org/trending.asp');
     }
 
     public function testPort()

@@ -52,7 +52,10 @@ class Body implements StreamableInterface
      */
     public function detach()
     {
-        return $this->stream;
+        $stream = $this->stream;
+        $this->stream = null;
+
+        return $stream;
     }
 
 

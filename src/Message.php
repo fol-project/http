@@ -12,10 +12,10 @@ use Psr\Http\Message\StreamableInterface;
 abstract class Message implements MessageInterface
 {
     public $headers;
+    public $events;
 
     protected $protocol = '1.1';
     protected $body;
-    protected $prepareCallbacks = [];
     protected $functions = [];
     protected $services = [];
 
@@ -210,24 +210,5 @@ abstract class Message implements MessageInterface
     public function removeHeader($header)
     {
         return $this->headers->delete($header);
-    }
-
-
-    /**
-     * Add a prepare callback
-     */
-    public function addPrepareCallback(callable $callback = null)
-    {
-        $this->prepareCallbacks[] = $callback;
-    }
-
-    /**
-     * Executes the prepare callbacks
-     */
-    public function executePrepare(Request $request, Response $response)
-    {
-        foreach ($this->prepareCallbacks as $callback) {
-            $callback($request, $response);
-        }
     }
 }

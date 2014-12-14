@@ -1,7 +1,9 @@
 Fol\Http
 ========
 
-Http library for PHP 5.5
+Http library for PHP 5.5 compatible with PSR-7
+
+More info about [PSR-7 http-message](https://github.com/php-fig/http-message)
 
 ## Requests
 
@@ -53,18 +55,10 @@ $request->cookies
 ```php
 use Fol\Http\Response;
 
-//Change the body content
-$response->setBody('Bye, world');
+//Returns the body stream
+$body = $response->getBody();
 
-//Use a stream as body
-$response->setBody('php://temp', true);
+$body->write('More content');
 
-//Append data to body
-$response->write('More content');
-
-//Get the body
-echo $response->read();
-
-//Send the response to the user
-$response->send();
+echo $body->getContents();
 ```

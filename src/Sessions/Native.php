@@ -33,9 +33,7 @@ class Native extends Session
 
         parent::__construct($request, $id, $name);
 
-        $request->addPrepareCallback(function ($request, $response) {
-            $this->prepare($request, $response);
-        });
+        $request->events->on('prepare', [$this, 'prepare']);
 
         $this->start();
     }
@@ -73,20 +71,6 @@ class Native extends Session
     }
 
     /**
-     * Magic method to close the session
-     */
-    protected function prepare(Request $request, Response $response)
-    {
-        if ((session_status() === PHP_SESSION_ACTIVE) && (session_name() === $this->name) && (session_id() === $this->id)) {
-            session_write_close();
-        }
-
-        if (!$this->id) {
-            $response->cookies->setDelete($this->name, $this->cookie['path'], $this->cookie['domain'], $this->cookie['secure'], $this->cookie['httponly']);
-        }
-    }
-
-    /**
      * Regenerate the id for the current session
      */
     public function regenerate($destroy = false, $lifetime = null)
@@ -119,5 +103,24 @@ class Native extends Session
         $this->id = null;
 
         session_destroy();
+    }
+
+
+    /**
+     * Default "prepare" listener for this session
+     *
+     * @param Request $request
+     * @param Response $response
+     * @param Router\Route $route
+     */
+    protected function prepare(Request $request, Response $response, Router\Route $route)
+    {
+        if ((session_status() === PHP_SESSION_ACTIVE) && (session_name() === $this->name) && (session_id() === $this->id)) {
+            session_write_close();
+        }
+
+        if (!$this->id) {
+            $response->cookies->setDelete($this->name, $this->cookie['path'], $this->cookie['domain'], $this->cookie['secure'], $this->cookie['httponly']);
+        }
     }
 }

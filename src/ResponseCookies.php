@@ -107,18 +107,15 @@ class ResponseCookies implements \ArrayAccess
             $expires = strtotime($expires);
         }
 
-        $data = [];
-
-        foreach (['expires', 'path', 'domain', 'secure', 'httponly'] as $key) {
-            if ($$key !== null) {
-                $data[$key] = $$key;
-            }
-        }
-
-        $data['name'] = $name;
-        $data['value'] = $value;
-
-        $this->items[$name] = $data + $this->defaults;
+        $this->items[$name] = [
+            'name' => $name,
+            'value' => $value,
+            'expires' => $expires,
+            'path' => $path,
+            'domain' => $domain,
+            'secure' => $secure,
+            'httponly' => $httponly
+        ];
     }
 
     /**
