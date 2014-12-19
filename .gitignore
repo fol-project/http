@@ -26,3 +26,4 @@ $RECYCLE.BIN/
 # COMPOSER
 vendor/
 composer.lock
+composer.phar

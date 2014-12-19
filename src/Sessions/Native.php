@@ -33,7 +33,7 @@ class Native extends Session
 
         parent::__construct($request, $id, $name);
 
-        $request->events->on('prepare', [$this, 'prepare']);
+        $request->events->on('prepareResponse', [$this, 'prepare']);
 
         $this->start();
     }

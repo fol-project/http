@@ -50,7 +50,7 @@ abstract class Route implements \ArrayAccess
             $response->getBody()->write(ob_get_clean().$return);
         }
 
-        $request->events->emit('prepare', [$request, $response, $this]);
+        $request->events->emit('prepareResponse', [$request, $response, $this]);
         $response->events->emit('prepare', [$request, $response, $this]);
 
         return $response;
