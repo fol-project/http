@@ -43,7 +43,7 @@ class Body implements StreamableInterface
      */
     public function close()
     {
-        fclose($this->stream);
+        return fclose($this->stream);
     }
 
 
@@ -77,7 +77,7 @@ class Body implements StreamableInterface
      */
     public function tell()
     {
-        ftell($this->stream);
+        return ftell($this->stream);
     }
 
 
@@ -86,7 +86,7 @@ class Body implements StreamableInterface
      */
     public function eof()
     {
-        feof($this->stream);
+        return feof($this->stream);
     }
 
 

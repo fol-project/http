@@ -27,7 +27,12 @@ class Response extends Message implements OutgoingResponseInterface, IncomingRes
      */
     public function __construct ($content = '', $status = 200, array $headers = array())
     {
-        $this->setBody($content);
+        $this->setBodySource('php://temp', 'r+');
+
+        if ($content) {
+            $this->getBody()->write($content);
+        }
+
         $this->setStatus($status);
 
         $this->headers = new ResponseHeaders($headers);
@@ -191,7 +196,7 @@ class Response extends Message implements OutgoingResponseInterface, IncomingRes
      * @param Response $response
      * @param Router\Route $route
      */
-    protected function prepare(Request $request, Response $response, Router\Route $route)
+    public function prepare(Request $request, Response $response, Router\Route $route)
     {
         if (!$this->headers->has('Content-Type') && ($format = $request->getFormat())) {
             $this->setFormat($format);

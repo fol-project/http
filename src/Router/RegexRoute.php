@@ -9,7 +9,7 @@ namespace Fol\Http\Router;
 use Fol\Http\Request;
 use Fol\Http\Url;
 
-class RegexRoute extends Route
+class RegexRoute extends StaticRoute
 {
     protected $regex;
 

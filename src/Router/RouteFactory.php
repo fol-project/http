@@ -97,7 +97,7 @@ class RouteFactory
             return new RegexRoute($name, $config, $target);
         }
 
-        return new Route($name, $config, $target);
+        return new StaticRoute($name, $config, $target);
     }
 
     /**
