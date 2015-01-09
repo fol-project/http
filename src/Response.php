@@ -6,10 +6,7 @@
  */
 namespace Fol\Http;
 
-use Psr\Http\Message\OutgoingResponseInterface;
-use Psr\Http\Message\IncomingResponseInterface;
-
-class Response extends Message implements OutgoingResponseInterface, IncomingResponseInterface
+class Response extends Message
 {
     protected static $constructors = [];
 

@@ -402,18 +402,4 @@ class Request extends Message implements IncomingRequestInterface, OutgoingReque
 
         return ($authentication['response'] === $validResponse);
     }
-
-    /**
-     * Sends the request and returns the response
-     *
-     * @return Response
-     */
-    public function send()
-    {
-        if ($this->sendCallback) {
-            return call_user_func($this->sendCallback, $this);
-        }
-
-        return CurlDispatcher::execute($this);
-    }
 }

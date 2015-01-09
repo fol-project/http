@@ -1,9 +1,9 @@
 {
 	"name": "fol/http",
 	"type": "library",
-	"description": "Http library for FOL framework",
-	"keywords": ["http", "psr-7"],
-	"homepage": "https://github.com/fol-project/fol-http",
+	"description": "Http library",
+	"keywords": ["http"],
+	"homepage": "https://github.com/fol-project/http",
 	"license": "AGPL-3.0",
 	"authors": [
 		{
@@ -15,11 +15,10 @@
 	],
 	"support": {
 		"email": "oom@oscarotero.com",
-		"issues": "https://github.com/fol-project/fol-http/issues"
+		"issues": "https://github.com/fol-project/http/issues"
 	},
 	"require": {
-		"php": ">=5.5.0",
-		"psr/http-message": "*"
+		"php": ">=5.5.0"
 	},
 	"autoload": {
 		"psr-4": {

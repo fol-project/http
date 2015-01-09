@@ -6,10 +6,7 @@
  */
 namespace Fol\Http;
 
-use Psr\Http\Message\MessageInterface;
-use Psr\Http\Message\StreamableInterface;
-
-abstract class Message implements MessageInterface
+abstract class Message
 {
     public $headers;
     public $events;
@@ -121,94 +118,22 @@ abstract class Message implements MessageInterface
     }
 
     /**
-     * Sets the body source: the stream file path
+     * Returns the message body
      *
-     * @param string $path The stream path (ex: php://temp)
-     * @param string $mode The stream mode (ex: r+)
-     */
-    public function setBodySource($path, $mode)
-    {
-        $this->body = [$path, $mode];
-    }
-
-
-    /**
-     * {inheritDoc}
+     * @return Body
      */
     public function getBody()
     {
-        if (is_array($this->body)) {
-            $this->body = new Body(fopen($this->body[0], $this->body[1]));
-        }
-
         return $this->body;
     }
 
     /**
      * Sets the message body
      *
-     * @param StreamableInterface $body
+     * @param Body $body
      */
-    public function setBody(StreamableInterface $body)
+    public function setBody(Body $body)
     {
         $this->body = $body;
-    }
-
-    /**
-     * {inheritDoc}
-     */
-    public function getHeaders()
-    {
-        return $this->headers->get();
-    }
-
-    /**
-     * {inheritDoc}
-     */
-    public function hasHeader($header)
-    {
-        return $this->headers->has($header);
-    }
-
-    /**
-     * {inheritDoc}
-     */
-    public function getHeader($header)
-    {
-        return implode(',', $this->getHeaderAsArray($header));
-    }
-
-    /**
-     * {inheritDoc}
-     */
-    public function getHeaderAsArray($header)
-    {
-        return $this->headers->get($header, false, []);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function setHeader($header, $value)
-    {
-        return $this->headers->set($header, $value);
-    }
-
-
-    /**
-     * {@inheritDoc}
-     */
-    public function addHeader($header, $value)
-    {
-        return $this->headers->set($header, $value, false);
-    }
-
-
-    /**
-     * {@inheritDoc}
-     */
-    public function removeHeader($header)
-    {
-        return $this->headers->delete($header);
     }
 }

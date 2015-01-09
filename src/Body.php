@@ -6,11 +6,10 @@
  */
 namespace Fol\Http;
 
-use Psr\Http\Message\StreamableInterface;
-
-class Body implements StreamableInterface
+class Body
 {
     protected $stream;
+    protected $source;
 
     private static $readWriteHash = [
         'read' => ['r', 'w+', 'r+', 'x+', 'c+', 'rb', 'w+b', 'r+b', 'x+b', 'c+b', 'rt', 'w+t', 'r+t', 'x+t', 'c+t', 'a+'],
@@ -21,11 +20,30 @@ class Body implements StreamableInterface
     /**
      * Constructor
      *
-     * @param resource $stream The stream resouce opened with fopen
+     * @param string|resource $stream The stream resouce opened with fopen or the path
+     * @param string          $mode   If you provide a path, the open mode used
      */
-    public function __construct($stream)
+    public function __construct($stream = 'php://temp', $mode = 'r+')
     {
-        $this->stream = $stream;
+        if (is_resource($stream)) {
+            $this->stream = $stream;
+        } else {
+            $this->source = [$stream, $mode];
+        }
+    }
+
+    /**
+     * Open and returns the stream resource
+     *
+     * @return resource
+     */
+    protected function getStream()
+    {
+        if ($this->stream) {
+            return $this->stream;
+        }
+
+        return $this->stream = fopen($this->source[0], $this->source[1]);
     }
 
 
@@ -34,7 +52,7 @@ class Body implements StreamableInterface
      */
     public function __toString()
     {
-        return stream_get_contents($this->stream, -1, 0);
+        return stream_get_contents($this->getStream(), -1, 0);
     }
 
 
@@ -43,7 +61,7 @@ class Body implements StreamableInterface
      */
     public function close()
     {
-        return fclose($this->stream);
+        return fclose($this->getStream());
     }
 
 
@@ -52,7 +70,7 @@ class Body implements StreamableInterface
      */
     public function detach()
     {
-        $stream = $this->stream;
+        $stream = $this->getStream();
         $this->stream = null;
 
         return $stream;
@@ -64,7 +82,7 @@ class Body implements StreamableInterface
      */
     public function getSize()
     {
-        $stats = fstat($this->stream);
+        $stats = fstat($this->getStream());
 
         if (isset($stats['size'])) {
             return $stats['size'];
@@ -77,7 +95,7 @@ class Body implements StreamableInterface
      */
     public function tell()
     {
-        return ftell($this->stream);
+        return ftell($this->getStream());
     }
 
 
@@ -86,7 +104,7 @@ class Body implements StreamableInterface
      */
     public function eof()
     {
-        return feof($this->stream);
+        return feof($this->getStream());
     }
 
 
@@ -104,7 +122,7 @@ class Body implements StreamableInterface
      */
     public function seek($offset, $whence = SEEK_SET)
     {
-        return fseek($this->stream, $offset, $whence);
+        return fseek($this->getStream(), $offset, $whence);
     }
 
 
@@ -122,7 +140,7 @@ class Body implements StreamableInterface
      */
     public function write($string)
     {
-        return fwrite($this->stream, $string);
+        return fwrite($this->getStream(), $string);
     }
 
 
@@ -140,7 +158,7 @@ class Body implements StreamableInterface
      */
     public function read($length)
     {
-        return fread($this->stream, $length);
+        return fread($this->getStream(), $length);
     }
 
 
@@ -149,7 +167,7 @@ class Body implements StreamableInterface
      */
     public function getContents()
     {
-        return stream_get_contents($this->stream);
+        return stream_get_contents($this->getStream());
     }
 
 
@@ -158,7 +176,7 @@ class Body implements StreamableInterface
      */
     public function getMetadata($key = null)
     {
-        $metadata = stream_get_meta_data($this->stream);
+        $metadata = stream_get_meta_data($this->getStream());
 
         if ($key) {
             return isset($metadata[$key]) ? $metadata[$key] : null;
