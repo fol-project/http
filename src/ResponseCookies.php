@@ -14,7 +14,7 @@ class ResponseCookies implements \ArrayAccess
      * Applies a default configuration to the cookies
      *
      * @param array $config An array with some or all of these keys:
-     * 
+     *
      * path
      * domain
      * secure
@@ -77,7 +77,7 @@ class ResponseCookies implements \ArrayAccess
             'path' => $path,
             'domain' => $domain,
             'secure' => $secure,
-            'httponly' => $httponly
+            'httponly' => $httponly,
         ];
     }
 
@@ -115,7 +115,7 @@ class ResponseCookies implements \ArrayAccess
         }
 
         if (!($cookie = $this->get($name))) {
-            return null;
+            return;
         }
 
         $string = urlencode($cookie['name']).'='.urlencode($cookie['value']).';';

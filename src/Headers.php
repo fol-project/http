@@ -10,7 +10,6 @@ class Headers implements \ArrayAccess
 {
     use ContainerTrait;
 
-
     /**
      * Normalize the name of the parameters.
      * self::normalize('CONTENT type') Returns "Content-Type"
@@ -23,7 +22,6 @@ class Headers implements \ArrayAccess
     {
         return str_replace(' ', '-', ucwords(strtolower(str_replace('-', ' ', $string))));
     }
-
 
     /**
      * Converts all headers to a string
@@ -40,7 +38,6 @@ class Headers implements \ArrayAccess
 
         return $text;
     }
-
 
     /**
      * Stores new headers. You can define an array to store more than one at the same time
@@ -70,12 +67,11 @@ class Headers implements \ArrayAccess
         }
     }
 
-
     /**
      * Gets one or all parameters
      *
-     * @param string  $name    The header name
-     * @param boolean $first   Set true to return just the value of the first header with this name. False to return an array with all values.
+     * @param string  $name  The header name
+     * @param boolean $first Set true to return just the value of the first header with this name. False to return an array with all values.
      *
      * @return null|string The header value or an array with all values
      */
@@ -188,7 +184,7 @@ class Headers implements \ArrayAccess
         }
 
         if (!($value = $this->get($name, $first))) {
-            return null;
+            return;
         }
 
         if ($first) {

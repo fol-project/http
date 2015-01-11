@@ -36,7 +36,6 @@ class Request extends Message
         return $request;
     }
 
-
     /**
      * Constructor
      *
@@ -90,7 +89,6 @@ class Request extends Message
             return $this->handler->$name;
         }
     }
-
 
     /**
      * Magic function to convert the request to a string
@@ -152,7 +150,6 @@ class Request extends Message
     {
         return $this->url->getUrl();
     }
-
 
     /**
      * Gets the requested format.
@@ -231,7 +228,7 @@ class Request extends Message
             'X-Forwarded',
             'X-Cluster-Client-Ip',
             'Forwarded-For',
-            'Forwarded'
+            'Forwarded',
         ];
 
         $ips = [];

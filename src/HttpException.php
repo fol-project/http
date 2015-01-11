@@ -8,7 +8,6 @@ namespace Fol\Http;
 
 class HttpException extends \Exception
 {
-
     /**
      * Constructor.
      *

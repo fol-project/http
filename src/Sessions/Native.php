@@ -14,9 +14,9 @@ class Native extends Session
     /**
      * Construct and loads the session data
      *
-     * @param RequestHandler     $handler
-     * @param string|null $id
-     * @param string|null $name
+     * @param RequestHandler $handler
+     * @param string|null    $id
+     * @param string|null    $name
      */
     public function __construct(RequestHandler $handler, $id = null, $name = null)
     {
@@ -41,7 +41,7 @@ class Native extends Session
      * Starts the session
      *
      * @param RequestHandler $handler
-     * 
+     *
      * @throws \RuntimeException if session cannot be started
      */
     protected function start(RequestHandler $handler)
@@ -74,7 +74,7 @@ class Native extends Session
         session_start();
 
         $this->id = session_id();
-        $this->items =& $_SESSION;
+        $this->items = & $_SESSION;
     }
 
     /**
@@ -112,12 +112,11 @@ class Native extends Session
         session_destroy();
     }
 
-
     /**
      * request handler callback
      *
      * @param RequestHandler $handler
-     * @param Response $response
+     * @param Response       $response
      */
     public function handlerCallback(RequestHandler $handler, Response $response)
     {

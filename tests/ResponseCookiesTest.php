@@ -26,7 +26,7 @@ class ResponseCookiesTest extends PHPUnit_Framework_TestCase
 
         $cookies->applyDefaults([
             'path' => '/',
-            'domain' => 'domain.com'
+            'domain' => 'domain.com',
         ]);
 
         $this->assertEquals('/', $cookies->get('Other')['path']);
@@ -34,7 +34,7 @@ class ResponseCookiesTest extends PHPUnit_Framework_TestCase
 
         $cookies->setDelete('UserID');
         $this->assertEquals(1, $cookies->get('UserID')['expires']);
-        
+
         $cookies->delete('UserID');
         $this->assertFalse($cookies->has('UserID'));
         $this->assertSame(1, $cookies->length());

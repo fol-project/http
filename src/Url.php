@@ -10,7 +10,7 @@ class Url
 {
     protected static $defaultPorts = [
         'http' => 80,
-        'https' => 433
+        'https' => 433,
     ];
 
     protected $scheme;
@@ -24,7 +24,6 @@ class Url
     protected $fragment;
 
     public $query;
-
 
     /**
      * Generates an url using its parts
@@ -57,7 +56,6 @@ class Url
         );
     }
 
-
     /**
      * Constructor
      *
@@ -68,7 +66,6 @@ class Url
         $this->query = new RequestParameters();
         $this->setUrl($url);
     }
-
 
     /**
      * Set a new url
@@ -94,19 +91,18 @@ class Url
         }
     }
 
-
     /**
      * Gets the url
-     * 
+     *
      * @param boolean $query    True to add the query to the url (false by default)
      * @param boolean $fragment True to add the fragment to the url (false by default)
-     * 
+     *
      * @return string
      */
-    public function getUrl($query = false, $fragment = false) {
+    public function getUrl($query = false, $fragment = false)
+    {
         return self::build($this->getScheme(), $this->getHost(), $this->getPort(), $this->getUser(), $this->getPassword(), $this->getPath(), ($query ? $this->query->get() : []), ($fragment ? $this->getFragment() : ''));
     }
-
 
     /**
      * Gets the url directory
@@ -118,10 +114,9 @@ class Url
         return $this->directory;
     }
 
-
     /**
      * Sets the url directory
-     * 
+     *
      * @param string $directory
      */
     public function setDirectory($directory)
@@ -136,7 +131,6 @@ class Url
 
         $this->directory = $directory;
     }
-
 
     /**
      * Gets the url path (directory + filename [+ extension])
@@ -162,10 +156,9 @@ class Url
         return $path;
     }
 
-
     /**
      * Sets the url path
-     * 
+     *
      * @param string $path
      */
     public function setPath($path)
@@ -177,7 +170,6 @@ class Url
         $this->setExtension($parts['extension']);
     }
 
-
     /**
      * Gets the url scheme (for example: http)
      *
@@ -188,7 +180,6 @@ class Url
         return $this->scheme;
     }
 
-
     /**
      * Sets the url scheme
      *
@@ -198,7 +189,6 @@ class Url
     {
         $this->scheme = $scheme ? strtolower($scheme) : $scheme;
     }
-
 
     /**
      * Gets the url host
@@ -220,7 +210,6 @@ class Url
         $this->host = $host ? strtolower($host) : $host;
     }
 
-
     /**
      * Gets the url port
      *
@@ -241,7 +230,6 @@ class Url
         $this->port = ($port === null) ? $port : intval($port);
     }
 
-
     /**
      * Gets the url user
      *
@@ -251,7 +239,6 @@ class Url
     {
         return $this->user;
     }
-
 
     /**
      * Sets the url user
@@ -263,7 +250,6 @@ class Url
         $this->user = $user;
     }
 
-
     /**
      * Gets the url password
      *
@@ -273,7 +259,6 @@ class Url
     {
         return $this->password;
     }
-
 
     /**
      * Sets the url password
@@ -295,10 +280,9 @@ class Url
         return $this->fragment;
     }
 
-
     /**
      * Sets the url fragment
-     * 
+     *
      * @param null|string $fragment
      */
     public function setFragment($fragment)
@@ -310,7 +294,6 @@ class Url
         $this->fragment = $fragment;
     }
 
-
     /**
      * Gets the url extension
      *
@@ -321,17 +304,15 @@ class Url
         return $this->extension;
     }
 
-
     /**
      * Sets the url extension
-     * 
+     *
      * @param string $extension
      */
     public function setExtension($extension)
     {
         $this->extension = strtolower($extension);
     }
-
 
     /**
      * Gets the url filename
@@ -343,10 +324,9 @@ class Url
         return $this->filename;
     }
 
-
     /**
      * Sets the url filename
-     * 
+     *
      * @param string $filename
      */
     public function setFilename($filename)

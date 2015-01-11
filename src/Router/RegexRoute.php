@@ -16,7 +16,7 @@ class RegexRoute extends StaticRoute
     /**
      * {@inheritDoc}
      */
-    public function __construct (array $config = array())
+    public function __construct(array $config = array())
     {
         parent::__construct($config);
 
@@ -103,7 +103,7 @@ class RegexRoute extends StaticRoute
      *
      * @return string The url to the route
      */
-    public function generate (array $parameters = array())
+    public function generate(array $parameters = array())
     {
         $path = $this->path;
 

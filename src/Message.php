@@ -13,7 +13,6 @@ abstract class Message
     protected $protocol = '1.1';
     protected $body;
 
-
     /**
      * {inheritDoc}
      */

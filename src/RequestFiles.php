@@ -13,7 +13,7 @@ class RequestFiles extends RequestParameters
         2 => 'The uploaded file exceeds the MAX_FILE_SIZE directive that was specified in the HTML form',
         3 => 'The uploaded file was only partially uploaded',
         4 => 'No file was uploaded',
-        6 => 'Missing a temporary folder'
+        6 => 'Missing a temporary folder',
     ];
 
     /**
@@ -49,9 +49,8 @@ class RequestFiles extends RequestParameters
             return $file['error'];
         }
 
-        return null;
+        return;
     }
-
 
     /**
      * Returns the error message
@@ -65,7 +64,7 @@ class RequestFiles extends RequestParameters
         $code = $this->getErrorCode($name);
 
         if (($code === null) || !isset(self::$errors[$code])) {
-            return null;
+            return;
         }
 
         return self::$errors[$code];

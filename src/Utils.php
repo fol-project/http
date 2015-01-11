@@ -14,13 +14,13 @@ class Utils
 
     /**
      * Returns all available formats
-     * 
+     *
      * @return array
      */
     public static function getFormats()
     {
         if (empty(self::$formats)) {
-            self::$formats = require(__DIR__.'/data/formats.php');
+            self::$formats = require __DIR__.'/data/formats.php';
         }
 
         return self::$formats;
@@ -28,13 +28,13 @@ class Utils
 
     /**
      * Returns all available languages
-     * 
+     *
      * @return array
      */
     public static function getLanguages()
     {
         if (empty(self::$languages)) {
-            self::$languages = require(__DIR__.'/data/languages.php');
+            self::$languages = require __DIR__.'/data/languages.php';
         }
 
         return self::$languages;
@@ -42,13 +42,13 @@ class Utils
 
     /**
      * Returns all available statuses
-     * 
+     *
      * @return array
      */
     public static function getStatuses()
     {
         if (empty(self::$statuses)) {
-            self::$statuses = require(__DIR__.'/data/statuses.php');
+            self::$statuses = require __DIR__.'/data/statuses.php';
         }
 
         return self::$statuses;
@@ -92,7 +92,7 @@ class Utils
      * Gets the language
      * Utils::getLanguage('gl-es') => gl
      *
-     * @param string  $language   The raw language code
+     * @param string $language The raw language code
      *
      * @return boolean|string
      */
@@ -108,7 +108,7 @@ class Utils
      * Gets the language name
      * Utils::getLanguageName('gl-es') => Galician
      *
-     * @param string  $language   The raw language code
+     * @param string $language The raw language code
      *
      * @return boolean|string
      */
@@ -173,10 +173,9 @@ class Utils
         return false;
     }
 
-
     /**
      * Parse and return http values
-     * 
+     *
      * Utils::parseHeader('text/html,application/xhtml+xml,application/xml;q=0.9,* /*;q=0.8')
      * Array (
      *     [text/html] => Array()

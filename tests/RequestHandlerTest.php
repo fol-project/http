@@ -1,7 +1,6 @@
 <?php
 use Fol\Http\Request;
 use Fol\Http\Response;
-use Fol\Http\Url;
 use Fol\Http\RequestHandler;
 use Fol\Http\Sessions\Session;
 
@@ -47,7 +46,7 @@ class RequestHandlerTest extends PHPUnit_Framework_TestCase
     {
         $request = new Request('http://domain.com', 'HEAD');
         $response = new Response('This is a response');
-        
+
         $handler = new RequestHandler($request);
 
         $handler->handle($response);

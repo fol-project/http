@@ -22,7 +22,7 @@ class RequestCookies implements \ArrayAccess
     {
         if ($name === null) {
             if (!$this->items) {
-                return null;
+                return;
             }
 
             $header = $headerName;
@@ -35,7 +35,7 @@ class RequestCookies implements \ArrayAccess
         }
 
         if (!($value = $this->get($name))) {
-            return null;
+            return;
         }
 
         return $headerName.urlencode($name).'='.urlencode($value).';';

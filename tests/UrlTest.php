@@ -49,7 +49,7 @@ class UrlTest extends PHPUnit_Framework_TestCase
 
         $this->assertEquals($url->getPort(), 433);
         $this->assertEquals($url->getUrl(), 'https://blog.com/');
-        
+
         $url->setPort(8888);
         $this->assertEquals($url->getUrl(), 'https://blog.com:8888/');
     }

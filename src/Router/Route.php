@@ -8,7 +8,6 @@ namespace Fol\Http\Router;
 
 use Fol\Http\Request;
 use Fol\Http\Response;
-use Fol\Http\HttpException;
 
 abstract class Route
 {
@@ -29,9 +28,9 @@ abstract class Route
     /**
      * Execute the route
      *
-     * @param Request       $request   The request to send to the controller
-     * @param Response      $response  The response to send to the controller
-     * @param array         $arguments Extra arguments passed to the controller (after $request and $response instances)
+     * @param Request  $request   The request to send to the controller
+     * @param Response $response  The response to send to the controller
+     * @param array    $arguments Extra arguments passed to the controller (after $request and $response instances)
      */
     public function execute(Request $request, Response $response, array $arguments = array())
     {

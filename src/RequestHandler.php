@@ -8,16 +8,15 @@ namespace Fol\Http;
 
 class RequestHandler
 {
-	protected $handlers = [];
+    protected $handlers = [];
     protected $services = [];
     protected $request;
     protected $baseUrl;
     protected $cookiesDefaultConfig = [];
 
-
     /**
      * Contructor. Set the basic configuration
-     * 
+     *
      * @param Request $request
      * @param string  $baseUrl
      */
@@ -37,7 +36,7 @@ class RequestHandler
             'domain' => $this->baseUrl->getHost(),
             'path' => $this->baseUrl->getPath(false),
             'secure' => ($this->baseUrl->getScheme() === 'https'),
-            'httponly' => true
+            'httponly' => true,
         ]);
     }
 
@@ -68,7 +67,7 @@ class RequestHandler
 
     /**
      * Returns the base url
-     * 
+     *
      * @return Url
      */
     public function getBaseUrl()
@@ -78,7 +77,7 @@ class RequestHandler
 
     /**
      * Set the default cookies configuration
-     * 
+     *
      * @param array $config
      */
     public function setCookiesDefaultConfig(array $config)
@@ -86,10 +85,9 @@ class RequestHandler
         $this->cookiesDefaultConfig = array_replace($this->cookiesDefaultConfig, $config);
     }
 
-
     /**
      * Get the default cookies configuration
-     * 
+     *
      * @param array
      */
     public function getCookiesDefaultConfig()
@@ -99,7 +97,7 @@ class RequestHandler
 
     /**
      * Set the request
-     * 
+     *
      * @return Request
      */
     public function getRequest()
@@ -129,14 +127,14 @@ class RequestHandler
 
     /**
      * Prepare the response according with the current request
-     * 
+     *
      * @param Response $response
      */
     public function handle(Response $response)
     {
         $request = $this->getRequest();
 
-    	if (!$request->headers->has('Content-Type') && ($format = $request->getFormat())) {
+        if (!$request->headers->has('Content-Type') && ($format = $request->getFormat())) {
             $response->setFormat($format);
         }
 

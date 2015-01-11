@@ -11,10 +11,10 @@ class ResponseTest extends PHPUnit_Framework_TestCase
 
         $this->assertSame(200, $response->getStatusCode());
         $this->assertSame('OK', $response->getReasonPhrase());
-        
+
         $response->setFormat('json');
         $this->assertSame('application/json; charset=UTF-8', $response->headers->get('Content-Type'));
-        
+
         $body = $response->getBody();
         $this->assertSame('hello world', (string) $body);
 

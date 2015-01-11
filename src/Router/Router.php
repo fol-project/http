@@ -23,7 +23,7 @@ class Router
     /**
      * Constructor function. Defines the base url
      *
-     * @param RequestHandler $handler
+     * @param RequestHandler    $handler
      * @param null|RouteFactory $routeFactory
      */
     public function __construct(RequestHandler $handler, RouteFactory $routeFactory = null)
@@ -108,7 +108,6 @@ class Router
         $response->send();
     }
 
-
     /**
      * Handle a specific request
      *
@@ -127,7 +126,6 @@ class Router
             } else {
                 throw new HttpException('Not found', 404);
             }
-
         } catch (HttpException $exception) {
             $level = ob_get_level();
 

@@ -21,8 +21,8 @@ class Session implements \ArrayAccess
      * Construct and loads the session data
      *
      * @param RequestHandler $handler
-     * @param string  $id
-     * @param string  $name
+     * @param string         $id
+     * @param string         $name
      */
     public function __construct(RequestHandler $handler, $id = null, $name = null)
     {
@@ -45,15 +45,19 @@ class Session implements \ArrayAccess
      * Starts the session
      *
      * @param RequestHandler $handler
-     * 
+     *
      * @throws \RuntimeException if session cannot be started
      */
-    protected function start(RequestHandler $handler) {}
+    protected function start(RequestHandler $handler)
+    {
+    }
 
     /**
      * Close the session and save the data.
      */
-    public function save() {}
+    public function save()
+    {
+    }
 
     /**
      * Destroy the current session deleting the data
@@ -89,7 +93,8 @@ class Session implements \ArrayAccess
      * @param boolean $destroy  Set true to destroy the current data
      * @param integer $lifetime The new session duration
      */
-    public function regenerate($destroy = false, $lifetime = null) {
+    public function regenerate($destroy = false, $lifetime = null)
+    {
         if ($destroy) {
             $this->delete();
         }
@@ -151,12 +156,11 @@ class Session implements \ArrayAccess
         return (isset($this->items['_flash']) && array_key_exists($name, $this->items['_flash']));
     }
 
-
     /**
      * request handler callback
      *
      * @param RequestHandler $handler
-     * @param Response $response
+     * @param Response       $response
      */
     public function handlerCallback(RequestHandler $handler, Response $response)
     {

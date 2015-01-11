@@ -243,7 +243,7 @@ class Globals
                 'tmp_name' => $files['tmp_name'][$index],
                 'size' => $files['size'][$index],
                 'type' => $files['type'][$index],
-                'error' => $files['error'][$index]
+                'error' => $files['error'][$index],
             );
 
             if (is_array($name)) {

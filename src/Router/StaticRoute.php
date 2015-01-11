@@ -22,7 +22,6 @@ class StaticRoute extends Route
     public $path;
     public $language;
 
-
     /**
      * Check whether or not the route match with the request
      *
@@ -61,7 +60,6 @@ class StaticRoute extends Route
         return $values;
     }
 
-
     /**
      * Reverse the route
      *
@@ -75,7 +73,6 @@ class StaticRoute extends Route
 
         return Url::build($values['scheme'], $values['host'], $values['port'], null, null, $values['path'], $parameters);
     }
-
 
     /**
      * Check two values

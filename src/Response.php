@@ -22,7 +22,7 @@ class Response extends Message
      * @param integer $status  The status code (200 by default)
      * @param array   $headers The headers to send in the response
      */
-    public function __construct ($content = '', $status = 200, array $headers = array())
+    public function __construct($content = '', $status = 200, array $headers = array())
     {
         $this->setBody(new Body());
 
@@ -108,7 +108,6 @@ class Response extends Message
         $this->headers->set('WWW-Authenticate', 'Digest realm="'.$realm.'",qop="auth",nonce="'.$nonce.'",opaque="'.md5($realm).'"');
     }
 
-
     /**
      * {@inheritDoc}
      */
@@ -118,7 +117,6 @@ class Response extends Message
         $this->reasonPhrase = $reasonPhrase ?: Utils::getReasonPhrase($code);
     }
 
-
     /**
      * {@inheritDoc}
      */
@@ -127,7 +125,6 @@ class Response extends Message
         return $this->statusCode;
     }
 
-
     /**
      * {@inheritDoc}
      */
@@ -135,7 +132,6 @@ class Response extends Message
     {
         return $this->reasonPhrase;
     }
-
 
     /**
      * Set the status code and header needle to redirect to another url
@@ -148,7 +144,6 @@ class Response extends Message
         $this->setStatus($status);
         $this->headers->set('location', $url);
     }
-
 
     /**
      * Send the response to the client

@@ -15,22 +15,22 @@ class RequestFilesTest extends PHPUnit_Framework_TestCase
                     'tmp_name' => 'abcdef',
                     'size' => 2300,
                     'type' => 'image/jpeg',
-                    'error' => 0
-                ],[
+                    'error' => 0,
+                ], [
                     'name' => 'file2.png',
                     'tmp_name' => 'efghij',
                     'size' => 2555,
                     'type' => 'image/png',
                     'error' => 1
-                ]
+                ],
             ],
             'avatar' => [
                 'name' => 'avatar.png',
                 'tmp_name' => '12345',
                 'size' => 1000,
                 'type' => 'image/png',
-                'error' => 3
-            ]
+                'error' => 3,
+            ],
         ]);
 
         $this->assertEquals(2, $files->length());

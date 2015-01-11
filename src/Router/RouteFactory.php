@@ -6,7 +6,6 @@
  */
 namespace Fol\Http\Router;
 
-use Fol\Http\RequestHandler;
 use Fol\Http\Url;
 
 class RouteFactory
@@ -57,9 +56,9 @@ class RouteFactory
     /**
      * Normalices the configuration of a route
      *
-     * @param string $name   Route name
-     * @param array  $config Route configuration (path, target, etc)
-     * @param Url $baseUrl The baseUrl of the route
+     * @param string $name    Route name
+     * @param array  $config  Route configuration (path, target, etc)
+     * @param Url    $baseUrl The baseUrl of the route
      *
      * @return array
      */
@@ -98,9 +97,9 @@ class RouteFactory
     /**
      * Creates a new route instance
      *
-     * @param string $name   Route name
-     * @param array  $config Route configuration (path, target, etc)
-     * @param Url $baseUrl The baseUrl of the route
+     * @param string $name    Route name
+     * @param array  $config  Route configuration (path, target, etc)
+     * @param Url    $baseUrl The baseUrl of the route
      *
      * @return Route
      */

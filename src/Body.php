@@ -13,9 +13,8 @@ class Body
 
     private static $readWriteHash = [
         'read' => ['r', 'w+', 'r+', 'x+', 'c+', 'rb', 'w+b', 'r+b', 'x+b', 'c+b', 'rt', 'w+t', 'r+t', 'x+t', 'c+t', 'a+'],
-        'write' => ['w', 'w+', 'rw', 'r+', 'x+', 'c+', 'wb', 'w+b', 'r+b', 'x+b', 'c+b', 'w+t', 'r+t', 'x+t', 'c+t', 'a', 'a+']
+        'write' => ['w', 'w+', 'rw', 'r+', 'x+', 'c+', 'wb', 'w+b', 'r+b', 'x+b', 'c+b', 'w+t', 'r+t', 'x+t', 'c+t', 'a', 'a+'],
     ];
-
 
     /**
      * Constructor
@@ -46,7 +45,6 @@ class Body
         return $this->stream = fopen($this->source[0], $this->source[1]);
     }
 
-
     /**
      * {@inheritDoc}
      */
@@ -57,7 +55,6 @@ class Body
         return stream_get_contents($this->getStream(), -1);
     }
 
-
     /**
      * {@inheritDoc}
      */
@@ -65,7 +62,6 @@ class Body
     {
         return fclose($this->getStream());
     }
-
 
     /**
      * {@inheritDoc}
@@ -77,7 +73,6 @@ class Body
 
         return $stream;
     }
-
 
     /**
      * {@inheritDoc}
@@ -91,7 +86,6 @@ class Body
         }
     }
 
-
     /**
      * {@inheritDoc}
      */
@@ -99,7 +93,6 @@ class Body
     {
         return ftell($this->getStream());
     }
-
 
     /**
      * {@inheritDoc}
@@ -109,7 +102,6 @@ class Body
         return feof($this->getStream());
     }
 
-
     /**
      * {@inheritDoc}
      */
@@ -117,7 +109,6 @@ class Body
     {
         return (bool) $this->getMetadata('seekable');
     }
-
 
     /**
      * {@inheritDoc}
@@ -127,7 +118,6 @@ class Body
         return fseek($this->getStream(), $offset, $whence);
     }
 
-
     /**
      * {@inheritDoc}
      */
@@ -135,7 +125,6 @@ class Body
     {
         return in_array($this->getMetadata('mode'), self::$readWriteHash['write']);
     }
-
 
     /**
      * {@inheritDoc}
@@ -145,7 +134,6 @@ class Body
         return fwrite($this->getStream(), $string);
     }
 
-
     /**
      * {@inheritDoc}
      */
@@ -153,7 +141,6 @@ class Body
     {
         return in_array($this->getMetadata('mode'), self::$readWriteHash['read']);
     }
-
 
     /**
      * {@inheritDoc}
@@ -163,7 +150,6 @@ class Body
         return fread($this->getStream(), $length);
     }
 
-
     /**
      * {@inheritDoc}
      */
@@ -171,7 +157,6 @@ class Body
     {
         return stream_get_contents($this->getStream());
     }
-
 
     /**
      * {@inheritDoc}
