@@ -44,14 +44,14 @@ class RequestHandlerTest extends PHPUnit_Framework_TestCase
 
     public function testHandle()
     {
-        $request = new Request('http://domain.com', 'HEAD');
+        $request = new Request('http://domain.com/index.json', 'HEAD');
         $response = new Response('This is a response');
 
         $handler = new RequestHandler($request);
 
         $handler->handle($response);
 
-        $this->assertEquals($response->headers->getDateTime('Date'), new \Datetime());
+        $this->assertEquals($response->headers->get('Content-Type'), 'application/json; charset=UTF-8');
         $this->assertEquals('', (string) $response->getBody());
     }
 }
