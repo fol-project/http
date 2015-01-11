@@ -92,29 +92,22 @@ class Headers implements \ArrayAccess
      * Gets one parameter as a getDateTime object
      * Useful for datetime values (Expires, Last-Modification, etc)
      *
-     * @param string $name    The header name
-     * @param string $default The default value if the header does not exists
+     * @param string $name The header name
      *
-     * @return \Datetime The value in a datetime object or false
+     * @return null|\DateTime The value in a datetime object or false
      */
-    public function getDateTime($name, $default = 'now')
+    public function getDateTime($name)
     {
         if ($this->has($name)) {
-            return \DateTime::createFromFormat(DATE_RFC2822, $this->get($name));
+            return \DateTime::createFromFormat(DATE_RFC2822, $this->get($name), new \DateTimeZone('GMT'));
         }
-
-        if ($default instanceof \Datetime) {
-            return $default;
-        }
-
-        return new \Datetime($default, new \DateTimeZone('UTC'));
     }
 
     /**
      * Define a header using a Datetime object and returns it
      *
      * @param string           $name     The header name
-     * @param \Datetime|string $datetime The datetime object. You can define also an string so the Datetime object will be created
+     * @param \DateTime|string $datetime The datetime object. You can define also an string so the Datetime object will be created
      *
      * @return \Datetime The datetime object
      */
@@ -124,7 +117,7 @@ class Headers implements \ArrayAccess
             $datetime = new \DateTime($datetime);
         }
 
-        $datetime->setTimezone(new \DateTimeZone('UTC'));
+        $datetime->setTimezone(new \DateTimeZone('GMT'));
         $this->set($name, $datetime->format('D, d M Y H:i:s').' GMT');
 
         return $datetime;

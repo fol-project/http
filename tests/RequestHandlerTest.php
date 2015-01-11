@@ -52,6 +52,7 @@ class RequestHandlerTest extends PHPUnit_Framework_TestCase
         $handler->handle($response);
 
         $this->assertEquals($response->headers->get('Content-Type'), 'application/json; charset=UTF-8');
+        $this->assertEquals($response->headers->getDateTime('Date'), new \Datetime());
         $this->assertEquals('', (string) $response->getBody());
     }
 }
