@@ -8,6 +8,7 @@ namespace Fol\Http\Router;
 
 use Fol\Http\ContainerTrait;
 use Fol\Http\Request;
+use Fol\Http\RequestHandler;
 use Fol\Http\Response;
 use Fol\Http\HttpException;
 
@@ -22,11 +23,12 @@ class Router
     /**
      * Constructor function. Defines the base url
      *
-     * @param RouteFactory $routeFactory
+     * @param RequestHandler $handler
+     * @param null|RouteFactory $routeFactory
      */
-    public function __construct(RequestHandler $handler, RouteFactory $routeFactory)
+    public function __construct(RequestHandler $handler, RouteFactory $routeFactory = null)
     {
-        $this->routeFactory = $routeFactory;
+        $this->routeFactory = $routeFactory ?: new RouteFactory();
         $this->handler = $handler;
     }
 
@@ -96,15 +98,19 @@ class Router
     }
 
     /**
-     * Run the router
+     * Run the router and send the response
      */
     public function run(array $arguments = array())
     {
-        $this->handler->send($this->handle($this->handler->getRequest(), $arguments));
+        $response = $this->handle($this->handler->getRequest(), $arguments);
+        $this->handler->handle($response);
+
+        $response->send();
     }
 
+
     /**
-     * Handle a request
+     * Handle a specific request
      *
      * @param RequestHandler $request
      * @param array          $arguments The arguments passed to the controller (after $request and $response instances)
@@ -131,7 +137,8 @@ class Router
             }
 
             if ($this->errorController) {
-                $this->errorController->set('exception', $exception);
+                $request->attributes->set('error', $exception);
+
                 return $this->errorController->execute($request, new Response('', $exception->getCode() ?: 500), $arguments);
             }
 

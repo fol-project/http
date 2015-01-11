@@ -3,15 +3,81 @@ Fol\Http
 
 Http library for PHP 5.5
 
-## Requests
+## Basic usage demo
+
+```php
+use Fol\Http\Request;
+use Fol\Http\Response;
+use Fol\Http\RequestHandler;
+
+// Init a request handler
+$handler = new RequestHandler(new Request('http://domain.com'));
+
+//Prepare a response
+$response = $handler->handle(new Response());
+
+//Send it
+$response->send();
+```
+
+## Usage with sessions, and routes
+
+```php
+use Fol\Http\Request;
+use Fol\Http\Response;
+use Fol\Http\RequestHandler;
+
+use Fol\Http\Sessions\Native;
+use Fol\Http\Routes\Router;
+
+
+// Init a request handler
+$handler = new RequestHandler(new Request('http://domain.com/about'));
+
+// Register and configure some services, for example, a session
+$handler->register('session', function ($handler) {
+	return new Native($handler);
+});
+
+//Init the router passing the handler
+$router = new Router($handler);
+
+//Add some routes:
+$router->map([
+	'index' => [
+		'path' => '/',
+		'target' => function ($request, $response) {
+			$response->getBody()->write('This is the index');
+		}
+	],
+	'about' => [
+		'path' => '/about',
+		'target' => function ($request, $response) {
+			$session = $request->session;
+
+			$response->getBody()->write('You are '.$session->get('username'));
+		}
+	]
+]);
+
+//Run the router (get the response, prepare and send it)
+$router->run();
+```
+
+
+## Classes
+
+### Request
+
+Manage the data from a request
 
 ```php
 use Fol\Http\Request;
 
-//Create from global values ($_GET, $_POST, $_SERVER, $_FILES, etc..)
+//Create from global
 $request = Request::createFromGlobals();
 
-//Create a custom request
+//Or custom request
 $request = new Request('http://blog.com/?page=2', 'GET', ['Accept' => 'text/html']);
 
 //Object to manage the url data (host, path, query, fragment, etc)
@@ -23,7 +89,7 @@ $request->query;
 //Manage the headers
 $request->headers
 
-//Manage the cookies (alias of $request->headers->cookies)
+//Manage the cookies
 $request->cookies
 
 //Manage the body data
@@ -31,9 +97,12 @@ $request->data
 
 //Manage the uploaded files
 $request->files
+
+//Get the body (streamable)
+$body = $response->getBody();
 ```
 
-## Response
+### Response
 
 ```php
 use Fol\Http\Response;
@@ -44,19 +113,28 @@ $response = new Response('Hello world', 200, ['Content-Type' => 'text/html']);
 //Manage the headers
 $request->headers
 
-//Manage the cookies (alias of $request->headers->cookies)
+//Manage the cookies
 $request->cookies
-```
 
-## Messages (Requests and Responses)
-
-```php
-use Fol\Http\Response;
-
-//Returns the body stream
+//Get the body (streamable)
 $body = $response->getBody();
-
-$body->write('More content');
-
-echo $body->getContents();
 ```
+
+### RequestHandler
+
+Manages a request/response cycle:
+
+* Register services used in the cycle (for example a session, started by the request but closed/modified by the response)
+* Prepare the response according to the request (for example, remove the body content of the response on HEAD requests)
+* You can define a base url to normalices the scope of the cookies, routes, etc
+
+### Sessions
+
+Provides an easy interface to work with sessions. There are two types of sessions:
+
+* Native (use the native implementation of PHP)
+* Session (to work with fake or custom sessions)
+
+### Router
+
+Provides a simple router system for MVC.

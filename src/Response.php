@@ -148,4 +148,42 @@ class Response extends Message
         $this->setStatus($status);
         $this->headers->set('location', $url);
     }
+
+
+    /**
+     * Send the response to the client
+     */
+    public function send()
+    {
+        if (!headers_sent()) {
+            header(sprintf('HTTP/%s %s %s', $this->getProtocolVersion(), $this->getStatusCode(), $this->getReasonPhrase()));
+
+            foreach ($this->headers->getAsString() as $header) {
+                header($header, false);
+            }
+
+            foreach ($this->cookies->get() as $cookie) {
+                if (!setcookie($cookie['name'], $cookie['value'], $cookie['expires'], $cookie['path'], $cookie['domain'], $cookie['secure'], $cookie['httponly'])) {
+                    throw new \Exception('Error sending the cookie '.$cookie['name']);
+                }
+            }
+        }
+
+        $level = ob_get_level();
+
+        while ($level > 0) {
+            ob_end_flush();
+            $level--;
+        }
+
+        $body = $this->getBody();
+        $body->seek(0);
+
+        while (!$body->eof()) {
+            echo $body->read(1024);
+            flush();
+        }
+
+        $body->close();
+    }
 }

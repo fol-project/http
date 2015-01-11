@@ -30,11 +30,11 @@ class Native extends Session
             $id = $request->cookies->get($name);
         }
 
-        parent::__construct($handler, $id, $name);
-
-        $handler->on('beforeSend', [$this, 'beforeSend']);
+        $this->id = $id;
 
         $this->start($handler);
+
+        $handler->pushHandler([$this, 'handlerCallback']);
     }
 
     /**
@@ -114,11 +114,12 @@ class Native extends Session
 
 
     /**
-     * beforeSend callback
+     * request handler callback
      *
      * @param RequestHandler $handler
+     * @param Response $response
      */
-    protected function beforeSend(RequestHandler $handler, Response $response)
+    public function handlerCallback(RequestHandler $handler, Response $response)
     {
         if ((session_status() === PHP_SESSION_ACTIVE) && (session_name() === $this->name) && (session_id() === $this->id)) {
             session_write_close();

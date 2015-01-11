@@ -32,7 +32,7 @@ class StaticRoute extends Route
      */
     public function match(Request $request)
     {
-        $match = (
+        return (
                self::check($this->ip, $request->getIp())
             && self::check($this->method, $request->getMethod())
             && self::check($this->language, $request->getLanguage())
@@ -87,7 +87,7 @@ class StaticRoute extends Route
      */
     protected static function check($routeValue, $requestValue)
     {
-        if ($routeValue === null) {
+        if ($routeValue === null || $requestValue === null) {
             return true;
         }
 

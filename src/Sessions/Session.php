@@ -8,6 +8,7 @@ namespace Fol\Http\Sessions;
 
 use Fol\Http\ContainerTrait;
 use Fol\Http\RequestHandler;
+use Fol\Http\Response;
 
 class Session implements \ArrayAccess
 {
@@ -25,9 +26,29 @@ class Session implements \ArrayAccess
      */
     public function __construct(RequestHandler $handler, $id = null, $name = null)
     {
+        $request = $handler->getRequest();
+
+        $this->name = $name ?: 'SESSID';
+
+        if (!$id && $request->cookies->get($name)) {
+            $id = $request->cookies->get($name);
+        }
+
         $this->id = $id;
-        $this->name = $name;
+
+        $this->start($handler);
+
+        $handler->pushHandler([$this, 'handlerCallback']);
     }
+
+    /**
+     * Starts the session
+     *
+     * @param RequestHandler $handler
+     * 
+     * @throws \RuntimeException if session cannot be started
+     */
+    protected function start(RequestHandler $handler) {}
 
     /**
      * Close the session and save the data.
@@ -128,5 +149,24 @@ class Session implements \ArrayAccess
     public function hasFlash($name)
     {
         return (isset($this->items['_flash']) && array_key_exists($name, $this->items['_flash']));
+    }
+
+
+    /**
+     * request handler callback
+     *
+     * @param RequestHandler $handler
+     * @param Response $response
+     */
+    public function handlerCallback(RequestHandler $handler, Response $response)
+    {
+        $cookie = $handler->getCookiesDefaultConfig();
+        $cookie['httponly'] = true;
+
+        if (!$this->id) {
+            $response->cookies->setDelete($this->name, $cookie['path'], $cookie['domain'], $cookie['secure'], $cookie['httponly']);
+        } else {
+            $response->cookies->set($this->name, $this->id, null, $cookie['path'], $cookie['domain'], $cookie['secure'], $cookie['httponly']);
+        }
     }
 }

@@ -7,6 +7,7 @@
 namespace Fol\Http\Router;
 
 use Fol\Http\RequestHandler;
+use Fol\Http\Url;
 
 class RouteFactory
 {
@@ -66,26 +67,29 @@ class RouteFactory
     {
         $config['name'] = $name;
         $config['target'] = $this->getTarget($config['target']);
-        $config['path'] = $baseUrl->getPath(false).$config['path'];
 
-        if (isset($config['path'][1])) {
-            $config['path'] = rtrim($config['path'], '/');
+        $basePath = $baseUrl->getPath(false);
+
+        if ($basePath !== '/') {
+            $config['path'] = $basePath.$config['path'];
         }
+
+        $config['path'] = rtrim($config['path'], '/') ?: '/';
 
         if (isset($config['regex'])) {
-            $config['regex'] = $baseUrl->getPath(false).$config['regex'];
+            $config['regex'] = $basePath.$config['regex'];
         }
 
-        if (!isset($config['scheme'])) {
-            $config['scheme'] = $baseUrl->getScheme();
+        if (!isset($config['scheme']) && ($scheme = $baseUrl->getScheme())) {
+            $config['scheme'] = $scheme;
         }
 
-        if (!isset($config['host'])) {
-            $config['host'] = $baseUrl->getHost();
+        if (!isset($config['host']) && ($host = $baseUrl->getHost())) {
+            $config['host'] = $host;
         }
 
-        if (!isset($config['port'])) {
-            $config['port'] = $baseUrl->getPort();
+        if (!isset($config['port']) && ($port = $baseUrl->getPort())) {
+            $config['port'] = $port;
         }
 
         return $config;
@@ -114,7 +118,7 @@ class RouteFactory
     /**
      * Creates a new error route instance
      *
-     * @param string $target The error target (ControllerClass::method)
+     * @param mixed $target The error target
      *
      * @return ErrorRoute
      */

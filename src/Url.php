@@ -77,23 +77,15 @@ class Url
      */
     public function setUrl($url)
     {
-        $url = parse_url($url) + [
-            'scheme' => null,
-            'host' => null,
-            'port' => null,
-            'user' => null,
-            'pass' => null,
-            'path' => '',
-            'fragment' => ''
-        ];
+        $url = parse_url($url);
 
-        $this->setScheme($url['scheme']);
-        $this->setHost($url['host']);
-        $this->setPort($url['port']);
-        $this->setUser($url['user']);
-        $this->setPassword($url['pass']);
-        $this->setPath($url['path']);
-        $this->setFragment($url['fragment']);
+        $this->setScheme(isset($url['scheme']) ? $url['scheme'] : null);
+        $this->setHost(isset($url['host']) ? $url['host'] : null);
+        $this->setPort(isset($url['port']) ? $url['port'] : null);
+        $this->setUser(isset($url['user']) ? $url['user'] : null);
+        $this->setPassword(isset($url['password']) ? $url['password'] : null);
+        $this->setPath(isset($url['path']) ? $url['path'] : '');
+        $this->setFragment(isset($url['fragment']) ? $url['fragment'] : '');
 
         if (isset($url['query'])) {
             parse_str(html_entity_decode($url['query']), $query);
@@ -138,10 +130,8 @@ class Url
 
         if ($directory === '.') {
             $directory = '/';
-        } else {
-            if ($directory[0] !== '/') {
-                $directory = "/{$path}";
-            }
+        } elseif ($directory[0] !== '/') {
+            $directory = "/{$path}";
         }
 
         $this->directory = $directory;
@@ -191,7 +181,7 @@ class Url
     /**
      * Gets the url scheme (for example: http)
      *
-     * @return string
+     * @return null|string
      */
     public function getScheme()
     {
@@ -202,18 +192,18 @@ class Url
     /**
      * Sets the url scheme
      *
-     * @param string $scheme
+     * @param null|string $scheme
      */
     public function setScheme($scheme)
     {
-        $this->scheme = strtolower($scheme);
+        $this->scheme = $scheme ? strtolower($scheme) : $scheme;
     }
 
 
     /**
      * Gets the url host
      *
-     * @return string
+     * @return null|string
      */
     public function getHost()
     {
@@ -223,18 +213,18 @@ class Url
     /**
      * Sets the url host
      *
-     * @param string $host
+     * @param null|string $host
      */
     public function setHost($host)
     {
-        $this->host = strtolower($host);
+        $this->host = $host ? strtolower($host) : $host;
     }
 
 
     /**
      * Gets the url port
      *
-     * @return int|null
+     * @return null|integer
      */
     public function getPort()
     {
@@ -244,7 +234,7 @@ class Url
     /**
      * Sets the url port
      *
-     * @param int|null $port
+     * @param null|integer $port
      */
     public function setPort($port)
     {
@@ -255,7 +245,7 @@ class Url
     /**
      * Gets the url user
      *
-     * @return string|null
+     * @return null|string
      */
     public function getUser()
     {
@@ -266,7 +256,7 @@ class Url
     /**
      * Sets the url user
      *
-     * @param string|null $user
+     * @param null|string $user
      */
     public function setUser($user)
     {
@@ -277,7 +267,7 @@ class Url
     /**
      * Gets the url password
      *
-     * @return string|null
+     * @return null|string
      */
     public function getPassword()
     {
@@ -288,7 +278,7 @@ class Url
     /**
      * Sets the url password
      *
-     * @param string|null $password
+     * @param null|string $password
      */
     public function setPassword($password)
     {
@@ -298,7 +288,7 @@ class Url
     /**
      * Gets the url fragment
      *
-     * @return string
+     * @return null|string
      */
     public function getFragment()
     {
@@ -309,7 +299,7 @@ class Url
     /**
      * Sets the url fragment
      * 
-     * @param string $fragment
+     * @param null|string $fragment
      */
     public function setFragment($fragment)
     {

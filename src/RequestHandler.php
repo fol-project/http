@@ -8,9 +8,9 @@ namespace Fol\Http;
 
 class RequestHandler
 {
-	protected $listeners = [];
+	protected $handlers = [];
     protected $services = [];
-    protected $requests = [];
+    protected $request;
     protected $baseUrl;
     protected $cookiesDefaultConfig = [];
 
@@ -21,12 +21,17 @@ class RequestHandler
      * @param Request $request
      * @param string  $baseUrl
      */
-    public function __construct(Request $request, $baseUrl = '')
+    public function __construct(Request $request, $baseUrl = null)
     {
         $request->setHandler($this);
         $this->request = $request;
 
-        $this->baseUrl = new Url($baseUrl);
+        if ($baseUrl === null) {
+            $this->baseUrl = clone $request->url;
+            $this->baseUrl->setPath('');
+        } else {
+            $this->baseUrl = new Url($baseUrl);
+        }
 
         $this->setCookiesDefaultConfig([
             'domain' => $this->baseUrl->getHost(),
@@ -102,57 +107,24 @@ class RequestHandler
         return $this->request;
     }
 
-	/**
-     * Register a new event
-     * 
-     * @param string $event
-     * @param callable $listener
+    /**
+     * Pushes a handler to the end of the stack.
+     *
+     * @param callable $handler The callback to execute
      */
-    public function on($event, callable $listener)
+    public function pushHandler(callable $handler)
     {
-        if (!isset($this->listeners[$event])) {
-            $this->listeners[$event] = [];
-        }
-
-        $this->listeners[$event][] = $listener;
+        $this->handlers[] = $handler;
     }
 
     /**
-     * Remove one, various or all events
-     * 
-     * @param null|string $event If it's not defined, removes all events
-     * @param null|callable $listener If it's not defined, removed all listeners
+     * Removes the last handler and returns it
+     *
+     * @return callable|null
      */
-    public function off($event = null, callable $listener = null)
+    public function popHandler()
     {
-        if ($event === null) {
-            $this->listeners = [];
-        } elseif ($listener === null) {
-            unset($this->listeners[$event]);
-        } else {
-            $index = array_search($listener, $this->listeners[$event], true);
-
-            if ($index !== false) {
-                unset($this->listeners[$event][$index]);
-            }
-        }
-    }
-
-    /**
-     * Emit an event
-     * 
-     * @param string $event
-     * @param array $arguments
-     */
-    public function emit($event, array $arguments = array())
-    {
-    	if (empty($this->listeners[$event])) {
-    		return;
-    	}
-
-        foreach ($this->listeners[$event] as $listener) {
-            call_user_func_array($listener, $arguments);
-        }
+        return array_pop($this->handlers);
     }
 
     /**
@@ -160,13 +132,9 @@ class RequestHandler
      * 
      * @param Response $response
      */
-    public function prepare(Response $response)
+    public function handle(Response $response)
     {
         $request = $this->getRequest();
-
-        if (!$request || !$response) {
-            throw new \RuntimeException('Missing Request or Response before prepare');
-        }
 
     	if (!$request->headers->has('Content-Type') && ($format = $request->getFormat())) {
             $response->setFormat($format);
@@ -189,49 +157,9 @@ class RequestHandler
         }
 
         $response->cookies->applyDefaults($this->getCookiesDefaultConfig());
-    }
 
-
-    /**
-     * Sends the response to the client
-     */
-    public function send(Response $response)
-    {
-        $this->emit('beforeSend', [$this, $response]);
-
-        $this->prepare($response);
-
-        if (!headers_sent()) {
-            header(sprintf('HTTP/%s %s %s', $response->getProtocolVersion(), $response->getStatusCode(), $response->getReasonPhrase()));
-
-            foreach ($response->headers->getAsString() as $header) {
-                header($header, false);
-            }
-
-            foreach ($response->cookies->get() as $cookie) {
-                if (!setcookie($cookie['name'], $cookie['value'], $cookie['expires'], $cookie['path'], $cookie['domain'], $cookie['secure'], $cookie['httponly'])) {
-                    throw new \Exception('Error sending the cookie '.$cookie['name']);
-                }
-            }
+        foreach ($this->handlers as $handler) {
+            call_user_func($handler, $this, $response);
         }
-
-        $level = ob_get_level();
-
-        while ($level > 0) {
-            ob_end_flush();
-            $level--;
-        }
-
-        $body = $response->getBody();
-        $body->seek(0);
-
-        while (!$body->eof()) {
-            echo $body->read(1024);
-            flush();
-        }
-
-        $body->close();
-
-        $this->emit('afterSend', [$this, $response]);
     }
 }

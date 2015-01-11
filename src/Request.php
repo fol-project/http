@@ -70,11 +70,11 @@ class Request extends Message
     {
         $this->url = clone $this->url;
         $this->query = $this->url->query;
-        $this->data = clone $this->data;
         $this->attributes = clone $this->attributes;
+        $this->data = clone $this->data;
         $this->files = clone $this->files;
-        $this->cookies = clone $this->cookies;
         $this->headers = clone $this->headers;
+        $this->cookies = clone $this->cookies;
     }
 
     /**

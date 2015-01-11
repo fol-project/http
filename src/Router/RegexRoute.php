@@ -16,14 +16,12 @@ class RegexRoute extends StaticRoute
     /**
      * {@inheritDoc}
      */
-    public function __construct ($name, array $config = array(), $target)
+    public function __construct (array $config = array())
     {
-        parent::__construct($name, $config, $target);
+        parent::__construct($config);
 
         if (empty($config['regex'])) {
             $this->regex = self::setRegex($this->path, isset($config['filters']) ? $config['filters'] : []);
-        } else {
-            $this->regex = $config['regex'];
         }
 
         $this->regex = "#^{$this->regex}$#";
@@ -81,19 +79,19 @@ class RegexRoute extends StaticRoute
     public function match(Request $request)
     {
         $match = (
-               $this->check('ip', $request->getIp())
-            && $this->check('method', $request->getMethod())
-            && $this->check('language', $request->getLanguage())
-            && $this->check('scheme', $request->url->getScheme())
-            && $this->check('host', $request->url->getHost())
-            && $this->check('port', $request->url->getPort())
+               self::check($this->ip, $request->getIp())
+            && self::check($this->method, $request->getMethod())
+            && self::check($this->language, $request->getLanguage())
+            && self::check($this->scheme, $request->url->getScheme())
+            && self::check($this->host, $request->url->getHost())
+            && self::check($this->port, $request->url->getPort())
         );
 
         if (!$match || ($matches = $this->checkRegex($request->url->getPath())) === false) {
             return false;
         }
 
-        $this->set($matches);
+        $request->attributes->set($matches);
 
         return true;
     }
