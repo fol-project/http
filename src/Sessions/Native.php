@@ -6,44 +6,45 @@
  */
 namespace Fol\Http\Sessions;
 
-use Fol\Http\Request;
+use Fol\Http\RequestHandler;
 use Fol\Http\Response;
-use Fol\Http\ResponseCookies;
 
 class Native extends Session
 {
-    protected $cookie;
-
     /**
      * Construct and loads the session data
      *
-     * @param Request     $request
+     * @param RequestHandler     $handler
      * @param string|null $id
      * @param string|null $name
      */
-    public function __construct(Request $request, $id = null, $name = null)
+    public function __construct(RequestHandler $handler, $id = null, $name = null)
     {
         if (!$name) {
             $name = session_name();
         }
 
+        $request = $handler->getRequest();
+
         if (!$id && $request->cookies->get($name)) {
             $id = $request->cookies->get($name);
         }
 
-        parent::__construct($request, $id, $name);
+        parent::__construct($handler, $id, $name);
 
-        $request->events->on('prepareResponse', [$this, 'prepare']);
+        $handler->on('beforeSend', [$this, 'beforeSend']);
 
-        $this->start();
+        $this->start($handler);
     }
 
     /**
      * Starts the session
      *
+     * @param RequestHandler $handler
+     * 
      * @throws \RuntimeException if session cannot be started
      */
-    protected function start()
+    protected function start(RequestHandler $handler)
     {
         if (session_status() === PHP_SESSION_DISABLED) {
             throw new \RuntimeException('Native sessions are disabled');
@@ -59,11 +60,17 @@ class Native extends Session
             session_id($this->id);
         }
 
+        //Configure session cookie
         ini_set('session.use_only_cookies', 1);
 
-        $this->cookie = ResponseCookies::calculateDefaults(BASE_URL, ['httponly' => true]);
+        $cookie = $handler->getCookiesDefaultConfig();
 
-        session_set_cookie_params($this->cookie['expires'], $this->cookie['path'], $this->cookie['domain'], $this->cookie['secure'], $this->cookie['httponly']);
+        $cookie['httponly'] = true;
+        $cookie['expires'] = ini_get('session.cookie_lifetime');
+
+        session_set_cookie_params($cookie['expires'], $cookie['path'], $cookie['domain'], $cookie['secure'], $cookie['httponly']);
+
+        //Start
         session_start();
 
         $this->id = session_id();
@@ -107,20 +114,21 @@ class Native extends Session
 
 
     /**
-     * Default "prepare" listener for this session
+     * beforeSend callback
      *
-     * @param Request $request
-     * @param Response $response
-     * @param Router\Route $route
+     * @param RequestHandler $handler
      */
-    protected function prepare(Request $request, Response $response, Router\Route $route)
+    protected function beforeSend(RequestHandler $handler, Response $response)
     {
         if ((session_status() === PHP_SESSION_ACTIVE) && (session_name() === $this->name) && (session_id() === $this->id)) {
             session_write_close();
         }
 
         if (!$this->id) {
-            $response->cookies->setDelete($this->name, $this->cookie['path'], $this->cookie['domain'], $this->cookie['secure'], $this->cookie['httponly']);
+            $cookie = $handler->getCookiesDefaultConfig();
+            $cookie['httponly'] = true;
+
+            $response->cookies->setDelete($this->name, $cookie['path'], $cookie['domain'], $cookie['secure'], $cookie['httponly']);
         }
     }
 }

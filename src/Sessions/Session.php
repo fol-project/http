@@ -7,8 +7,7 @@
 namespace Fol\Http\Sessions;
 
 use Fol\Http\ContainerTrait;
-use Fol\Http\Request;
-use Fol\Http\Response;
+use Fol\Http\RequestHandler;
 
 class Session implements \ArrayAccess
 {
@@ -20,11 +19,11 @@ class Session implements \ArrayAccess
     /**
      * Construct and loads the session data
      *
-     * @param Request $request
+     * @param RequestHandler $handler
      * @param string  $id
      * @param string  $name
      */
-    public function __construct(Request $request, $id = null, $name = null)
+    public function __construct(RequestHandler $handler, $id = null, $name = null)
     {
         $this->id = $id;
         $this->name = $name;

@@ -17,35 +17,37 @@ class Router
 
     private $errorController;
     private $routeFactory;
+    private $handler;
 
     /**
      * Constructor function. Defines the base url
      *
      * @param RouteFactory $routeFactory
      */
-    public function __construct(RouteFactory $routeFactory)
+    public function __construct(RequestHandler $handler, RouteFactory $routeFactory)
     {
         $this->routeFactory = $routeFactory;
+        $this->handler = $handler;
     }
 
     /**
      * Route factory method
      * Maps the given URL to the given target.
      *
-     * @param mixed $name   The route name.
-     * @param array $config Array of optional arguments.
+     * @param array|string $name   The route name or array with routes.
+     * @param array        $config Array of optional arguments.
      */
     public function map($name, array $config = array())
     {
         if (is_array($name)) {
             foreach ($name as $name => $config) {
-                $this->set($name, $this->routeFactory->createRoute($name, $config));
+                $this->set($name, $this->routeFactory->createRoute($name, $config, $this->handler->getBaseUrl()));
             }
 
             return;
         }
 
-        $this->set($name, $this->routeFactory->createRoute($name, $config));
+        $this->set($name, $this->routeFactory->createRoute($name, $config, $this->handler->getBaseUrl()));
     }
 
     /**
@@ -94,10 +96,18 @@ class Router
     }
 
     /**
+     * Run the router
+     */
+    public function run(array $arguments = array())
+    {
+        $this->handler->send($this->handle($this->handler->getRequest(), $arguments));
+    }
+
+    /**
      * Handle a request
      *
-     * @param Request $request
-     * @param array   $arguments The arguments passed to the controller (after $request and $response instances)
+     * @param RequestHandler $request
+     * @param array          $arguments The arguments passed to the controller (after $request and $response instances)
      *
      * @throws HttpException If no errorController is defined and an exception is thrown
      *

@@ -24,7 +24,7 @@ class Response extends Message
      */
     public function __construct ($content = '', $status = 200, array $headers = array())
     {
-        $this->setBodySource('php://temp', 'r+');
+        $this->setBody(new Body());
 
         if ($content) {
             $this->getBody()->write($content);
@@ -32,11 +32,8 @@ class Response extends Message
 
         $this->setStatus($status);
 
-        $this->headers = new ResponseHeaders($headers);
-        $this->cookies = $this->headers->cookies;
-
-        $this->events = new Events();
-        $this->events->on('prepare', [$this, 'prepare']);
+        $this->headers = new Headers($headers);
+        $this->cookies = new ResponseCookies();
     }
 
     /**
@@ -68,8 +65,8 @@ class Response extends Message
      */
     public function setFormat($format)
     {
-        if ($mimetype = Headers::getMimeType($format)) {
-            $this->headers->set('Content-Type', "$mimetype; charset=UTF-8");
+        if ($mimetype = Utils::formatToMimeType($format)) {
+            $this->headers->set('Content-Type', "{$mimetype}; charset=UTF-8");
         }
     }
 
@@ -117,8 +114,8 @@ class Response extends Message
      */
     public function setStatus($code, $reasonPhrase = null)
     {
-        $this->status = $code;
-        $this->reasonPhrase = $reasonPhrase ?: ResponseHeaders::getDefaultReasonPhrase($code);
+        $this->statusCode = $code;
+        $this->reasonPhrase = $reasonPhrase ?: Utils::getReasonPhrase($code);
     }
 
 
@@ -134,7 +131,7 @@ class Response extends Message
     /**
      * {@inheritDoc}
      */
-    public function getReasonPhrase($text = false)
+    public function getReasonPhrase()
     {
         return $this->reasonPhrase;
     }
@@ -150,69 +147,5 @@ class Response extends Message
     {
         $this->setStatus($status);
         $this->headers->set('location', $url);
-    }
-
-
-    /**
-     * Sends the response to the client
-     */
-    public function send()
-    {
-        if (!headers_sent()) {
-            header(sprintf('HTTP/%s %s %s', $this->protocol, $this->status[0], $this->status[1]));
-
-            $this->headers->send();
-            $this->cookies->send();
-        }
-
-        $level = ob_get_level();
-
-        while ($level > 0) {
-            ob_end_flush();
-            $level--;
-        }
-
-        flush();
-
-        $body = $this->getBody();
-        $body->seek(0);
-
-        while (!$body->eof()) {
-            echo $body->read(1024);
-            flush();
-        }
-
-        $body->close();
-    }
-
-
-    /**
-     * Default "prepare" listener for the response
-     *
-     * @param Request $request
-     * @param Response $response
-     * @param Router\Route $route
-     */
-    public function prepare(Request $request, Response $response, Router\Route $route)
-    {
-        if (!$this->headers->has('Content-Type') && ($format = $request->getFormat())) {
-            $this->setFormat($format);
-        }
-
-        if (!$this->headers->has('Content-Language') && ($language = $request->getLanguage())) {
-            $this->setLanguage($language);
-        }
-
-        if ($this->headers->has('Transfer-Encoding')) {
-            $this->headers->delete('Content-Length');
-        }
-
-        if (!$this->headers->has('Date')) {
-            $this->headers->setDateTime('Date', new \DateTime());
-        }
-
-        if ($request->getMethod() === 'HEAD') {
-            $this->setBody(new Body(fopen('php://temp', 'r')));
-        }
     }
 }

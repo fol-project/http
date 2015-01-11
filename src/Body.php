@@ -52,7 +52,9 @@ class Body
      */
     public function __toString()
     {
-        return stream_get_contents($this->getStream(), -1, 0);
+        $this->seek(0);
+
+        return stream_get_contents($this->getStream(), -1);
     }
 
 
@@ -176,7 +178,7 @@ class Body
      */
     public function getMetadata($key = null)
     {
-        $metadata = stream_get_meta_data($this->getStream());
+        $metadata = @stream_get_meta_data($this->getStream());
 
         if ($key) {
             return isset($metadata[$key]) ? $metadata[$key] : null;

@@ -1,8 +1,8 @@
 <?php
 /**
- * Fol\Http\Router\Route
+ * Fol\Http\Router\StaticRoute
  *
- * Class to manage a http route
+ * Class to manage a http static route (the path is a string, not a regex)
  */
 namespace Fol\Http\Router;
 
@@ -22,63 +22,24 @@ class StaticRoute extends Route
     public $path;
     public $language;
 
-    /**
-     * Constructor
-     *
-     * @param string $name   The route name
-     * @param array  $config The available options
-     * @param mixed  $target The route target
-     */
-    public function __construct($name, array $config = array(), $target)
-    {
-        $this->name = $name;
-        $this->target = $target;
-
-        foreach (['ip', 'method', 'scheme', 'host', 'port', 'path', 'language'] as $key) {
-            if (isset($config[$key])) {
-                $this->$key = $config[$key];
-            }
-        }
-    }
 
     /**
-     * Check two values
-     *
-     * @param string $name
-     * @param mixed  $value
-     *
-     * @return bool
-     */
-    public function check($name, $value)
-    {
-        if (($routeValue = $this->$name) === null) {
-            return true;
-        }
-
-        if (is_array($routeValue)) {
-            return in_array($value, $routeValue, true);
-        }
-
-        return ($value === $routeValue);
-    }
-
-    /**
-     * Check if the route match with the request
+     * Check whether or not the route match with the request
      *
      * @param Request $request The request to check
      *
-     * @return bool
+     * @return boolean
      */
     public function match(Request $request)
     {
-        return (
-               $this->check('ip', $request->getIp())
-            && $this->check('method', $request->getMethod())
-            && $this->check('language', $request->getLanguage())
-            && $this->check('scheme', $request->url->getScheme())
-            && $this->check('host', $request->url->getHost())
-            && $this->check('port', $request->url->getPort())
-            && $this->check('path', $request->url->getPath())
+        $match = (
+               self::check($this->ip, $request->getIp())
+            && self::check($this->method, $request->getMethod())
+            && self::check($this->language, $request->getLanguage())
+            && self::check($this->scheme, $request->url->getScheme())
+            && self::check($this->host, $request->url->getHost())
+            && self::check($this->port, $request->url->getPort())
+            && self::check($this->path, $request->url->getPath())
         );
     }
 
@@ -113,5 +74,27 @@ class StaticRoute extends Route
         $values = $this->getProperties(['scheme', 'host', 'port', 'path']);
 
         return Url::build($values['scheme'], $values['host'], $values['port'], null, null, $values['path'], $parameters);
+    }
+
+
+    /**
+     * Check two values
+     *
+     * @param mixed $routeValue
+     * @param mixed $requestValue
+     *
+     * @return boolean
+     */
+    protected static function check($routeValue, $requestValue)
+    {
+        if ($routeValue === null) {
+            return true;
+        }
+
+        if (is_array($routeValue)) {
+            return in_array($requestValue, $routeValue, true);
+        }
+
+        return ($requestValue === $routeValue);
     }
 }

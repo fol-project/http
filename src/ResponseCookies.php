@@ -10,56 +10,31 @@ class ResponseCookies implements \ArrayAccess
 {
     use ContainerTrait;
 
-    protected $defaults = [];
-
     /**
-     * Returns the default values for the cookies
+     * Applies a default configuration to the cookies
      *
-     * @param string $baseUrl  Url base to calculate the defaults
-     * @param array  $defaults User custom defaults
-     *
-     * @return array
+     * @param array $config An array with some or all of these keys:
+     * 
+     * path
+     * domain
+     * secure
+     * httponly
      */
-    public static function calculateDefaults($baseUrl, array $defaults = array())
+    public function applyDefaults(array $config)
     {
-        $url = parse_url($baseUrl);
+        $availableValues = ['path', 'domain', 'secure', 'httponly'];
 
-        return $defaults + [
-            'name' => null,
-            'value' => null,
-            'domain' => $url['host'],
-            'path' => (empty($url['path']) ? '/' : $url['path']),
-            'max-age' => null,
-            'expires' => null,
-            'secure' => ($url['scheme'] === 'https'),
-            'discard' => false,
-            'httponly' => false
-        ];
-    }
-
-    /**
-     * Sets the cookies default values
-     *
-     * @param array  $defaults User custom defaults
-     * @param string $baseUrl  Url base to calculate the defaults
-     */
-    public function setDefaults(array $defaults, $baseUrl = null)
-    {
-        if ($baseUrl) {
-            $defaults = static::calculateDefaults($baseUrl, $defaults);
+        if (array_diff(array_keys($config), $availableValues)) {
+            throw new \Exception("Only the following fields are available:".implode(',', $availableValues));
         }
 
-        $this->defaults = $defaults;
-    }
-
-    /**
-     * Gets the cookies default values
-     *
-     * @return array
-     */
-    public function getDefaults()
-    {
-        return $this->defaults;
+        foreach ($this->items as &$cookie) {
+            foreach ($config as $name => $value) {
+                if (!isset($cookie[$name])) {
+                    $cookie[$name] = $value;
+                }
+            }
+        }
     }
 
     /**
@@ -74,18 +49,6 @@ class ResponseCookies implements \ArrayAccess
         }
 
         return $text;
-    }
-
-    /**
-     * Sends the cookies to the browser
-     */
-    public function send()
-    {
-        foreach ($this->items as $cookie) {
-            if (!setcookie($cookie['name'], $cookie['value'], $cookie['expires'], $cookie['path'], $cookie['domain'], $cookie['secure'], $cookie['httponly'])) {
-                throw new \Exception('Error sending the cookie '.$cookie['name']);
-            }
-        }
     }
 
     /**

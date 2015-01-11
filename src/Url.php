@@ -149,11 +149,11 @@ class Url
 
 
     /**
-     * Gets the url path (directory + filename + extension)
+     * Gets the url path (directory + filename [+ extension])
      *
      * @return string
      */
-    public function getPath()
+    public function getPath($extension = true)
     {
         $path = $this->directory;
 
@@ -162,7 +162,11 @@ class Url
                 $path .= '/';
             }
 
-            $path .= $this->filename.($this->extension ? ".{$this->extension}" : '');
+            $path .= $this->filename;
+
+            if ($extension && $this->extension) {
+                $path .= ".{$this->extension}";
+            }
         }
 
         return $path;

@@ -1,9 +1,7 @@
 Fol\Http
 ========
 
-Http library for PHP 5.5 compatible with PSR-7
-
-More info about [PSR-7 http-message](https://github.com/php-fig/http-message)
+Http library for PHP 5.5
 
 ## Requests
 

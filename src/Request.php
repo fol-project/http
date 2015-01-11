@@ -6,13 +6,9 @@
  */
 namespace Fol\Http;
 
-use Psr\Http\Message\IncomingRequestInterface;
-use Psr\Http\Message\OutgoingRequestInterface;
-
-class Request extends Message implements IncomingRequestInterface, OutgoingRequestInterface
+class Request extends Message
 {
-    protected static $constructors = [];
-
+    protected $handler;
     protected $method;
     protected $language;
 
@@ -49,7 +45,7 @@ class Request extends Message implements IncomingRequestInterface, OutgoingReque
      * @param array  $headers The request headers
      * @param array  $query   The url parameters
      * @param array  $data    The request payload data
-     * @param array  $files   The FILES parameters
+     * @param array  $files   The uploaded files
      * @param array  $cookies The request cookies
      */
     public function __construct($url = '', $method = 'GET', array $headers = array(), array $query = array(), array $data = array(), array $files = array(), array $cookies = array())
@@ -63,11 +59,8 @@ class Request extends Message implements IncomingRequestInterface, OutgoingReque
         $this->attributes = new RequestParameters();
         $this->data = new RequestParameters($data);
         $this->files = new RequestFiles($files);
-
-        $this->events = new Events();
-        $this->headers = new RequestHeaders($headers);
-        $this->cookies = $this->headers->cookies;
-        $this->cookies->set($cookies);
+        $this->headers = new Headers($headers);
+        $this->cookies = new RequestCookies($cookies);
     }
 
     /**
@@ -84,28 +77,58 @@ class Request extends Message implements IncomingRequestInterface, OutgoingReque
         $this->headers = clone $this->headers;
     }
 
+    /**
+     * Magic function to get registered services.
+     *
+     * @param string $name The name of the service
+     *
+     * @return string The service instance or null
+     */
+    public function __get($name)
+    {
+        if ($this->handler) {
+            return $this->handler->$name;
+        }
+    }
+
 
     /**
      * Magic function to convert the request to a string
      */
     public function __toString()
     {
-        $text = $this->getMethod().' '.$this->getUrl();
-        $text .= "\nFormat: ".$this->getFormat();
-        $text .= "\nLanguage: ".$this->getLanguage();
-        $text .= "\nQuery:\n".$this->query;
-        $text .= "\nData:\n".$this->data;
-        $text .= "\nFiles:\n".$this->files;
-        $text .= "\nCookies:\n".$this->cookies;
-        $text .= "\nHeaders:\n".$this->headers;
+        return $this->getMethod().' '.$this->getUrl()
 
-        if (isset($this->route)) {
-            $text .= "\nRoute:\n".$this->route;
-        }
+            ."\nFormat: ".$this->getFormat()
+            ."\nLanguage: ".$this->getLanguage()
+            ."\nQuery:\n".$this->query
+            ."\nData:\n".$this->data
+            ."\nFiles:\n".$this->files
+            ."\nCookies:\n".$this->cookies
+            ."\nHeaders:\n".$this->headers
 
-        $text .= "\n\n".$this->read();
+            ."\nBody:\n"
+            ."\n\n".$this->getBody();
+    }
 
-        return $text;
+    /**
+     * Set the handler of this request
+     *
+     * @param RequestHandler $handler
+     */
+    public function setHandler(RequestHandler $handler)
+    {
+        $this->handler = $handler;
+    }
+
+    /**
+     * Get the handler of this request
+     *
+     * @return null|RequestHandler
+     */
+    public function getHandler()
+    {
+        return $this->handler;
     }
 
     /**
@@ -130,91 +153,6 @@ class Request extends Message implements IncomingRequestInterface, OutgoingReque
         return $this->url->getUrl();
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public function getServerParams()
-    {
-        return [
-            'REQUEST_METHOD' => $this->getMethod(),
-            'SERVER_PROTOCOL' => 'HTTP/1.1',
-            'SERVER_NAME' => $this->getHost(),
-            'REMOTE_ADDR' => $this->getIp(),
-            'HTTP_ACCEPT' => $this->headers->get('Accept'),
-            'HTTP_ACCEPT_CHARSET' => $this->headers->get('Accept-Charset'),
-            'HTTP_ACCEPT_ENCODING' => $this->headers->get('Accept-Encoding'),
-            'HTTP_ACCEPT_LANGUAGE' => $this->headers->get('Accept-Language'),
-            'HTTP_CONNECTION' => $this->headers->get('Accept-Connection'),
-            'HTTP_REFERER' => $this->headers->get('Referer'),
-            'HTTP_USER_AGENT' => $this->headers->get('User-Agent'),
-            'HTTPS' => ($this->url->getScheme() === 'https') ? 'on' : 'off',
-            'REQUEST_URI' => $this->url->getFullPath()
-        ];
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function getCookieParams()
-    {
-        return $this->cookies->get();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function getQueryParams()
-    {
-        return $this->url->query->get();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function getFileParams()
-    {
-        return $this->files->get();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function getBodyParams()
-    {
-        return $this->data->get();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function getAttributes()
-    {
-        return $this->attributes->get();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function getAttribute($attribute, $default = null)
-    {
-        return $this->attributes->get($attribute, $default);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function setAttributes(array $attributes)
-    {
-        return $this->attributes->set($attributes);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function setAttribute($attribute, $value)
-    {
-        return $this->attributes->set($attribute, $value);
-    }
 
     /**
      * Gets the requested format.
@@ -223,12 +161,12 @@ class Request extends Message implements IncomingRequestInterface, OutgoingReque
      */
     public function getFormat()
     {
-        if (($extension = $this->url->getExtension()) && isset(Headers::$formats[$extension])) {
+        if (($extension = $this->url->getExtension()) && Utils::formatToMimetype($extension)) {
             return $extension;
         }
 
-        foreach (array_keys($this->headers->getParsed('Accept')) as $mimetype) {
-            if ($format = Headers::getFormat($mimetype)) {
+        foreach (array_keys(Utils::parseHeader($this->headers->get('Accept'))) as $mimetype) {
+            if ($format = Utils::mimetypeToFormat($mimetype)) {
                 return $format;
             }
         }
@@ -259,25 +197,25 @@ class Request extends Message implements IncomingRequestInterface, OutgoingReque
     /**
      * Gets the preferred language
      *
-     * @param array $locales Ordered available languages
+     * @param null|array $locales Ordered available languages
      *
      * @param string|null
      */
-    public function getPreferredLanguage(array $locales)
+    public function getPreferredLanguage(array $locales = null)
     {
-        $languages = array_keys($this->headers->getParsed('Accept-Language'));
+        $languages = array_keys(Utils::parseHeader($this->headers->get('Accept-Language')));
 
         if ($locales === null) {
-            return isset($languages[0]) ? Headers::getLanguage($languages[0]) : null;
+            return isset($languages[0]) ? Utils::getLanguage($languages[0]) : null;
         }
 
         if (!$languages) {
-            return isset($locales[0]) ? Headers::getLanguage($locales[0]) : null;
+            return isset($locales[0]) ? Utils::getLanguage($locales[0]) : null;
         }
 
         $common = array_values(array_intersect($languages, $locales));
 
-        return Headers::getLanguage(isset($common[0]) ? $common[0] : $locales[0]);
+        return Utils::getLanguage(isset($common[0]) ? $common[0] : $locales[0]);
     }
 
     /**
@@ -360,7 +298,7 @@ class Request extends Message implements IncomingRequestInterface, OutgoingReque
      */
     public function getUser()
     {
-        $authentication = $this->headers->getAuthentication();
+        $authentication = Utils::parseAuthorizationHeader($this->headers->get('Authorization'));
 
         return isset($authentication['username']) ? $authentication['username'] : $this->url->getUser();
     }
@@ -372,7 +310,7 @@ class Request extends Message implements IncomingRequestInterface, OutgoingReque
      */
     public function getPassword()
     {
-        $authentication = $this->headers->getAuthentication();
+        $authentication = Utils::parseAuthorizationHeader($this->headers->get('Authorization'));
 
         return isset($authentication['password']) ? $authentication['password'] : $this->url->getPassword();
     }
@@ -387,7 +325,7 @@ class Request extends Message implements IncomingRequestInterface, OutgoingReque
      */
     public function checkPassword($password, $realm)
     {
-        $authentication = $this->headers->getAuthentication();
+        $authentication = Utils::parseAuthorizationHeader($this->headers->get('Authorization'));
 
         if (empty($authentication['type']) || $authentication['type'] !== 'Digest') {
             return false;

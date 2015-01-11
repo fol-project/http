@@ -6,228 +6,10 @@
  */
 namespace Fol\Http;
 
-abstract class Headers implements \ArrayAccess
+class Headers implements \ArrayAccess
 {
     use ContainerTrait;
 
-    /**
-     * list of standard formats -> mime-types
-     */
-    public static $formats = [
-        'atom' => ['application/atom+xml'],
-        'css' => ['text/css'],
-        'html' => ['text/html', 'application/xhtml+xml'],
-        'gif' => ['image/gif'],
-        'jpg' => ['image/jpeg', 'image/jpg'],
-        'js'  => ['text/javascript', 'application/javascript', 'application/x-javascript'],
-        'jsonp'  => ['text/javascript', 'application/javascript', 'application/x-javascript'],
-        'json' => ['application/json', 'text/json', 'application/x-json'],
-        'png' => ['image/png',  'image/x-png'],
-        'pdf' => ['application/pdf', 'application/x-download'],
-        'rdf' => ['application/rdf+xml'],
-        'rss' => ['application/rss+xml'],
-        'txt' => ['text/plain'],
-        'xml' => ['text/xml', 'application/xml', 'application/x-xml'],
-        'zip' => ['application/zip', 'application/x-zip', 'application/x-zip-compressed']
-    ];
-
-    /**
-     * List of standards http languages
-     */
-    public static $languages = [
-        'aa' => 'Afar',
-        'ab' => 'Abkhazian',
-        'af' => 'Afrikaans',
-        'am' => 'Amharic',
-        'ar' => 'Arabic',
-        'as' => 'Assamese',
-        'ay' => 'Aymara',
-        'az' => 'Azerbaijani',
-        'ba' => 'Bashkir',
-        'be' => 'Byelorussian',
-        'bg' => 'Bulgarian',
-        'bh' => 'Bihari',
-        'bi' => 'Bislama',
-        'bn' => 'Bengali',
-        'bo' => 'Tibetan',
-        'br' => 'Breton',
-        'ca' => 'Catalan',
-        'co' => 'Corsican',
-        'cs' => 'Czech',
-        'cy' => 'Welsh',
-        'da' => 'Danish',
-        'de' => 'German',
-        'dz' => 'Bhutani',
-        'el' => 'Greek',
-        'en' => 'English',
-        'eo' => 'Esperanto',
-        'es' => 'Spanish',
-        'et' => 'Estonian',
-        'eu' => 'Basque',
-        'fa' => 'Persian',
-        'fi' => 'Finnish',
-        'fj' => 'Fiji',
-        'fo' => 'Faeroese',
-        'fr' => 'French',
-        'fy' => 'Frisian',
-        'ga' => 'Irish',
-        'gd' => 'Gaelic',
-        'gl' => 'Galician',
-        'gn' => 'Guarani',
-        'gu' => 'Gujarati',
-        'ha' => 'Hausa',
-        'hi' => 'Hindi',
-        'hr' => 'Croatian',
-        'hu' => 'Hungarian',
-        'hy' => 'Armenian',
-        'ia' => 'Interlingua',
-        'ie' => 'Interlingue',
-        'ik' => 'Inupiak',
-        'in' => 'Indonesian',
-        'is' => 'Icelandic',
-        'it' => 'Italian',
-        'iw' => 'Hebrew',
-        'ja' => 'Japanese',
-        'ji' => 'Yiddish',
-        'jw' => 'Javanese',
-        'ka' => 'Georgian',
-        'kk' => 'Kazakh',
-        'kl' => 'Greenlandic',
-        'km' => 'Cambodian',
-        'kn' => 'Kannada',
-        'ko' => 'Korean',
-        'ks' => 'Kashmiri',
-        'ku' => 'Kurdish',
-        'ky' => 'Kirghiz',
-        'la' => 'Latin',
-        'ln' => 'Lingala',
-        'lo' => 'Laothian',
-        'lt' => 'Lithuanian',
-        'lv' => 'Latvian',
-        'mg' => 'Malagasy',
-        'mi' => 'Maori',
-        'mk' => 'Macedonian',
-        'ml' => 'Malayalam',
-        'mn' => 'Mongolian',
-        'mo' => 'Moldavian',
-        'mr' => 'Marathi',
-        'ms' => 'Malay',
-        'mt' => 'Maltese',
-        'my' => 'Burmese',
-        'na' => 'Nauru',
-        'ne' => 'Nepali',
-        'nl' => 'Dutch',
-        'no' => 'Norwegian',
-        'oc' => 'Occitan',
-        'om' => 'Oromo',
-        'or' => 'Oriya',
-        'pa' => 'Punjabi',
-        'pl' => 'Polish',
-        'ps' => 'Pashto',
-        'pt' => 'Portuguese',
-        'qu' => 'Quechua',
-        'rm' => 'Rhaeto-Romance',
-        'rn' => 'Kirundi',
-        'ro' => 'Romanian',
-        'ru' => 'Russian',
-        'rw' => 'Kinyarwanda',
-        'sa' => 'Sanskrit',
-        'sd' => 'Sindhi',
-        'sg' => 'Sangro',
-        'sh' => 'Serbo-Croatian',
-        'si' => 'Singhalese',
-        'sk' => 'Slovak',
-        'sl' => 'Slovenian',
-        'sm' => 'Samoan',
-        'sn' => 'Shona',
-        'so' => 'Somali',
-        'sq' => 'Albanian',
-        'sr' => 'Serbian',
-        'ss' => 'Siswati',
-        'st' => 'Sesotho',
-        'su' => 'Sudanese',
-        'sv' => 'Swedish',
-        'sw' => 'Swahili',
-        'ta' => 'Tamil',
-        'te' => 'Tegulu',
-        'tg' => 'Tajik',
-        'th' => 'Thai',
-        'ti' => 'Tigtinya',
-        'tk' => 'Turkmen',
-        'tl' => 'Tagalog',
-        'tn' => 'Setswana',
-        'to' => 'Tonga',
-        'tr' => 'Turkish',
-        'ts' => 'Tsonga',
-        'tt' => 'Tatar',
-        'tw' => 'Twi',
-        'uk' => 'Ukrainian',
-        'ur' => 'Urdu',
-        'uz' => 'Uzbek',
-        'vi' => 'Vietnamese',
-        'vo' => 'Volapuk',
-        'wo' => 'Wolof',
-        'xh' => 'Xhosa',
-        'yo' => 'Yoruba',
-        'zh' => 'Chinese',
-        'zu' => 'Zulu'
-    ];
-
-
-    /**
-     * Gets the format related with a mimetype. Search in self::$formats array.
-     *
-     * Headers::getFormat('text/css') Returns "css"
-     *
-     * @param string $mimetype The mimetype to search
-     *
-     * @return string The extension of the mimetype or false
-     */
-    public static function getFormat($mimetype)
-    {
-        foreach (self::$formats as $format => $mimetypes) {
-            if (in_array($mimetype, $mimetypes)) {
-                return $format;
-            }
-        }
-
-        return false;
-    }
-
-    /**
-     * Gets the mimetype related with a format. This is the opposite of getFormat()
-     *
-     * Headers::getMimetype('css') Returns "text/css"
-     *
-     * @param string $format The format to search
-     *
-     * @return string The mimetype code or false
-     */
-    public static function getMimetype($format)
-    {
-        return isset(self::$formats[$format][0]) ? self::$formats[$format][0] : false;
-    }
-
-    /**
-     * Gets the language
-     *
-     * Headers::getLanguage('gl-es') Returns "gl"
-     *
-     * @param string  $language   The raw language code
-     * @param boolean $returnName Set true to return "Galician" instead "gl" (for example)
-     *
-     * @return string The simplified language code or false
-     */
-    public static function getLanguage($language, $returnName = false)
-    {
-        $language = strtolower(substr($language, 0, 2));
-
-        if (!isset(self::$languages[$language])) {
-            return false;
-        }
-
-        return $returnName ? self::$languages[$language] : $language;
-    }
 
     /**
      * Normalize the name of the parameters.
@@ -294,11 +76,10 @@ abstract class Headers implements \ArrayAccess
      *
      * @param string  $name    The header name
      * @param boolean $first   Set true to return just the value of the first header with this name. False to return an array with all values.
-     * @param mixed   $default The default value if the header was not found
      *
-     * @return string The header value or an array with all values
+     * @return null|string The header value or an array with all values
      */
-    public function get($name = null, $first = true, $default = null)
+    public function get($name = null, $first = true)
     {
         if (func_num_args() === 0) {
             return $this->items;
@@ -306,45 +87,9 @@ abstract class Headers implements \ArrayAccess
 
         $name = self::normalize($name);
 
-        if (empty($this->items[$name])) {
-            return $default;
+        if (isset($this->items[$name])) {
+            return $first ? $this->items[$name][0] : $this->items[$name];
         }
-
-        return $first ? $this->items[$name][0] : $this->items[$name];
-    }
-
-
-    /**
-     * Gets the value of an header parsed.
-     *
-     * $header->get('Accept') Returns: text/html,application/xhtml+xml,application/xml;q=0.9,* /*;q=0.8
-     * $header->getParsed('Accept')
-     * Array (
-     *     [text/html] => Array()
-     *     [application/xhtml+xml] => Array()
-     *     [application/xml] => Array([q] => 0.9)
-     *     [* /*] => Array([q] => 0.8)
-     * )
-     *
-     * @param string $name The header name
-     *
-     * @return array The parsed value
-     */
-    public function getParsed($name)
-    {
-        return self::toArray($this->get($name));
-    }
-
-
-    /**
-     * It's the opposite of getParsed: saves a header defining the value as array
-     *
-     * @param string $name  The header name
-     * @param array  $value The parsed value
-     */
-    public function setParsed($name, array $value)
-    {
-        $this->set($name, self::toString($value));
     }
 
     /**
@@ -478,78 +223,5 @@ abstract class Headers implements \ArrayAccess
         $this->set($header[0], $header[1], $replace);
 
         return true;
-    }
-
-    /**
-     * Private function to parse and return http values
-     *
-     * @param string $value The string to parse
-     *
-     * @return array The parsed value
-     */
-    private static function toArray($value)
-    {
-        if (!$value) {
-            return [];
-        }
-
-        $results = [];
-
-        foreach (explode(',', $value) as $values) {
-            $items = [];
-
-            foreach (explode(';', $values) as $value) {
-                if (strpos($value, '=') === false) {
-                    $items[trim($value)] = true;
-                } else {
-                    list($name, $value) = explode('=', $value, 2);
-                    $items[trim($name)] = trim($value);
-                }
-            }
-
-            $name = key($items);
-
-            if (($items[$name] === true) && (count($items) > 1)) {
-                array_shift($items);
-                $results[$name] = $items;
-            } else {
-                $results[$name] = $items[$name];
-            }
-        }
-
-        return $results;
-    }
-
-    /**
-     * Private function to convert a parsed http value to string
-     *
-     * @param array $values The parsed value
-     *
-     * @return string The value in string format
-     */
-    private static function toString(array $values)
-    {
-        if (!$values) {
-            return '';
-        }
-
-        $results = array();
-
-        foreach ($values as $name => $value) {
-            if (!is_array($value)) {
-                $results[] = ($value === true) ? $name : "$name=$value";
-                continue;
-            }
-
-            $sub_values = array($name);
-
-            foreach ($value as $value_name => $value_value) {
-                $sub_values[] = ($value_value === true) ? $value_name : "$value_name=$value_value";
-            }
-
-            $results[] = implode(';', $sub_values);
-        }
-
-        return implode(',', $results);
     }
 }

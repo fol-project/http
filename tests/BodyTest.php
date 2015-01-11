@@ -1,7 +1,7 @@
 <?php
 use Fol\Http\Body;
 
-require_once dirname(__DIR__).'/vendor/autoload.php';
+require_once dirname(__DIR__).'/src/autoload.php';
 
 class BodyTest extends PHPUnit_Framework_TestCase
 {
@@ -26,10 +26,15 @@ class BodyTest extends PHPUnit_Framework_TestCase
         $this->assertSame(' world', $body->read(6));
         $this->assertSame(11, $body->tell());
         $this->assertSame(11, $body->getSize());
-        $this->assertSame('Hello world', (string) $body);
         $this->assertSame('', $body->getContents());
+        $this->assertSame('Hello world', (string) $body);
 
         $body->seek(0);
         $this->assertSame('Hello world', $body->getContents());
+
+        $body->close();
+        $this->assertFalse($body->isReadable());
+        $this->assertFalse($body->isWritable());
+        $this->assertFalse($body->isSeekable());
     }
 }

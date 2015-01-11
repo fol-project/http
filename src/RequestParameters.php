@@ -38,27 +38,4 @@ class RequestParameters implements \ArrayAccess
 
         return $this->parentGet($name, $default);
     }
-
-    /**
-     * Returns a value filtered using the filter_var php function
-     *
-     * For example:
-     * $input->filter('email', FILTER_VALIDATE_EMAIL)
-     *
-     * @param string  $name    The variable name
-     * @param integer $filter  One of the available filters provided by php (http://www.php.net/manual/en/filter.filters.php)
-     * @param integer $options Options for the filter
-     *
-     * @return mixed The filtered value
-     */
-    public function filter($name, $filter, $options = null)
-    {
-        $value = $this->get($name);
-
-        if (is_null($value)) {
-            return $value;
-        }
-
-        return ($options === null) ? filter_var($value, $filter) : filter_var($value, $filter, $options);
-    }
 }

@@ -6,28 +6,20 @@
  */
 namespace Fol\Http\Router;
 
+use Fol\Http\RequestHandler;
+
 class RouteFactory
 {
     private $namespace;
-    private $baseUrl;
 
     /**
      * Constructor
      *
      * @param string $namespace The namespace where the controllers are located
-     * @param string $baseUrl   The url base to prepend to the routes
      */
-    public function __construct($namespace, $baseUrl)
+    public function __construct($namespace = '')
     {
         $this->namespace = $namespace;
-        $components = parse_url($baseUrl);
-
-        $this->baseUrl = [
-            'scheme' => $components['scheme'],
-            'host' => $components['host'],
-            'port' => isset($components['port']) ? $components['port'] : null,
-            'path' => isset($components['path']) ? $components['path'] : ''
-        ];
     }
 
     /**
@@ -54,9 +46,49 @@ class RouteFactory
             list($class, $method) = explode('::', $target, 2);
         }
 
-        $class = "{$this->namespace}\\{$class}";
+        if ($this->namespace) {
+            $class = "{$this->namespace}\\{$class}";
+        }
 
         return [$class, $method];
+    }
+
+    /**
+     * Normalices the configuration of a route
+     *
+     * @param string $name   Route name
+     * @param array  $config Route configuration (path, target, etc)
+     * @param Url $baseUrl The baseUrl of the route
+     *
+     * @return array
+     */
+    private function getConfig($name, array $config, Url $baseUrl)
+    {
+        $config['name'] = $name;
+        $config['target'] = $this->getTarget($config['target']);
+        $config['path'] = $baseUrl->getPath(false).$config['path'];
+
+        if (isset($config['path'][1])) {
+            $config['path'] = rtrim($config['path'], '/');
+        }
+
+        if (isset($config['regex'])) {
+            $config['regex'] = $baseUrl->getPath(false).$config['regex'];
+        }
+
+        if (!isset($config['scheme'])) {
+            $config['scheme'] = $baseUrl->getScheme();
+        }
+
+        if (!isset($config['host'])) {
+            $config['host'] = $baseUrl->getHost();
+        }
+
+        if (!isset($config['port'])) {
+            $config['port'] = $baseUrl->getPort();
+        }
+
+        return $config;
     }
 
     /**
@@ -64,40 +96,19 @@ class RouteFactory
      *
      * @param string $name   Route name
      * @param array  $config Route configuration (path, target, etc)
+     * @param Url $baseUrl The baseUrl of the route
      *
      * @return Route
      */
-    public function createRoute($name, array $config)
+    public function createRoute($name, array $config, Url $baseUrl)
     {
-        $target = $this->getTarget($config['target']);
-
-        $config['path'] = $this->baseUrl['path'].$config['path'];
-
-        if (isset($config['regex'])) {
-            $config['regex'] = $this->baseUrl['path'].$config['regex'];
-        }
-
-        if (!isset($config['scheme'])) {
-            $config['scheme'] = $this->baseUrl['scheme'];
-        }
-
-        if (!isset($config['host'])) {
-            $config['host'] = $this->baseUrl['host'];
-        }
-
-        if (!isset($config['port'])) {
-            $config['port'] = $this->baseUrl['port'];
-        }
-
-        if (isset($config['path'][1])) {
-            $config['path'] = rtrim($config['path'], '/');
-        }
+        $config = $this->getConfig($name, $config, $baseUrl);
 
         if (isset($config['regex']) || strpos($config['path'], '{') !== false) {
-            return new RegexRoute($name, $config, $target);
+            return new RegexRoute($config);
         }
 
-        return new StaticRoute($name, $config, $target);
+        return new StaticRoute($config);
     }
 
     /**

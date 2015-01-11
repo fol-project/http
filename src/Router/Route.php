@@ -6,14 +6,25 @@
  */
 namespace Fol\Http\Router;
 
-use Fol\Http\ContainerTrait;
 use Fol\Http\Request;
 use Fol\Http\Response;
 use Fol\Http\HttpException;
 
-abstract class Route implements \ArrayAccess
+abstract class Route
 {
-    use ContainerTrait;
+    /**
+     * Constructor
+     *
+     * @param array $config The available options
+     */
+    public function __construct(array $config = array())
+    {
+        foreach (array_keys(get_object_vars($this)) as $key) {
+            if (isset($config[$key])) {
+                $this->$key = $config[$key];
+            }
+        }
+    }
 
     /**
      * Execute the route
@@ -49,9 +60,6 @@ abstract class Route implements \ArrayAccess
         } else {
             $response->getBody()->write(ob_get_clean().$return);
         }
-
-        $request->events->emit('prepareResponse', [$request, $response, $this]);
-        $response->events->emit('prepare', [$request, $response, $this]);
 
         return $response;
     }

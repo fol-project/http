@@ -1,7 +1,7 @@
 <?php
 use Fol\Http\Url;
 
-require_once dirname(__DIR__).'/vendor/autoload.php';
+require_once dirname(__DIR__).'/src/autoload.php';
 
 class UrlTest extends PHPUnit_Framework_TestCase
 {
@@ -61,7 +61,7 @@ class UrlTest extends PHPUnit_Framework_TestCase
         $this->assertEquals(2, $url->query->length());
         $this->assertEquals('latest', $url->query->get('sort'));
         $this->assertEquals('1', $url->query['page']);
-        $this->assertEquals('default', $url->query->get('no-defined', 'default'));
+        $this->assertNull($url->query->get('no-defined'));
 
         $url->query->set('from', 'now');
         $this->assertEquals($url->getUrl(true), 'http://blog.com/?sort=latest&page=1&from=now');

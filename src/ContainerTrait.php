@@ -80,11 +80,10 @@ trait ContainerTrait
      * $params->get('name') Returns just this parameter
      *
      * @param string $name    The parameter name
-     * @param mixed  $default The default value if the parameter is not set
      *
      * @return string The parameter value or the default
      */
-    public function get($name = null, $default = null)
+    public function get($name = null)
     {
         if ($name === null) {
             return $this->items;
@@ -93,8 +92,6 @@ trait ContainerTrait
         if (isset($this->items[$name]) && $this->items[$name] !== '') {
             return $this->items[$name];
         }
-
-        return $default;
     }
 
     /**
