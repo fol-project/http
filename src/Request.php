@@ -94,7 +94,7 @@ class Request extends Message
      */
     public function __toString()
     {
-        return $this->getMethod().' '.$this->getUrl()
+        return $this->getMethod().' '.$this->url->getUrl()
 
             ."\nFormat: ".$this->getFormat()
             ."\nLanguage: ".$this->getLanguage()
