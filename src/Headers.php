@@ -73,7 +73,7 @@ class Headers implements \ArrayAccess
      * @param string  $name  The header name
      * @param boolean $first Set true to return just the value of the first header with this name. False to return an array with all values.
      *
-     * @return null|string The header value or an array with all values
+     * @return null|string|array The header value or an array with all values
      */
     public function get($name = null, $first = true)
     {

@@ -126,7 +126,7 @@ class Url
         if ($directory === '.') {
             $directory = '/';
         } elseif ($directory[0] !== '/') {
-            $directory = "/{$path}";
+            $directory = "/{$directory}";
         }
 
         $this->directory = $directory;

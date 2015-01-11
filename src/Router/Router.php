@@ -111,8 +111,8 @@ class Router
     /**
      * Handle a specific request
      *
-     * @param RequestHandler $request
-     * @param array          $arguments The arguments passed to the controller (after $request and $response instances)
+     * @param Request $request
+     * @param array   $arguments The arguments passed to the controller (after $request and $response instances)
      *
      * @throws HttpException If no errorController is defined and an exception is thrown
      *

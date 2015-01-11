@@ -50,12 +50,12 @@ class Response extends Message
      */
     public function __toString()
     {
-        $text = sprintf('HTTP/%s %s %s', $this->protocol, $this->statusCode, $this->reasonPhrase);
-        $text .= "\nCookies:\n".$this->cookies;
-        $text .= "\nHeaders:\n".$this->headers;
-        $text .= "\n\n".$this->read();
-
-        return $text;
+        return sprintf('HTTP/%s %s %s', $this->protocol, $this->statusCode, $this->reasonPhrase)
+            ."\nCookies:\n".$this->cookies
+            ."\nHeaders:\n".$this->headers
+            
+            ."\nBody:\n"
+            ."\n\n".$this->getBody();
     }
 
     /**

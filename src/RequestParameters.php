@@ -17,11 +17,10 @@ class RequestParameters implements \ArrayAccess
      * $input->get('user[age]') Returns 34
      *
      * @param string $name    The parameter name
-     * @param mixed  $default A default value to return if the name does not exist
      *
-     * @return mixed The value or default value
+     * @return mixed
      */
-    public function get($name = null, $default = null)
+    public function get($name = null)
     {
         if (is_string($name) && (strpos($name, '[') !== false) && (strpos($name, ']') !== false)) {
             $subarrays = explode('[', str_replace(']', '', $name));
@@ -36,6 +35,6 @@ class RequestParameters implements \ArrayAccess
             }
         }
 
-        return $this->parentGet($name, $default);
+        return $this->parentGet($name);
     }
 }

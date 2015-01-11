@@ -79,9 +79,9 @@ trait ContainerTrait
      * $params->get() Returns all parameters
      * $params->get('name') Returns just this parameter
      *
-     * @param string $name The parameter name
+     * @param null|string $name The parameter name
      *
-     * @return string The parameter value or the default
+     * @return string|array
      */
     public function get($name = null)
     {

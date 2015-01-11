@@ -37,7 +37,6 @@ abstract class Route
         ob_start();
 
         array_unshift($arguments, $request, $response);
-        $request->route = $this;
 
         if (!is_array($this->target) || is_object($this->target[0])) {
             $return = call_user_func_array($this->target, $arguments);

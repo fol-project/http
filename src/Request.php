@@ -17,7 +17,6 @@ class Request extends Message
     public $data;
     public $files;
     public $cookies;
-    public $route;
     public $attributes;
 
     /**
@@ -30,7 +29,7 @@ class Request extends Message
         $request = new static(Globals::getUrl(), Globals::getMethod(), Globals::getHeaders(), Globals::getGet(), Globals::getPost(), Globals::getFiles(), Globals::getCookies());
 
         if (!$request->data->length()) {
-            $request->setBodySource('php://input', 'r');
+            $request->setBody(new Body('php://input', 'r'));
         }
 
         return $request;
@@ -127,28 +126,6 @@ class Request extends Message
     public function getHandler()
     {
         return $this->handler;
-    }
-
-    /**
-     * Set a new url to the request
-     *
-     * @param string $url The new url
-     */
-    public function setUrl($url)
-    {
-        $this->url->setUrl($url);
-    }
-
-    /**
-     * Returns the full url
-     *
-     * @param boolean $query True to add the query to the url (false by default)
-     *
-     * @return string The current url
-     */
-    public function getUrl()
-    {
-        return $this->url->getUrl();
     }
 
     /**
