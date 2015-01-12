@@ -27,11 +27,11 @@ class Globals
      */
     public function __construct(array $server = null, array $get = null, array $post = null, array $files = null, array $cookie = null, $input = null)
     {
-        $this->server = isset($server) ? $server : filter_input_array(INPUT_SERVER);
-        $this->get = isset($get) ? $get : filter_input_array(INPUT_GET);
-        $this->post = isset($post) ? $post : filter_input_array(INPUT_POST);
+        $this->server = isset($server) ? $server : (array) filter_input_array(INPUT_SERVER);
+        $this->get = isset($get) ? $get : (array) filter_input_array(INPUT_GET);
+        $this->post = isset($post) ? $post : (array) filter_input_array(INPUT_POST);
         $this->files = isset($files) ? $files : $_FILES;
-        $this->cookie = isset($cookie) ? $cookie : filter_input_array(INPUT_COOKIE);
+        $this->cookie = isset($cookie) ? $cookie : (array) filter_input_array(INPUT_COOKIE);
         $this->input = isset($input) ? $input : 'php://input';
     }
 
