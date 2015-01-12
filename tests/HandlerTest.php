@@ -1,17 +1,17 @@
 <?php
 use Fol\Http\Request;
 use Fol\Http\Response;
-use Fol\Http\RequestResponseHandler;
+use Fol\Http\Handler;
 use Fol\Http\Sessions\Session;
 
 require_once dirname(__DIR__).'/src/autoload.php';
 
-class RequestResponseHandlerTest extends PHPUnit_Framework_TestCase
+class HandlerTest extends PHPUnit_Framework_TestCase
 {
     public function testOne()
     {
         $request = new Request('http://domain.com');
-        $handler = new RequestResponseHandler($request);
+        $handler = new Handler($request);
 
         $handler->register('session', function ($handler) {
             return new Session($handler, 23, 'name');
@@ -25,7 +25,7 @@ class RequestResponseHandlerTest extends PHPUnit_Framework_TestCase
     /**
      * @depends testOne
      */
-    public function testSession(RequestResponseHandler $handler)
+    public function testSession(Handler $handler)
     {
         $request = $handler->getRequest();
         $session = $request->session;
@@ -47,12 +47,12 @@ class RequestResponseHandlerTest extends PHPUnit_Framework_TestCase
         $request = new Request('http://domain.com/index.json', 'HEAD');
         $response = new Response('This is a response');
 
-        $handler = new RequestResponseHandler($request);
+        $handler = new Handler($request);
 
         $handler->handle($response);
 
         $this->assertEquals($response->headers->get('Content-Type'), 'application/json; charset=UTF-8');
-        
+
         $this->assertEquals($response->headers->get('Date'), (new \Datetime('now', new \DateTimeZone('GMT')))->format('D, d M Y H:i:s').' GMT');
         $this->assertEquals('', (string) $response->getBody());
     }

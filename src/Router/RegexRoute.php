@@ -7,11 +7,11 @@
 namespace Fol\Http\Router;
 
 use Fol\Http\Request;
-use Fol\Http\Url;
 
 class RegexRoute extends StaticRoute
 {
     protected $regex;
+    protected $filters;
 
     /**
      * {@inheritDoc}
@@ -23,8 +23,6 @@ class RegexRoute extends StaticRoute
         if (empty($config['regex'])) {
             $this->regex = self::setRegex($this->path, isset($config['filters']) ? $config['filters'] : []);
         }
-
-        $this->regex = "#^{$this->regex}$#";
     }
 
     /**
@@ -46,15 +44,39 @@ class RegexRoute extends StaticRoute
     }
 
     /**
+     * Generates and return the regex
+     *
+     * @param null|string $basePath
+     *
+     * @return string
+     */
+    private function getRegex($basePath)
+    {
+        if (empty($this->regex)) {
+            $this->regex = preg_replace_callback('/\{([^\}]*)\}/', function ($matches) {
+                $name = $matches[1];
+                $filter = isset($this->filters[$name]) ? $this->filters[$name] : '[^/]+';
+
+                return "(?P<{$name}>{$filter})";
+            }, $path);
+        }
+
+        return '#^'.($basePath === '/' ? '' : $basePath).$this->regex.'$#';
+    }
+
+    /**
      * Check the regex of the request
      *
-     * @param string $path The path
+     * @param string      $path     The path
+     * @param null|string $basePath The path
      *
      * @return array|false
      */
-    public function checkRegex($path)
+    public function checkRegex($path, $basePath)
     {
-        if (preg_match($this->regex, $path, $matches)) {
+        $regex = $this->getRegex($basePath);
+
+        if (preg_match($regex, $path, $matches)) {
             $params = [];
 
             foreach ($matches as $key => $value) {
@@ -70,30 +92,26 @@ class RegexRoute extends StaticRoute
     }
 
     /**
-     * Check if the route match with the request
-     *
-     * @param Request $request The request to check
-     *
-     * @return bool
+     * {@inheritDoc}
      */
-    public function match(Request $request)
+    public function match(Request $request, array $baseUrl)
     {
         $match = (
                self::check($this->ip, $request->getIp())
             && self::check($this->method, $request->getMethod())
             && self::check($this->language, $request->getLanguage())
-            && self::check($this->scheme, $request->url->getScheme())
-            && self::check($this->host, $request->url->getHost())
-            && self::check($this->port, $request->url->getPort())
+            && self::check($this->scheme, $request->url->getScheme(), $baseUrl['scheme'])
+            && self::check($this->host, $request->url->getHost(), $baseUrl['host'])
+            && self::check($this->port, $request->url->getPort(), $baseUrl['port'])
         );
 
-        if (!$match || ($matches = $this->checkRegex($request->url->getPath())) === false) {
-            return false;
+        if ($match && ($matches = $this->checkRegex($request->url->getPath(), $baseUrl['path'])) !== false) {
+            $request->attributes->set($matches);
+
+            return true;
         }
 
-        $request->attributes->set($matches);
-
-        return true;
+        return false;
     }
 
     /**

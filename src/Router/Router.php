@@ -8,8 +8,9 @@ namespace Fol\Http\Router;
 
 use Fol\Http\ContainerTrait;
 use Fol\Http\Request;
-use Fol\Http\RequestResponseHandler;
+use Fol\Http\Handler;
 use Fol\Http\Response;
+use Fol\Http\Url;
 use Fol\Http\HttpException;
 
 class Router
@@ -18,18 +19,21 @@ class Router
 
     private $errorController;
     private $routeFactory;
-    private $handler;
+    private $baseUrl = [
+        'scheme' => null,
+        'host' => null,
+        'port' => null,
+        'path' => null,
+    ];
 
     /**
      * Constructor function. Defines the base url
      *
-     * @param RequestResponseHandler    $handler
      * @param null|RouteFactory $routeFactory
      */
-    public function __construct(RequestResponseHandler $handler, RouteFactory $routeFactory = null)
+    public function __construct(RouteFactory $routeFactory = null)
     {
         $this->routeFactory = $routeFactory ?: new RouteFactory();
-        $this->handler = $handler;
     }
 
     /**
@@ -43,13 +47,13 @@ class Router
     {
         if (is_array($name)) {
             foreach ($name as $name => $config) {
-                $this->set($name, $this->routeFactory->createRoute($name, $config, $this->handler->getBaseUrl()));
+                $this->set($name, $this->routeFactory->createRoute($name, $config));
             }
 
             return;
         }
 
-        $this->set($name, $this->routeFactory->createRoute($name, $config, $this->handler->getBaseUrl()));
+        $this->set($name, $this->routeFactory->createRoute($name, $config));
     }
 
     /**
@@ -63,6 +67,16 @@ class Router
     }
 
     /**
+     * Define the base url
+     *
+     * @param Url $baseUrl
+     */
+    public function setBaseUrl(Url $baseUrl)
+    {
+        $this->baseUrl = $baseUrl->toArray();
+    }
+
+    /**
      * Match given request url and request method and see if a route has been defined for it
      *
      * @param Request $request
@@ -72,7 +86,7 @@ class Router
     public function match(Request $request)
     {
         foreach ($this->items as $route) {
-            if ($route->match($request)) {
+            if ($route->match($request, $this->baseUrl)) {
                 return $route;
             }
         }
@@ -98,17 +112,6 @@ class Router
     }
 
     /**
-     * Run the router and send the response
-     */
-    public function run(array $arguments = array())
-    {
-        $response = $this->handle($this->handler->getRequest(), $arguments);
-        $this->handler->handle($response);
-
-        $response->send();
-    }
-
-    /**
      * Handle a specific request
      *
      * @param Request $request
@@ -118,7 +121,7 @@ class Router
      *
      * @return Response
      */
-    public function handle(Request $request, array $arguments = array())
+    public function getResponse(Request $request, array $arguments = array())
     {
         try {
             if (($route = $this->match($request))) {
@@ -135,6 +138,25 @@ class Router
 
             throw $exception;
         }
+
+        return $response;
+    }
+
+    /**
+     * Run the router and return the response
+     *
+     * @param Handler $handler
+     * @param array   $arguments $arguments The arguments passed to the controller (after $request and $response instances)
+     *
+     * @return Response
+     */
+    public function run(Handler $handler, array $arguments = array())
+    {
+        $this->setBaseUrl($handler->getBaseUrl());
+
+        $response = $this->getResponse($handler->getRequest(), $arguments);
+
+        $handler->handle($response);
 
         return $response;
     }

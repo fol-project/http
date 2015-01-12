@@ -16,7 +16,7 @@ class RequestParameters implements \ArrayAccess
      * $input->get('user') Returns, for example: array('name' => 'xan', 'age' => 34)
      * $input->get('user[age]') Returns 34
      *
-     * @param string $name    The parameter name
+     * @param string $name The parameter name
      *
      * @return mixed
      */

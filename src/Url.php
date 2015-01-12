@@ -343,4 +343,23 @@ class Url
     {
         $this->filename = $filename;
     }
+
+    /**
+     * Returns the url parameters as array
+     *
+     * @return array
+     */
+    public function toArray()
+    {
+        return [
+            'scheme' => $this->getScheme(),
+            'host' => $this->getHost(),
+            'port' => $this->getPort(),
+            'user' => $this->getUser(),
+            'password' => $this->getPassword(),
+            'path' => $this->getPath(true),
+            'query' => $this->query->get(),
+            'fragment' => $this->getFragment()
+        ];
+    }
 }

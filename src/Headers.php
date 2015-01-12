@@ -109,7 +109,7 @@ class Headers implements \ArrayAccess
     /**
      * Define a header using a Datetime object and returns it
      *
-     * @param string           $name     The header name
+     * @param string          $name     The header name
      * @param DateTime|string $datetime The datetime object. You can define also an string so the Datetime object will be created
      *
      * @return Datetime The datetime object

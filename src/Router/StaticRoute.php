@@ -26,19 +26,20 @@ class StaticRoute extends Route
      * Check whether or not the route match with the request
      *
      * @param Request $request The request to check
+     * @param array   $baseUrl The base url components used
      *
      * @return boolean
      */
-    public function match(Request $request)
+    public function match(Request $request, array $baseUrl)
     {
         return (
                self::check($this->ip, $request->getIp())
             && self::check($this->method, $request->getMethod())
             && self::check($this->language, $request->getLanguage())
-            && self::check($this->scheme, $request->url->getScheme())
-            && self::check($this->host, $request->url->getHost())
-            && self::check($this->port, $request->url->getPort())
-            && self::check($this->path, $request->url->getPath())
+            && self::check($this->scheme, $request->url->getScheme(), $baseUrl['scheme'])
+            && self::check($this->host, $request->url->getHost(), $baseUrl['host'])
+            && self::check($this->port, $request->url->getPort(), $baseUrl['port'])
+            && self::check(($baseUrl['path'] === '/' ? '' : $baseUrl['path']).$this->path, $request->url->getPath())
         );
     }
 
@@ -79,11 +80,16 @@ class StaticRoute extends Route
      *
      * @param mixed $routeValue
      * @param mixed $requestValue
+     * @param mixed $baseValue
      *
      * @return boolean
      */
-    protected static function check($routeValue, $requestValue)
+    protected static function check($routeValue, $requestValue, $baseValue = null)
     {
+        if ($routeValue === null) {
+            $routeValue = $baseValue;
+        }
+
         if ($routeValue === null || $requestValue === null) {
             return true;
         }

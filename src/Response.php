@@ -53,7 +53,7 @@ class Response extends Message
         return sprintf('HTTP/%s %s %s', $this->protocol, $this->statusCode, $this->reasonPhrase)
             ."\nCookies:\n".$this->cookies
             ."\nHeaders:\n".$this->headers
-            
+
             ."\nBody:\n"
             ."\n\n".$this->getBody();
     }

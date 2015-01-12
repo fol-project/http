@@ -22,8 +22,8 @@ class Request extends Message
     /**
      * Creates a new request object from global values
      *
-     * @param Globals $globals 
-     * 
+     * @param Globals $globals
+     *
      * @return Request The object with the global data
      */
     public static function createFromGlobals(Globals $globals = null)
@@ -117,9 +117,9 @@ class Request extends Message
     /**
      * Set the handler of this request
      *
-     * @param RequestResponseHandler $handler
+     * @param Handler $handler
      */
-    public function setHandler(RequestResponseHandler $handler)
+    public function setHandler(Handler $handler)
     {
         $this->handler = $handler;
     }
@@ -127,7 +127,7 @@ class Request extends Message
     /**
      * Get the handler of this request
      *
-     * @return null|RequestResponseHandler
+     * @return null|Handler
      */
     public function getHandler()
     {

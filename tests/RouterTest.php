@@ -1,6 +1,6 @@
 <?php
 use Fol\Http\Request;
-use Fol\Http\RequestResponseHandler;
+use Fol\Http\Handler;
 use Fol\Http\Router\Router;
 
 require_once dirname(__DIR__).'/src/autoload.php';
@@ -9,8 +9,7 @@ class RouterTest extends PHPUnit_Framework_TestCase
 {
     public function testOne()
     {
-        $handler = new RequestResponseHandler(new Request('http://domain.com'));
-        $router = new Router($handler);
+        $router = new Router();
 
         $router->map('index', [
             'path' => '/',
@@ -37,6 +36,9 @@ class RouterTest extends PHPUnit_Framework_TestCase
 
         $router->map('put', [
             'path' => '/put/{id}',
+            'filters' => [
+                'id' => '[\d]+',
+            ],
             'method' => ['PUT'],
             'target' => function ($request, $response) {
                 $response->getBody()->write('This is PUT/'.$request->attributes['id']);
@@ -48,7 +50,7 @@ class RouterTest extends PHPUnit_Framework_TestCase
             'target' => function ($request, $response) use ($router) {
                 $response->getBody()->write('This is a subrequest: ');
 
-                $r = $router->handle(new Request('http://domain.com/post', 'POST'));
+                $r = $router->getResponse(new Request('http://domain.com/post', 'POST'));
 
                 $response->getBody()->write((string) $r->getBody());
             }
@@ -60,22 +62,27 @@ class RouterTest extends PHPUnit_Framework_TestCase
             return 'Error '.$error->getCode().'/'.$error->getMessage();
         });
 
-        $response = $router->handle($handler->getRequest());
+        $handler = new Handler(new Request('http://domain.com'));
+
+        $response = $router->run($handler);
         $this->assertEquals('This is the index', (string) $response->getBody());
 
-        $response = $router->handle(new Request('/'));
+        $response = $router->getResponse(new Request('/'));
         $this->assertEquals('This is the index', (string) $response->getBody());
 
-        $response = $router->handle(new Request('http://domain.com/post', 'POST'));
+        $response = $router->getResponse(new Request('http://domain.com/post', 'POST'));
         $this->assertEquals('This is POST', (string) $response->getBody());
 
-        $response = $router->handle(new Request('http://domain.com/put/23', 'PUT'));
+        $response = $router->getResponse(new Request('http://domain.com/put/23', 'PUT'));
         $this->assertEquals('This is PUT/23', (string) $response->getBody());
 
-        $response = $router->handle(new Request('http://domain.com/subrequest'));
+        $response = $router->getResponse(new Request('http://domain.com/put/2.3', 'PUT'));
+        $this->assertEquals('Error 404/Not found', (string) $response->getBody());
+
+        $response = $router->getResponse(new Request('http://domain.com/subrequest'));
         $this->assertEquals('This is a subrequest: This is POST', (string) $response->getBody());
 
-        $response = $router->handle(new Request('http://domain.com/post', 'GET'));
+        $response = $router->getResponse(new Request('http://domain.com/post', 'GET'));
         $this->assertEquals('Error 404/Not found', (string) $response->getBody());
     }
 }

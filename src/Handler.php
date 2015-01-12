@@ -1,12 +1,12 @@
 <?php
 /**
- * Fol\Http\RequestResponseHandler
+ * Fol\Http\Handler
  *
  * Class to manage the http request/response cycle
  */
 namespace Fol\Http;
 
-class RequestResponseHandler
+class Handler
 {
     protected $handlers = [];
     protected $services = [];

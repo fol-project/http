@@ -8,10 +8,10 @@ Http library for PHP 5.5
 ```php
 use Fol\Http\Request;
 use Fol\Http\Response;
-use Fol\Http\RequestResponseHandler;
+use Fol\Http\Handler;
 
 // Init a request handler
-$handler = new RequestResponseHandler(new Request('http://domain.com'));
+$handler = new Handler(new Request('http://domain.com'));
 
 //Prepare a response
 $response = $handler->handle(new Response());
@@ -20,27 +20,27 @@ $response = $handler->handle(new Response());
 $response->send();
 ```
 
-## Usage with sessions, and routes
+## Usage with sessions and routes
 
 ```php
 use Fol\Http\Request;
 use Fol\Http\Response;
-use Fol\Http\RequestResponseHandler;
+use Fol\Http\Handler;
 
 use Fol\Http\Sessions\Native;
 use Fol\Http\Routes\Router;
 
 
 // Init a request handler
-$handler = new RequestResponseHandler(new Request('http://domain.com/about'));
+$handler = new Handler(new Request('http://domain.com/about'));
 
 // Register and configure some services, for example, a session
 $handler->register('session', function ($handler) {
 	return new Native($handler);
 });
 
-//Init the router passing the handler
-$router = new Router($handler);
+//Init the router
+$router = new Router();
 
 //Add some routes:
 $router->map([
@@ -60,8 +60,11 @@ $router->map([
 	]
 ]);
 
-//Run the router (get the response, prepare and send it)
-$router->run();
+//Run the router with the handler
+$response = $router->run($handler);
+
+//Send the response
+$response->send();
 ```
 
 
@@ -120,7 +123,7 @@ $request->cookies
 $body = $response->getBody();
 ```
 
-### RequestResponseHandler
+### Handler
 
 Manages a request/response cycle:
 

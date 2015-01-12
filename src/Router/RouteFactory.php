@@ -6,8 +6,6 @@
  */
 namespace Fol\Http\Router;
 
-use Fol\Http\Url;
-
 class RouteFactory
 {
     private $namespace;
@@ -54,58 +52,18 @@ class RouteFactory
     }
 
     /**
-     * Normalices the configuration of a route
-     *
-     * @param string $name    Route name
-     * @param array  $config  Route configuration (path, target, etc)
-     * @param Url    $baseUrl The baseUrl of the route
-     *
-     * @return array
-     */
-    private function getConfig($name, array $config, Url $baseUrl)
-    {
-        $config['name'] = $name;
-        $config['target'] = $this->getTarget($config['target']);
-
-        $basePath = $baseUrl->getPath(false);
-
-        if ($basePath !== '/') {
-            $config['path'] = $basePath.$config['path'];
-        }
-
-        $config['path'] = rtrim($config['path'], '/') ?: '/';
-
-        if (isset($config['regex'])) {
-            $config['regex'] = $basePath.$config['regex'];
-        }
-
-        if (!isset($config['scheme']) && ($scheme = $baseUrl->getScheme())) {
-            $config['scheme'] = $scheme;
-        }
-
-        if (!isset($config['host']) && ($host = $baseUrl->getHost())) {
-            $config['host'] = $host;
-        }
-
-        if (!isset($config['port']) && ($port = $baseUrl->getPort())) {
-            $config['port'] = $port;
-        }
-
-        return $config;
-    }
-
-    /**
      * Creates a new route instance
      *
-     * @param string $name    Route name
-     * @param array  $config  Route configuration (path, target, etc)
-     * @param Url    $baseUrl The baseUrl of the route
+     * @param string $name   Route name
+     * @param array  $config Route configuration (path, target, etc)
      *
      * @return Route
      */
-    public function createRoute($name, array $config, Url $baseUrl)
+    public function createRoute($name, array $config)
     {
-        $config = $this->getConfig($name, $config, $baseUrl);
+        $config['name'] = $name;
+        $config['target'] = $this->getTarget($config['target']);
+        $config['path'] = rtrim($config['path'], '/') ?: '/';
 
         if (isset($config['regex']) || strpos($config['path'], '{') !== false) {
             return new RegexRoute($config);

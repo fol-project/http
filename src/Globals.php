@@ -35,7 +35,6 @@ class Globals
         $this->input = isset($input) ? $input : 'php://input';
     }
 
-
     /**
      * Gets a value from $server variable
      *
@@ -225,7 +224,7 @@ class Globals
 
     /**
      * Gets the $_FILES values (and normalizes its structure)
-     * 
+     *
      * @param boolean $fixed
      *
      * @return array
