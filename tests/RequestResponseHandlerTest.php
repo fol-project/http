@@ -1,17 +1,17 @@
 <?php
 use Fol\Http\Request;
 use Fol\Http\Response;
-use Fol\Http\RequestHandler;
+use Fol\Http\RequestResponseHandler;
 use Fol\Http\Sessions\Session;
 
 require_once dirname(__DIR__).'/src/autoload.php';
 
-class RequestHandlerTest extends PHPUnit_Framework_TestCase
+class RequestResponseHandlerTest extends PHPUnit_Framework_TestCase
 {
     public function testOne()
     {
         $request = new Request('http://domain.com');
-        $handler = new RequestHandler($request);
+        $handler = new RequestResponseHandler($request);
 
         $handler->register('session', function ($handler) {
             return new Session($handler, 23, 'name');
@@ -25,7 +25,7 @@ class RequestHandlerTest extends PHPUnit_Framework_TestCase
     /**
      * @depends testOne
      */
-    public function testSession(RequestHandler $handler)
+    public function testSession(RequestResponseHandler $handler)
     {
         $request = $handler->getRequest();
         $session = $request->session;
@@ -47,7 +47,7 @@ class RequestHandlerTest extends PHPUnit_Framework_TestCase
         $request = new Request('http://domain.com/index.json', 'HEAD');
         $response = new Response('This is a response');
 
-        $handler = new RequestHandler($request);
+        $handler = new RequestResponseHandler($request);
 
         $handler->handle($response);
 

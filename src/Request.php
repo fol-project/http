@@ -117,9 +117,9 @@ class Request extends Message
     /**
      * Set the handler of this request
      *
-     * @param RequestHandler $handler
+     * @param RequestResponseHandler $handler
      */
-    public function setHandler(RequestHandler $handler)
+    public function setHandler(RequestResponseHandler $handler)
     {
         $this->handler = $handler;
     }
@@ -127,7 +127,7 @@ class Request extends Message
     /**
      * Get the handler of this request
      *
-     * @return null|RequestHandler
+     * @return null|RequestResponseHandler
      */
     public function getHandler()
     {

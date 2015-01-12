@@ -6,7 +6,7 @@
  */
 namespace Fol\Http\Sessions;
 
-use Fol\Http\RequestHandler;
+use Fol\Http\RequestResponseHandler;
 use Fol\Http\Response;
 
 class Native extends Session
@@ -14,11 +14,11 @@ class Native extends Session
     /**
      * Construct and loads the session data
      *
-     * @param RequestHandler $handler
+     * @param RequestResponseHandler $handler
      * @param string|null    $id
      * @param string|null    $name
      */
-    public function __construct(RequestHandler $handler, $id = null, $name = null)
+    public function __construct(RequestResponseHandler $handler, $id = null, $name = null)
     {
         if (!$name) {
             $name = session_name();
@@ -40,11 +40,11 @@ class Native extends Session
     /**
      * Starts the session
      *
-     * @param RequestHandler $handler
+     * @param RequestResponseHandler $handler
      *
      * @throws \RuntimeException if session cannot be started
      */
-    protected function start(RequestHandler $handler)
+    protected function start(RequestResponseHandler $handler)
     {
         if (session_status() === PHP_SESSION_DISABLED) {
             throw new \RuntimeException('Native sessions are disabled');
@@ -115,10 +115,10 @@ class Native extends Session
     /**
      * request handler callback
      *
-     * @param RequestHandler $handler
+     * @param RequestResponseHandler $handler
      * @param Response       $response
      */
-    public function handlerCallback(RequestHandler $handler, Response $response)
+    public function handlerCallback(RequestResponseHandler $handler, Response $response)
     {
         if ((session_status() === PHP_SESSION_ACTIVE) && (session_name() === $this->name) && (session_id() === $this->id)) {
             session_write_close();

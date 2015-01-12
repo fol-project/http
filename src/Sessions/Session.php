@@ -7,7 +7,7 @@
 namespace Fol\Http\Sessions;
 
 use Fol\Http\ContainerTrait;
-use Fol\Http\RequestHandler;
+use Fol\Http\RequestResponseHandler;
 use Fol\Http\Response;
 
 class Session implements \ArrayAccess
@@ -20,11 +20,11 @@ class Session implements \ArrayAccess
     /**
      * Construct and loads the session data
      *
-     * @param RequestHandler $handler
+     * @param RequestResponseHandler $handler
      * @param string         $id
      * @param string         $name
      */
-    public function __construct(RequestHandler $handler, $id = null, $name = null)
+    public function __construct(RequestResponseHandler $handler, $id = null, $name = null)
     {
         $request = $handler->getRequest();
 
@@ -44,11 +44,11 @@ class Session implements \ArrayAccess
     /**
      * Starts the session
      *
-     * @param RequestHandler $handler
+     * @param RequestResponseHandler $handler
      *
      * @throws \RuntimeException if session cannot be started
      */
-    protected function start(RequestHandler $handler)
+    protected function start(RequestResponseHandler $handler)
     {
     }
 
@@ -159,10 +159,10 @@ class Session implements \ArrayAccess
     /**
      * request handler callback
      *
-     * @param RequestHandler $handler
+     * @param RequestResponseHandler $handler
      * @param Response       $response
      */
-    public function handlerCallback(RequestHandler $handler, Response $response)
+    public function handlerCallback(RequestResponseHandler $handler, Response $response)
     {
         $cookie = $handler->getCookiesDefaultConfig();
         $cookie['httponly'] = true;

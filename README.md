@@ -8,10 +8,10 @@ Http library for PHP 5.5
 ```php
 use Fol\Http\Request;
 use Fol\Http\Response;
-use Fol\Http\RequestHandler;
+use Fol\Http\RequestResponseHandler;
 
 // Init a request handler
-$handler = new RequestHandler(new Request('http://domain.com'));
+$handler = new RequestResponseHandler(new Request('http://domain.com'));
 
 //Prepare a response
 $response = $handler->handle(new Response());
@@ -25,14 +25,14 @@ $response->send();
 ```php
 use Fol\Http\Request;
 use Fol\Http\Response;
-use Fol\Http\RequestHandler;
+use Fol\Http\RequestResponseHandler;
 
 use Fol\Http\Sessions\Native;
 use Fol\Http\Routes\Router;
 
 
 // Init a request handler
-$handler = new RequestHandler(new Request('http://domain.com/about'));
+$handler = new RequestResponseHandler(new Request('http://domain.com/about'));
 
 // Register and configure some services, for example, a session
 $handler->register('session', function ($handler) {
@@ -120,7 +120,7 @@ $request->cookies
 $body = $response->getBody();
 ```
 
-### RequestHandler
+### RequestResponseHandler
 
 Manages a request/response cycle:
 

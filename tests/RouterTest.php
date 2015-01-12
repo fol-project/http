@@ -1,6 +1,6 @@
 <?php
 use Fol\Http\Request;
-use Fol\Http\RequestHandler;
+use Fol\Http\RequestResponseHandler;
 use Fol\Http\Router\Router;
 
 require_once dirname(__DIR__).'/src/autoload.php';
@@ -9,7 +9,7 @@ class RouterTest extends PHPUnit_Framework_TestCase
 {
     public function testOne()
     {
-        $handler = new RequestHandler(new Request('http://domain.com'));
+        $handler = new RequestResponseHandler(new Request('http://domain.com'));
         $router = new Router($handler);
 
         $router->map('index', [

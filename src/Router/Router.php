@@ -8,7 +8,7 @@ namespace Fol\Http\Router;
 
 use Fol\Http\ContainerTrait;
 use Fol\Http\Request;
-use Fol\Http\RequestHandler;
+use Fol\Http\RequestResponseHandler;
 use Fol\Http\Response;
 use Fol\Http\HttpException;
 
@@ -23,10 +23,10 @@ class Router
     /**
      * Constructor function. Defines the base url
      *
-     * @param RequestHandler    $handler
+     * @param RequestResponseHandler    $handler
      * @param null|RouteFactory $routeFactory
      */
-    public function __construct(RequestHandler $handler, RouteFactory $routeFactory = null)
+    public function __construct(RequestResponseHandler $handler, RouteFactory $routeFactory = null)
     {
         $this->routeFactory = $routeFactory ?: new RouteFactory();
         $this->handler = $handler;
