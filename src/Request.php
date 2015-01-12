@@ -22,14 +22,20 @@ class Request extends Message
     /**
      * Creates a new request object from global values
      *
+     * @param Globals $globals 
+     * 
      * @return Request The object with the global data
      */
-    public static function createFromGlobals()
+    public static function createFromGlobals(Globals $globals = null)
     {
-        $request = new static(Globals::getUrl(), Globals::getMethod(), Globals::getHeaders(), Globals::getGet(), Globals::getPost(), Globals::getFiles(), Globals::getCookies());
+        if (!$globals) {
+            $globals = new Globals();
+        }
+
+        $request = new static($globals->getUrl(), $globals->getMethod(), $globals->getHeaders(), $globals->getGet(), $globals->getPost(), $globals->getFiles(), $globals->getCookies());
 
         if (!$request->data->length()) {
-            $request->setBody(new Body('php://input', 'r'));
+            $request->setBody(new Body($globals->getInput(), 'r'));
         }
 
         return $request;

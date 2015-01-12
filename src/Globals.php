@@ -8,16 +8,44 @@ namespace Fol\Http;
 
 class Globals
 {
+    protected $server;
+    protected $get;
+    protected $post;
+    protected $files;
+    protected $cookie;
+    protected $input;
+
     /**
-     * Gets a value from $_SERVER variable
+     * Constructor.
+     *
+     * @param null|array  $server
+     * @param null|array  $get
+     * @param null|array  $post
+     * @param null|array  $files
+     * @param null|array  $cookie
+     * @param null|string $input
+     */
+    public function __construct(array $server = null, array $get = null, array $post = null, array $files = null, array $cookie = null, $input = null)
+    {
+        $this->server = isset($server) ? $server : filter_input_array(INPUT_SERVER);
+        $this->get = isset($get) ? $get : filter_input_array(INPUT_GET);
+        $this->post = isset($post) ? $post : filter_input_array(INPUT_POST);
+        $this->files = isset($files) ? $files : $_FILES;
+        $this->cookie = isset($cookie) ? $cookie : filter_input_array(INPUT_COOKIE);
+        $this->input = isset($input) ? $input : 'php://input';
+    }
+
+
+    /**
+     * Gets a value from $server variable
      *
      * @param string $name The parameter name
      *
      * @return mixed The parameter value or null
      */
-    public static function get($name)
+    protected function get($name)
     {
-        return isset($_SERVER[$name]) ? $_SERVER[$name] : null;
+        return isset($this->server[$name]) ? $this->server[$name] : null;
     }
 
     /**
@@ -27,9 +55,9 @@ class Globals
      *
      * @return boolean
      */
-    public static function has($name)
+    protected function has($name)
     {
-        return !empty($_SERVER[$name]);
+        return !empty($this->server[$name]);
     }
 
     /**
@@ -37,9 +65,9 @@ class Globals
      *
      * @return string
      */
-    public static function getScheme()
+    public function getScheme()
     {
-        return self::get('HTTPS') === 'on' ? 'https' : 'http';
+        return $this->get('HTTPS') === 'on' ? 'https' : 'http';
     }
 
     /**
@@ -47,9 +75,9 @@ class Globals
      *
      * @return integer
      */
-    public static function getPort()
+    public function getPort()
     {
-        return self::get('X_FORWARDED_PORT') ?: self::get('SERVER_PORT') ?: 80;
+        return $this->get('X_FORWARDED_PORT') ?: $this->get('SERVER_PORT') ?: 80;
     }
 
     /**
@@ -57,9 +85,9 @@ class Globals
      *
      * @return string
      */
-    public static function getPath()
+    public function getPath()
     {
-        return explode('?', self::get('REQUEST_URI'), 2)[0];
+        return explode('?', $this->get('REQUEST_URI'), 2)[0];
     }
 
     /**
@@ -67,9 +95,9 @@ class Globals
      *
      * @return string
      */
-    public static function getHost()
+    public function getHost()
     {
-        return self::get('SERVER_NAME');
+        return $this->get('SERVER_NAME');
     }
 
     /**
@@ -77,9 +105,9 @@ class Globals
      *
      * @return string
      */
-    public static function getUrl()
+    public function getUrl()
     {
-        return self::getScheme().'://'.self::getHost().':'.self::getPort().self::getPath();
+        return $this->getScheme().'://'.$this->getHost().':'.$this->getPort().$this->getPath();
     }
 
     /**
@@ -87,12 +115,12 @@ class Globals
      *
      * @return string
      */
-    public static function getMethod()
+    public function getMethod()
     {
-        $method = self::get('REQUEST_METHOD');
+        $method = $this->get('REQUEST_METHOD');
 
-        if ($method === 'POST' && self::has('X_HTTP_METHOD_OVERRIDE')) {
-            return self::get('X_HTTP_METHOD_OVERRIDE');
+        if ($method === 'POST' && $this->has('X_HTTP_METHOD_OVERRIDE')) {
+            return $this->get('X_HTTP_METHOD_OVERRIDE');
         }
 
         return $method ?: 'GET';
@@ -103,11 +131,11 @@ class Globals
      *
      * @return array
      */
-    public static function getHeaders()
+    public function getHeaders()
     {
         $headers = [];
 
-        foreach ($_SERVER as $name => $value) {
+        foreach ($this->server as $name => $value) {
             if (strpos($name, 'HTTP_') === 0) {
                 $headers[str_replace('_', '-', substr($name, 5))] = $value;
                 continue;
@@ -120,55 +148,65 @@ class Globals
 
         //Http authentication header
         if (!isset($headers['AUTHORIZATION'])) {
-            if (self::has('REDIRECT_HTTP_AUTHORIZATION')) {
-                $headers['AUTHORIZATION'] = self::get('REDIRECT_HTTP_AUTHORIZATION');
-            } elseif (self::has('PHP_AUTH_USER')) {
-                $headers['AUTHORIZATION'] = 'Basic '.base64_encode(self::get('PHP_AUTH_USER').':'.self::has('PHP_AUTH_PW'));
-            } elseif (self::has('PHP_AUTH_DIGEST')) {
-                $headers['AUTHORIZATION'] = self::get('PHP_AUTH_DIGEST');
+            if ($this->has('REDIRECT_HTTP_AUTHORIZATION')) {
+                $headers['AUTHORIZATION'] = $this->get('REDIRECT_HTTP_AUTHORIZATION');
+            } elseif ($this->has('PHP_AUTH_USER')) {
+                $headers['AUTHORIZATION'] = 'Basic '.base64_encode($this->get('PHP_AUTH_USER').':'.$this->has('PHP_AUTH_PW'));
+            } elseif ($this->has('PHP_AUTH_DIGEST')) {
+                $headers['AUTHORIZATION'] = $this->get('PHP_AUTH_DIGEST');
             }
         }
 
         //Ips
         if (!isset($headers['CLIENT-IP']) && !isset($headers['X-FORWARDED-FOR'])) {
-            $headers['CLIENT-IP'] = self::get('REMOTE_ADDR');
+            $headers['CLIENT-IP'] = $this->get('REMOTE_ADDR');
         }
 
         return $headers;
     }
 
     /**
-     * Gets the global $_GET values
+     * Gets the $_SERVER values
      *
      * @return array
      */
-    public static function getGet()
+    public function getServer()
     {
-        return (array) filter_input_array(INPUT_GET);
+        return $this->server;
     }
 
     /**
-     * Gets the global $_POST values
+     * Gets the $_GET values
      *
      * @return array
      */
-    public static function getPost()
+    public function getGet()
     {
-        if (($data = (array) filter_input_array(INPUT_POST))) {
-            return $data;
+        return $this->get;
+    }
+
+    /**
+     * Gets the $_POST values
+     *
+     * @return array
+     */
+    public function getPost()
+    {
+        if ($this->post) {
+            return $this->post;
         }
 
-        if (in_array(self::getMethod(), ['POST', 'PUT', 'DELETE'])) {
-            $contentType = self::get('CONTENT_TYPE');
+        if (in_array($this->getMethod(), ['POST', 'PUT', 'DELETE'])) {
+            $contentType = $this->get('CONTENT_TYPE');
 
             if (strpos($contentType, 'application/x-www-form-urlencoded') === 0) {
-                parse_str(file_get_contents('php://input'), $data);
+                parse_str(file_get_contents($this->input), $data);
 
                 return $data ?: [];
             }
 
             if (strpos($contentType, 'application/json') === 0) {
-                return json_decode(file_get_contents('php://input'), true) ?: [];
+                return json_decode(file_get_contents($this->input), true) ?: [];
             }
         }
 
@@ -176,27 +214,39 @@ class Globals
     }
 
     /**
-     * Gets the global $_COOKIES values
+     * Gets the $_COOKIE values
      *
      * @return array
      */
-    public static function getCookies()
+    public function getCookies()
     {
-        return (array) filter_input_array(INPUT_COOKIE);
+        return $this->cookie;
     }
 
     /**
-     * Gets the global $_FILES values (and normalizes its structure)
+     * Gets the $_FILES values (and normalizes its structure)
+     * 
+     * @param boolean $fixed
      *
      * @return array
      */
-    public static function getFiles()
+    public function getFiles($fixed = true)
     {
-        if (empty($_FILES)) {
-            return [];
+        if ($fixed && $this->files) {
+            return self::fixArray($this->files);
         }
 
-        return self::fixArray($_FILES);
+        return $this->files;
+    }
+
+    /**
+     * Gets the raw input stream path
+     *
+     * @return string
+     */
+    public function getInput()
+    {
+        return $this->input;
     }
 
     /**

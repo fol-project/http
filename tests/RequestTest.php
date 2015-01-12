@@ -1,5 +1,6 @@
 <?php
 use Fol\Http\Request;
+use Fol\Http\Globals;
 
 require_once dirname(__DIR__).'/src/autoload.php';
 
@@ -70,5 +71,20 @@ class RequestTest extends PHPUnit_Framework_TestCase
         $this->assertEquals('oscarotero', $request->getUser());
         $this->assertEquals('a-miña-contraseña', $request->getPassword());
         $this->assertFalse($request->checkPassword('foo', 'bar'));
+    }
+
+    public function testCreateFromGlobal()
+    {
+        $g = include __DIR__.'/files/global-request.php';
+        $global = new Globals($g['_SERVER'], $g['_GET'], $g['_POST'], $g['_FILES'], $g['_COOKIE'], $g['input']);
+
+        $request = Request::createFromGlobals($global);
+
+        $this->assertEquals('POST', $request->getMethod());
+        $this->assertEquals('http://localhost/test.php', $request->url->getUrl());
+        $this->assertEquals(80, $request->url->getPort());
+        $this->assertEquals('html', $request->getFormat());
+        $this->assertEquals('gl', $request->getPreferredLanguage(['gl']));
+        $this->assertEquals('', (string) $request->getBody());
     }
 }
