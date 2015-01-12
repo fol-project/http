@@ -32,6 +32,18 @@ class StaticRoute extends Route
      */
     public function match(Request $request, array $baseUrl)
     {
+        $path = '';
+
+        if ($baseUrl['path'] !== '/') {
+            $path .= $baseUrl['path'];
+        }
+        if ($this->path !== '/') {
+            $path .= $this->path;
+        }
+        if (!$path) {
+            $path = '/';
+        }
+
         return (
                self::check($this->ip, $request->getIp())
             && self::check($this->method, $request->getMethod())
@@ -39,7 +51,7 @@ class StaticRoute extends Route
             && self::check($this->scheme, $request->url->getScheme(), $baseUrl['scheme'])
             && self::check($this->host, $request->url->getHost(), $baseUrl['host'])
             && self::check($this->port, $request->url->getPort(), $baseUrl['port'])
-            && self::check(($baseUrl['path'] === '/' ? '' : $baseUrl['path']).$this->path, $request->url->getPath())
+            && self::check($path, $request->url->getPath())
         );
     }
 
