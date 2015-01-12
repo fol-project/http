@@ -92,6 +92,16 @@ class Url
     }
 
     /**
+     * Magic method to stringify the url
+     *
+     * @return string
+     */
+    public function __toString()
+    {
+        return $this->getUrl(true, true);
+    }
+
+    /**
      * Gets the url
      *
      * @param boolean $query    True to add the query to the url (false by default)

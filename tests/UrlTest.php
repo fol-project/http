@@ -37,6 +37,7 @@ class UrlTest extends PHPUnit_Framework_TestCase
         $this->assertEquals($url->getUrl(true, true), 'https://news.org/trending.asp?sort=latest#menu');
         $this->assertEquals($url->getUrl(true), 'https://news.org/trending.asp?sort=latest');
         $this->assertEquals($url->getUrl(), 'https://news.org/trending.asp');
+        $this->assertEquals($url->getUrl(true, true), (string) $url);
     }
 
     public function testPort()
