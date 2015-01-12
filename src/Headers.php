@@ -6,6 +6,9 @@
  */
 namespace Fol\Http;
 
+use DateTime;
+use DateTimeZone;
+
 class Headers implements \ArrayAccess
 {
     use ContainerTrait;
@@ -94,12 +97,12 @@ class Headers implements \ArrayAccess
      *
      * @param string $name The header name
      *
-     * @return null|\DateTime The value in a datetime object or false
+     * @return null|DateTime The value in a datetime object or false
      */
     public function getDateTime($name)
     {
         if ($this->has($name)) {
-            return \DateTime::createFromFormat(DATE_RFC2822, $this->get($name), new \DateTimeZone('GMT'));
+            return new DateTime($this->get($name), new DateTimeZone('GMT'));
         }
     }
 
@@ -107,17 +110,17 @@ class Headers implements \ArrayAccess
      * Define a header using a Datetime object and returns it
      *
      * @param string           $name     The header name
-     * @param \DateTime|string $datetime The datetime object. You can define also an string so the Datetime object will be created
+     * @param DateTime|string $datetime The datetime object. You can define also an string so the Datetime object will be created
      *
-     * @return \Datetime The datetime object
+     * @return Datetime The datetime object
      */
     public function setDateTime($name, $datetime = null)
     {
-        if (!($datetime instanceof \Datetime)) {
-            $datetime = new \DateTime($datetime);
+        if (!($datetime instanceof Datetime)) {
+            $datetime = new DateTime($datetime);
         }
 
-        $datetime->setTimezone(new \DateTimeZone('GMT'));
+        $datetime->setTimezone(new DateTimeZone('GMT'));
         $this->set($name, $datetime->format('D, d M Y H:i:s').' GMT');
 
         return $datetime;
