@@ -34,31 +34,37 @@ abstract class Route
      */
     public function execute(Request $request, Response $response, array $arguments = array())
     {
-        ob_start();
+        try {
+            ob_start();
 
-        array_unshift($arguments, $request, $response);
+            array_unshift($arguments, $request, $response);
 
-        if (!is_array($this->target) || is_object($this->target[0])) {
-            $return = call_user_func_array($this->target, $arguments);
-        } else {
-            list($class, $method) = $this->target;
+            if (!is_array($this->target) || is_object($this->target[0])) {
+                $return = call_user_func_array($this->target, $arguments);
+            } else {
+                list($class, $method) = $this->target;
 
-            $class = new \ReflectionClass($class);
+                $class = new \ReflectionClass($class);
 
-            $controller = $class->hasMethod('__construct') ? $class->newInstanceArgs($arguments) : $class->newInstance();
+                $controller = $class->hasMethod('__construct') ? $class->newInstanceArgs($arguments) : $class->newInstance();
 
-            $return = $class->getMethod($method)->invokeArgs($controller, $arguments);
+                $return = $class->getMethod($method)->invokeArgs($controller, $arguments);
 
-            unset($controller);
+                unset($controller);
+            }
+
+            if ($return instanceof Response) {
+                $response = $return;
+                $response->getBody()->write(ob_get_contents());
+            } else {
+                $response->getBody()->write(ob_get_contents().$return);
+            }
+
+            return $response;
+        } catch (\Exception $exception) {
+            throw $exception;
+        } finally {
+            ob_end_clean();
         }
-
-        if ($return instanceof Response) {
-            $response = $return;
-            $response->getBody()->write(ob_get_clean());
-        } else {
-            $response->getBody()->write(ob_get_clean().$return);
-        }
-
-        return $response;
     }
 }

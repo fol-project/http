@@ -127,13 +127,6 @@ class Router
                 throw new HttpException('Not found', 404);
             }
         } catch (HttpException $exception) {
-            $level = ob_get_level();
-
-            while ($level > 0) {
-                ob_get_clean();
-                $level--;
-            }
-
             if ($this->errorController) {
                 $request->attributes->set('error', $exception);
 
