@@ -31,7 +31,7 @@ class HeadersTest extends PHPUnit_Framework_TestCase
     public function testDatetime()
     {
         $headers = new Headers();
-        $headers->setDateTime('Date', new \Datetime('31-06-2010 20:35:12'));
+        $headers->setDateTime('Date', new \Datetime('31-06-2010 18:35:12', new \DateTimeZone('GMT')));
 
         $this->assertEquals('Date: Thu, 01 Jul 2010 18:35:12 GMT', $headers->getAsString('Date'));
 
