@@ -84,5 +84,11 @@ class RouterTest extends PHPUnit_Framework_TestCase
 
         $response = $router->getResponse(new Request('http://domain.com/post', 'GET'));
         $this->assertEquals('Error 404/Not found', (string) $response->getBody());
+
+        $this->assertEquals('http://domain.com/', $router->getUrl('index'));
+        $this->assertEquals('http://domain.com/post', $router->getUrl('post'));
+        $this->assertEquals('http://domain.com/get/post', $router->getUrl('get-post'));
+        $this->assertEquals('http://domain.com/put/34', $router->getUrl('put', ['id' => '34']));
+        $this->assertEquals('http://domain.com/put/34?name=oscar', $router->getUrl('put', ['id' => '34', 'name' => 'oscar']));
     }
 }

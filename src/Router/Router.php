@@ -108,7 +108,7 @@ class Router
             throw new \Exception("No route with the name $name has been found.");
         }
 
-        return $this->items[$name]->generate($params);
+        return $this->items[$name]->generate($this->baseUrl, $params);
     }
 
     /**

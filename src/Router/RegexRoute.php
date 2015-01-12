@@ -7,41 +7,12 @@
 namespace Fol\Http\Router;
 
 use Fol\Http\Request;
+use Fol\Http\Url;
 
 class RegexRoute extends StaticRoute
 {
     protected $regex;
     protected $filters;
-
-    /**
-     * {@inheritDoc}
-     */
-    public function __construct(array $config = array())
-    {
-        parent::__construct($config);
-
-        if (empty($config['regex'])) {
-            $this->regex = self::setRegex($this->path, isset($config['filters']) ? $config['filters'] : []);
-        }
-    }
-
-    /**
-     * Generates the regex
-     *
-     * @param string $path
-     * @param array  $filters
-     *
-     * @return string
-     */
-    private static function setRegex($path, array $filters)
-    {
-        return preg_replace_callback('/\{([^\}]*)\}/', function ($matches) use ($filters) {
-            $name = $matches[1];
-            $filter = isset($filters[$name]) ? $filters[$name] : '[^/]+';
-
-            return "(?P<{$name}>{$filter})";
-        }, $path);
-    }
 
     /**
      * Generates and return the regex
@@ -58,7 +29,7 @@ class RegexRoute extends StaticRoute
                 $filter = isset($this->filters[$name]) ? $this->filters[$name] : '[^/]+';
 
                 return "(?P<{$name}>{$filter})";
-            }, $path);
+            }, $this->path);
         }
 
         return '#^'.($basePath === '/' ? '' : $basePath).$this->regex.'$#';
@@ -115,15 +86,11 @@ class RegexRoute extends StaticRoute
     }
 
     /**
-     * Reverse the route
-     *
-     * @param array $parameters Optional array of parameters to use in URL
-     *
-     * @return string The url to the route
+     * {@inheritDoc}
      */
-    public function generate(array $parameters = array())
+    public function generate(array $baseUrl, array $parameters = array())
     {
-        $path = $this->path;
+        $path = $this->getPath($baseUrl['path']);
 
         foreach ($parameters as $name => $value) {
             if (strpos($path, '{'.$name.'}') !== false) {
@@ -132,7 +99,7 @@ class RegexRoute extends StaticRoute
             }
         }
 
-        $values = $this->getProperties(['scheme', 'host', 'port']);
+        $values = $this->getProperties($baseUrl, ['scheme', 'host', 'port']);
 
         return Url::build($values['scheme'], $values['host'], $values['port'], null, null, $path, $parameters);
     }

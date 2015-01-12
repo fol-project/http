@@ -32,10 +32,53 @@ class StaticRoute extends Route
      */
     public function match(Request $request, array $baseUrl)
     {
+        return (
+               self::check($this->ip, $request->getIp())
+            && self::check($this->method, $request->getMethod())
+            && self::check($this->language, $request->getLanguage())
+            && self::check($this->scheme, $request->url->getScheme(), $baseUrl['scheme'])
+            && self::check($this->host, $request->url->getHost(), $baseUrl['host'])
+            && self::check($this->port, $request->url->getPort(), $baseUrl['port'])
+            && self::check($this->getPath($baseUrl['path']), $request->url->getPath())
+        );
+    }
+
+    /**
+     * Get the route properties
+     *
+     * @param array $defaults   Default values on null
+     * @param array $properties The properties to return
+     *
+     * @return array
+     */
+    protected function getProperties(array $defaults, array $properties)
+    {
+        $values = [];
+
+        foreach ($properties as $name) {
+            if (!isset($this->$name)) {
+                $values[$name] = (string) $defaults[$name];
+            } else {
+                $values[$name] = is_array($this->$name) ? $this->$name[0] : (string) $this->$name;
+            }
+        }
+
+        return $values;
+    }
+
+    /**
+     * Returns the normalized path
+     *
+     * @param null|string $basePath
+     *
+     * @return string
+     */
+    protected function getPath($basePath)
+    {
         $path = '';
 
-        if ($baseUrl['path'] !== '/') {
-            $path .= $baseUrl['path'];
+        if ($basePath !== '/') {
+            $path .= $basePath;
         }
         if ($this->path !== '/') {
             $path .= $this->path;
@@ -44,45 +87,20 @@ class StaticRoute extends Route
             $path = '/';
         }
 
-        return (
-               self::check($this->ip, $request->getIp())
-            && self::check($this->method, $request->getMethod())
-            && self::check($this->language, $request->getLanguage())
-            && self::check($this->scheme, $request->url->getScheme(), $baseUrl['scheme'])
-            && self::check($this->host, $request->url->getHost(), $baseUrl['host'])
-            && self::check($this->port, $request->url->getPort(), $baseUrl['port'])
-            && self::check($path, $request->url->getPath())
-        );
-    }
-
-    /**
-     * Get the route properties
-     *
-     * @param array $properties The properties to return
-     *
-     * @return array
-     */
-    protected function getProperties(array $properties)
-    {
-        $values = [];
-
-        foreach ($properties as $name) {
-            $values[$name] = is_array($this->$name) ? $this->$name[0] : (string) $this->$name;
-        }
-
-        return $values;
+        return $path;
     }
 
     /**
      * Reverse the route
      *
+     * @param array $baseUrl    The base url components used
      * @param array $parameters Optional array of parameters to use in URL
      *
      * @return string The url to the route
      */
-    public function generate(array $parameters = array())
+    public function generate(array $baseUrl, array $parameters = array())
     {
-        $values = $this->getProperties(['scheme', 'host', 'port', 'path']);
+        $values = $this->getProperties($baseUrl, ['scheme', 'host', 'port', 'path']);
 
         return Url::build($values['scheme'], $values['host'], $values['port'], null, null, $values['path'], $parameters);
     }
