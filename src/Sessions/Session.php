@@ -30,8 +30,8 @@ class Session implements \ArrayAccess
 
         $this->name = $name ?: 'PHPSESSID';
 
-        if (!$id && $request->cookies->get($name)) {
-            $id = $request->cookies->get($name);
+        if (!$id && $request->cookies->get($this->name)) {
+            $id = $request->cookies->get($this->name);
         }
 
         $this->id = $id;
