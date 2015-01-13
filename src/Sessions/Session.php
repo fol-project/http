@@ -28,7 +28,7 @@ class Session implements \ArrayAccess
     {
         $request = $handler->getRequest();
 
-        $this->name = $name ?: 'SESSID';
+        $this->name = $name ?: 'PHPSESSID';
 
         if (!$id && $request->cookies->get($name)) {
             $id = $request->cookies->get($name);
