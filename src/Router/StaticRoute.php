@@ -102,7 +102,7 @@ class StaticRoute extends Route
     {
         $values = $this->getProperties($baseUrl, ['scheme', 'host', 'port', 'path']);
 
-        return Url::build($values['scheme'], $values['host'], $values['port'], null, null, $values['path'], $parameters);
+        return Url::build($values['scheme'], $values['host'], $values['port'], null, null, $this->getPath($baseUrl['path']), $parameters);
     }
 
     /**
