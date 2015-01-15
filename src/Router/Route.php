@@ -31,6 +31,8 @@ abstract class Route
      * @param Request  $request   The request to send to the controller
      * @param Response $response  The response to send to the controller
      * @param array    $arguments Extra arguments passed to the controller (after $request and $response instances)
+     * 
+     * @return Response
      */
     public function execute(Request $request, Response $response, array $arguments = array())
     {
