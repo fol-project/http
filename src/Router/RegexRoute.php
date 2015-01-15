@@ -88,7 +88,7 @@ class RegexRoute extends StaticRoute
     /**
      * {@inheritDoc}
      */
-    public function generate(array $baseUrl, array $parameters = array())
+    public function getUrl(array $baseUrl, array $parameters = array())
     {
         $path = $this->getPath($baseUrl['path']);
 

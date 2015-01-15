@@ -35,7 +35,7 @@ abstract class Route
     public function execute(Request $request, Response $response, array $arguments = array())
     {
         $request->route = $this;
-        
+
         try {
             ob_start();
 

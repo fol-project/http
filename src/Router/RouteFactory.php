@@ -2,7 +2,7 @@
 /**
  * Fol\Http\Router\RouteFactory
  *
- * Class to generate route classes
+ * Class to instantiate routes
  */
 namespace Fol\Http\Router;
 

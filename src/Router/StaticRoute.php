@@ -98,7 +98,7 @@ class StaticRoute extends Route
      *
      * @return string The url to the route
      */
-    public function generate(array $baseUrl, array $parameters = array())
+    public function getUrl(array $baseUrl, array $parameters = array())
     {
         $values = $this->getProperties($baseUrl, ['scheme', 'host', 'port', 'path']);
 

@@ -37,6 +37,16 @@ class Router
     }
 
     /**
+     * Define the base url
+     *
+     * @param Url $baseUrl
+     */
+    public function setBaseUrl(Url $baseUrl)
+    {
+        $this->baseUrl = $baseUrl->toArray();
+    }
+
+    /**
      * Route factory method
      * Maps the given URL to the given target.
      *
@@ -64,16 +74,6 @@ class Router
     public function setError($target)
     {
         $this->errorController = $this->routeFactory->createErrorRoute($target);
-    }
-
-    /**
-     * Define the base url
-     *
-     * @param Url $baseUrl
-     */
-    public function setBaseUrl(Url $baseUrl)
-    {
-        $this->baseUrl = $baseUrl->toArray();
     }
 
     /**
@@ -108,7 +108,7 @@ class Router
             throw new \Exception("No route with the name $name has been found.");
         }
 
-        return $this->items[$name]->generate($this->baseUrl, $params);
+        return $this->items[$name]->getUrl($this->baseUrl, $params);
     }
 
     /**
@@ -121,7 +121,7 @@ class Router
      *
      * @return Response
      */
-    public function getResponse(Request $request, array $arguments = array())
+    public function dispatch(Request $request, array $arguments = array())
     {
         try {
             if (($route = $this->match($request))) {
@@ -154,7 +154,7 @@ class Router
     {
         $this->setBaseUrl($handler->getBaseUrl());
 
-        $response = $this->getResponse($handler->getRequest(), $arguments);
+        $response = $this->dispatch($handler->getRequest(), $arguments);
 
         $handler->handle($response);
 
