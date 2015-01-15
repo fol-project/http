@@ -50,7 +50,7 @@ class RouterTest extends PHPUnit_Framework_TestCase
             'target' => function ($request, $response) use ($router) {
                 $response->getBody()->write('This is a subrequest: ');
 
-                $r = $router->getResponse(new Request('http://domain.com/post', 'POST'));
+                $r = $router->dispatch(new Request('http://domain.com/post', 'POST'));
 
                 $response->getBody()->write((string) $r->getBody());
             }
@@ -67,22 +67,22 @@ class RouterTest extends PHPUnit_Framework_TestCase
         $response = $router->run($handler);
         $this->assertEquals('This is the index', (string) $response->getBody());
 
-        $response = $router->getResponse(new Request('/'));
+        $response = $router->dispatch(new Request('/'));
         $this->assertEquals('This is the index', (string) $response->getBody());
 
-        $response = $router->getResponse(new Request('http://domain.com/post', 'POST'));
+        $response = $router->dispatch(new Request('http://domain.com/post', 'POST'));
         $this->assertEquals('This is POST', (string) $response->getBody());
 
-        $response = $router->getResponse(new Request('http://domain.com/put/23', 'PUT'));
+        $response = $router->dispatch(new Request('http://domain.com/put/23', 'PUT'));
         $this->assertEquals('This is PUT/23', (string) $response->getBody());
 
-        $response = $router->getResponse(new Request('http://domain.com/put/2.3', 'PUT'));
+        $response = $router->dispatch(new Request('http://domain.com/put/2.3', 'PUT'));
         $this->assertEquals('Error 404/Not found', (string) $response->getBody());
 
-        $response = $router->getResponse(new Request('http://domain.com/subrequest'));
+        $response = $router->dispatch(new Request('http://domain.com/subrequest'));
         $this->assertEquals('This is a subrequest: This is POST', (string) $response->getBody());
 
-        $response = $router->getResponse(new Request('http://domain.com/post', 'GET'));
+        $response = $router->dispatch(new Request('http://domain.com/post', 'GET'));
         $this->assertEquals('Error 404/Not found', (string) $response->getBody());
 
         $this->assertEquals('http://domain.com/', $router->getUrl('index'));
