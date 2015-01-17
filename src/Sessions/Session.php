@@ -106,23 +106,22 @@ class Session implements \ArrayAccess
      * Get a flash value (read only once)
      *
      * @param string $name    The value name. If it is not defined, returns all stored variables
-     * @param string $default A default value in case the variable is not defined
      *
      * @return string The value of the variable or the default value.
      * @return array  All stored variables in case no name is defined.
      */
-    public function getFlash($name = null, $default = null)
+    public function getFlash($name = null)
     {
         if ($name === null) {
             return isset($this->items['_flash']) ? $this->items['_flash'] : [];
         }
 
         if (isset($this->items['_flash'][$name])) {
-            $default = $this->items['_flash'][$name];
+            $value = $this->items['_flash'][$name];
             unset($this->items['_flash'][$name]);
-        }
 
-        return $default;
+            return $value;
+        }
     }
 
     /**
