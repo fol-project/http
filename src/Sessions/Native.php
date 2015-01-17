@@ -31,6 +31,7 @@ class Native extends Session
         }
 
         $this->id = $id;
+        $this->name = $name;
 
         $this->start($handler);
 
