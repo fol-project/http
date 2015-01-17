@@ -20,14 +20,14 @@ class UrlTest extends PHPUnit_Framework_TestCase
 
         $url->setScheme('https');
         $url->setHost('news.org');
-        $url->setPort(433);
+        $url->setPort(443);
         $url->setPath('trending');
         $url->setExtension('asp');
         $url->setFragment('#menu');
 
         $this->assertEquals($url->getScheme(), 'https');
         $this->assertEquals($url->getHost(), 'news.org');
-        $this->assertEquals($url->getPort(), 433);
+        $this->assertEquals($url->getPort(), 443);
         $this->assertEquals($url->getDirectory(), '/');
         $this->assertEquals($url->getPath(), '/trending.asp');
         $this->assertEquals($url->getFilename(), 'trending');
@@ -48,7 +48,7 @@ class UrlTest extends PHPUnit_Framework_TestCase
 
         $url->setScheme('https');
 
-        $this->assertEquals($url->getPort(), 433);
+        $this->assertEquals($url->getPort(), 443);
         $this->assertEquals($url->getUrl(), 'https://blog.com/');
 
         $url->setPort(8888);
