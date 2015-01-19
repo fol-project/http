@@ -27,7 +27,7 @@ class Globals
      */
     public function __construct(array $server = null, array $get = null, array $post = null, array $files = null, array $cookie = null, $input = null)
     {
-        $this->server = isset($server) ? $server : (array) filter_input_array(INPUT_SERVER);
+        $this->server = isset($server) ? $server : $_SERVER;
         $this->get = isset($get) ? $get : (array) filter_input_array(INPUT_GET);
         $this->post = isset($post) ? $post : (array) filter_input_array(INPUT_POST);
         $this->files = isset($files) ? $files : $_FILES;
@@ -152,7 +152,7 @@ class Globals
             } elseif ($this->has('PHP_AUTH_USER')) {
                 $headers['AUTHORIZATION'] = 'Basic '.base64_encode($this->get('PHP_AUTH_USER').':'.$this->has('PHP_AUTH_PW'));
             } elseif ($this->has('PHP_AUTH_DIGEST')) {
-                $headers['AUTHORIZATION'] = $this->get('PHP_AUTH_DIGEST');
+                $headers['AUTHORIZATION'] = 'Digest '.$this->get('PHP_AUTH_DIGEST');
             }
         }
 
