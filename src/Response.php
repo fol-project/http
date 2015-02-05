@@ -146,6 +146,38 @@ class Response extends Message
     }
 
     /**
+     * Prepare the response according with the middleware stack
+     *
+     * @param MiddlewareStack $stack
+     */
+    public function prepare(MiddlewareStack $stack)
+    {
+        $request = $stack->getRequest();
+
+        if (!$request->headers->has('Content-Type') && ($format = $request->getFormat())) {
+            $this->setFormat($format);
+        }
+
+        if (!$request->headers->has('Content-Language') && ($language = $request->getLanguage())) {
+            $this->setLanguage($language);
+        }
+
+        if ($request->headers->has('Transfer-Encoding')) {
+            $this->headers->delete('Content-Length');
+        }
+
+        if (!$this->headers->has('Date')) {
+            $this->headers->setDateTime('Date', new \DateTime());
+        }
+
+        if ($request->getMethod() === 'HEAD') {
+            $this->setBody(new Body());
+        }
+
+        $this->cookies->prepare($stack);
+    }
+
+    /**
      * Send the response to the client
      */
     public function send()

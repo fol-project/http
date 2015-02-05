@@ -12,30 +12,40 @@ Http library for PHP 5.5
 ```php
 use Fol\Http\Request;
 use Fol\Http\Response;
-use Fol\Http\Handler;
+use Fol\Http\MiddlewareStack;
 
-// Init a request handler
-$handler = new Handler(new Request('http://domain.com'));
+//Init a http middleware stack
+$stack = new MiddlewareStack();
 
-//Prepare a response
-$response = $handler->handle(new Response());
+//Push some middlewares
+$stack->push(function ($request, $response) {
+	$response->getBody()->write('Hello world');
+});
 
-//Send it
-$response->send();
+$stack->push(function ($request, $response) {
+	$response->getBody()->setStatus(200);
+});
+
+//Run
+$stack->run(new Request('http://domain.com'), new Response());
+
+//Send the response to the client browser
+$stack->getResponse()->send();
 ```
 
 ## Usage with sessions and routes
 
+Sessions and routes are like any other middleware that you can push to the stack
+
 ```php
 use Fol\Http\Request;
 use Fol\Http\Response;
-use Fol\Http\Handler;
+use Fol\Http\MiddlewareStack;
 
 use Fol\Http\Sessions\Native;
 use Fol\Http\Routes\Router;
 
 
-// Init a request handler
 $handler = new Handler(new Request('http://domain.com/about'));
 
 // Register and configure some services, for example, a session
@@ -57,18 +67,25 @@ $router->map([
 	'about' => [
 		'path' => '/about',
 		'target' => function ($request, $response) {
-			$session = $request->session;
+			$session = $request->attributes->get('session');
 
 			$response->getBody()->write('You are '.$session->get('username'));
 		}
 	]
 ]);
 
-//Run the router with the handler
-$response = $router->run($handler);
+//Init the stack
+$stack = new MiddlewareStack();
+
+//Push the router and session middleware
+$stack->push(new Native());
+$stack->push($router);
+
+//Run all
+$stack->run(new Request('http://domain.com'), new Response());
 
 //Send the response
-$response->send();
+$stack->getResponse()->send();
 ```
 
 
@@ -127,13 +144,9 @@ $request->cookies
 $body = $response->getBody();
 ```
 
-### Handler
+### MiddlewareStack
 
-Manages a request/response cycle:
-
-* Register services used in the cycle (for example a session, started by the request but closed/modified by the response)
-* Prepare the response according to the request (for example, remove the body content of the response on HEAD requests)
-* You can define a base url to normalices the scope of the cookies, routes, etc
+Manages all middlewares in a request/response cycle:
 
 ### Sessions
 

@@ -12,19 +12,15 @@ use Fol\Http\Handler;
 use Fol\Http\Response;
 use Fol\Http\Url;
 use Fol\Http\HttpException;
+use Fol\Http\MiddlewareStack;
 
 class Router
 {
     use ContainerTrait;
 
-    private $errorController;
+    private $baseUrl;
+    private $errorRoute;
     private $routeFactory;
-    private $baseUrl = [
-        'scheme' => null,
-        'host' => null,
-        'port' => null,
-        'path' => null,
-    ];
 
     /**
      * Constructor function. Defines the base url
@@ -37,13 +33,17 @@ class Router
     }
 
     /**
-     * Define the base url
+     * Run the router as a middleware
      *
-     * @param Url $baseUrl
+     * @param Request         $request
+     * @param Response        $response
+     * @param MiddlewareStack $stack
+     *
+     * @return Response
      */
-    public function setBaseUrl(Url $baseUrl)
+    public function __invoke(Request $request, Response $response, MiddlewareStack $stack)
     {
-        $this->baseUrl = $baseUrl->toArray();
+        return $this->run($request, $response, $stack);
     }
 
     /**
@@ -73,7 +73,7 @@ class Router
      */
     public function setError($target)
     {
-        $this->errorController = $this->routeFactory->createErrorRoute($target);
+        $this->errorRoute = $this->routeFactory->createErrorRoute($target);
     }
 
     /**
@@ -112,52 +112,39 @@ class Router
     }
 
     /**
-     * Handle a specific request
+     * Run the route
      *
-     * @param Request $request
-     * @param array   $arguments The arguments passed to the controller (after $request and $response instances)
-     *
-     * @throws HttpException If no errorController is defined and an exception is thrown
+     * @param Request         $request
+     * @param Response        $response
+     * @param MiddlewareStack $stack
      *
      * @return Response
      */
-    public function dispatch(Request $request, array $arguments = array())
+    public function run(Request $request, Response $response, MiddlewareStack $stack)
     {
+        $previousBaseUrl = $this->baseUrl;
+        $this->baseUrl = $stack->getBaseUrl()->toArray();
+
         try {
-            if (($route = $this->match($request))) {
-                $response = $route->execute($request, new Response(), $arguments);
-            } else {
+            if (!($route = $this->match($request))) {
                 throw new HttpException('Not found', 404);
             }
-        } catch (HttpException $exception) {
-            if ($this->errorController) {
-                $request->attributes->set('error', $exception);
+            
+            $route($request, $response, $stack);
 
-                return $this->errorController->execute($request, new Response('', $exception->getCode() ?: 500), $arguments);
+        } catch (HttpException $exception) {
+            if (!$this->errorRoute) {
+                throw $exception;
             }
 
-            throw $exception;
+            $request->attributes->set('error', $exception);
+            $response = new Response('', $exception->getCode() ?: 500);
+            $stack->setResponse($response);
+
+            $this->errorRoute($request, $response, $stack);
         }
 
-        return $response;
-    }
-
-    /**
-     * Run the router and return the response
-     *
-     * @param Handler $handler
-     * @param array   $arguments $arguments The arguments passed to the controller (after $request and $response instances)
-     *
-     * @return Response
-     */
-    public function run(Handler $handler, array $arguments = array())
-    {
-        $this->setBaseUrl($handler->getBaseUrl());
-
-        $response = $this->dispatch($handler->getRequest(), $arguments);
-
-        $handler->handle($response);
-
-        return $response;
+        $this->baseUrl = $previousBaseUrl;
+        $stack->next();
     }
 }

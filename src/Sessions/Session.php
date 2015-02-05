@@ -7,8 +7,9 @@
 namespace Fol\Http\Sessions;
 
 use Fol\Http\ContainerTrait;
-use Fol\Http\Handler;
+use Fol\Http\Request;
 use Fol\Http\Response;
+use Fol\Http\MiddlewareStack;
 
 class Session implements \ArrayAccess
 {
@@ -20,36 +21,27 @@ class Session implements \ArrayAccess
     /**
      * Construct and loads the session data
      *
-     * @param Handler $handler
      * @param string  $id
      * @param string  $name
      */
-    public function __construct(Handler $handler, $id = null, $name = null)
+    public function __construct($id = null, $name = null)
     {
-        $request = $handler->getRequest();
-
-        $this->name = $name ?: 'PHPSESSID';
-
-        if (!$id && $request->cookies->get($this->name)) {
-            $id = $request->cookies->get($this->name);
-        }
-
         $this->id = $id;
-
-        $this->start($handler);
-
-        $handler->pushHandler([$this, 'handlerCallback']);
+        $this->name = $name;
     }
 
     /**
-     * Starts the session
+     * Run the session as a middleware
      *
-     * @param Handler $handler
+     * @param Request         $request
+     * @param Response        $response
+     * @param MiddlewareStack $stack
      *
-     * @throws \RuntimeException if session cannot be started
+     * @return Response
      */
-    protected function start(Handler $handler)
+    public function __invoke(Request $request, Response $response, MiddlewareStack $stack)
     {
+        return $this->run($request, $response, $stack);
     }
 
     /**
@@ -156,15 +148,36 @@ class Session implements \ArrayAccess
     }
 
     /**
-     * request handler callback
+     * Run the session
      *
-     * @param Handler  $handler
-     * @param Response $response
+     * @param Request         $request
+     * @param Response        $response
+     * @param MiddlewareStack $stack
+     *
+     * @return Response
      */
-    public function handlerCallback(Handler $handler, Response $response)
+    public function run(Request $request, Response $response, MiddlewareStack $stack)
     {
-        $cookie = $handler->getCookiesDefaultConfig();
-        $cookie['httponly'] = true;
+        if (!$this->name) {
+            $this->name = 'PHPSESSID';
+        }
+
+        if (!$this->id && $request->cookies->get($this->name)) {
+            $this->id = $request->cookies->get($this->name);
+        }
+
+        $request->attributes->set('session', $this);
+
+        $stack->next();
+
+        $baseUrl = $stack->getBaseUrl();
+
+        $cookie = [
+            'domain' => $baseUrl->getHost(),
+            'path' => $baseUrl->getPath(false),
+            'secure' => ($baseUrl->getScheme() === 'https'),
+            'httponly' => true,
+        ];
 
         if (!$this->id) {
             $response->cookies->setDelete($this->name, $cookie['path'], $cookie['domain'], $cookie['secure'], $cookie['httponly']);

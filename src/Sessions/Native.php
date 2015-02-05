@@ -12,73 +12,6 @@ use Fol\Http\Response;
 class Native extends Session
 {
     /**
-     * Construct and loads the session data
-     *
-     * @param Handler     $handler
-     * @param string|null $id
-     * @param string|null $name
-     */
-    public function __construct(Handler $handler, $id = null, $name = null)
-    {
-        if (!$name) {
-            $name = session_name();
-        }
-
-        $request = $handler->getRequest();
-
-        if (!$id && $request->cookies->get($name)) {
-            $id = $request->cookies->get($name);
-        }
-
-        $this->id = $id;
-        $this->name = $name;
-
-        $this->start($handler);
-
-        $handler->pushHandler([$this, 'handlerCallback']);
-    }
-
-    /**
-     * Starts the session
-     *
-     * @param Handler $handler
-     *
-     * @throws \RuntimeException if session cannot be started
-     */
-    protected function start(Handler $handler)
-    {
-        if (session_status() === PHP_SESSION_DISABLED) {
-            throw new \RuntimeException('Native sessions are disabled');
-        }
-
-        if (session_status() === PHP_SESSION_ACTIVE) {
-            throw new \RuntimeException('Failed to start the session: already started by PHP.');
-        }
-
-        session_name($this->name);
-
-        if ($this->id) {
-            session_id($this->id);
-        }
-
-        //Configure session cookie
-        ini_set('session.use_only_cookies', 1);
-
-        $cookie = $handler->getCookiesDefaultConfig();
-
-        $cookie['httponly'] = true;
-        $cookie['expires'] = ini_get('session.cookie_lifetime');
-
-        session_set_cookie_params($cookie['expires'], $cookie['path'], $cookie['domain'], $cookie['secure'], $cookie['httponly']);
-
-        //Start
-        session_start();
-
-        $this->id = session_id();
-        $this->items = & $_SESSION;
-    }
-
-    /**
      * Regenerate the id for the current session
      */
     public function regenerate($destroy = false, $lifetime = null)
@@ -114,22 +47,81 @@ class Native extends Session
     }
 
     /**
-     * request handler callback
+     * Run the session
      *
-     * @param Handler  $handler
-     * @param Response $response
+     * @param Request         $request
+     * @param Response        $response
+     * @param MiddlewareStack $stack
+     *
+     * @return Response
      */
-    public function handlerCallback(Handler $handler, Response $response)
+    public function run(Request $request, Response $response, MiddlewareStack $stack)
     {
+        if (!$this->name) {
+            $this->name = session_name();
+        }
+
+        if (!$this->id && $request->cookies->get($this->name)) {
+            $this->id = $request->cookies->get($this->name);
+        }
+
+        $baseUrl = $stack->getBaseUrl();
+
+        $cookie = [
+            'domain' => $baseUrl->getHost(),
+            'path' => $baseUrl->getPath(false),
+            'secure' => ($baseUrl->getScheme() === 'https'),
+            'httponly' => true,
+            'expires' => ini_get('session.cookie_lifetime')
+        ];
+
+        $this->start();
+
+        $request->attributes->set('session', $this);
+
+        $stack->next();
+
         if ((session_status() === PHP_SESSION_ACTIVE) && (session_name() === $this->name) && (session_id() === $this->id)) {
             session_write_close();
         }
 
         if (!$this->id) {
-            $cookie = $handler->getCookiesDefaultConfig();
-            $cookie['httponly'] = true;
-
             $response->cookies->setDelete($this->name, $cookie['path'], $cookie['domain'], $cookie['secure'], $cookie['httponly']);
         }
+    }
+
+    /**
+     * Starts the session
+     *
+     * @param Handler $handler
+     *
+     * @throws \RuntimeException if session cannot be started
+     */
+    protected function start(array $cookie)
+    {
+        if (session_status() === PHP_SESSION_DISABLED) {
+            throw new \RuntimeException('Native sessions are disabled');
+        }
+
+        if (session_status() === PHP_SESSION_ACTIVE) {
+            throw new \RuntimeException('Failed to start the session: already started by PHP.');
+        }
+
+        session_name($this->name);
+
+        if ($this->id) {
+            session_id($this->id);
+        }
+
+        //Configure session cookie
+        ini_set('session.use_only_cookies', 1);
+
+        session_set_cookie_params($cookie['expires'], $cookie['path'], $cookie['domain'], $cookie['secure'], $cookie['httponly']);
+
+        //Start
+        session_start();
+
+        $this->id = session_id();
+        $this->items = & $_SESSION;
     }
 }
