@@ -130,7 +130,7 @@ class Router
                 throw new HttpException('Not found', 404);
             }
             
-            $route($request, $response, $stack);
+            $route($request, $response, $stack->getApp());
 
         } catch (HttpException $exception) {
             if (!$this->errorRoute) {
@@ -141,7 +141,7 @@ class Router
             $response = new Response('', $exception->getCode() ?: 500);
             $stack->setResponse($response);
 
-            $this->errorRoute($request, $response, $stack);
+            $this->errorRoute($request, $response, $stack->getApp());
         }
 
         $this->baseUrl = $previousBaseUrl;

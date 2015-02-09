@@ -19,11 +19,11 @@ class MiddlewareStack
     /**
      * Contructor.
      *
-     * @param App $app
+     * @param mixed $app
      */
-    public function __construct(App $app = null)
+    public function __construct($app = null)
     {
-        $this->setBaseUrl($app ? $app->getUrl() : '');
+        $this->setBaseUrl(($app instanceof Fol\App) ? $app->getUrl() : '');
         $this->app = $app;
     }
 
@@ -43,7 +43,7 @@ class MiddlewareStack
     /**
      * Returns the app
      *
-     * @return null|App
+     * @return mixed
      */
     public function getApp()
     {

@@ -56,18 +56,16 @@ abstract class Route
         try {
             ob_start();
 
-            if (is_callable($this->target)) {
-                $return = call_user_func($this->target, $request, $response, $stack);
-            } elseif (is_array($this->target)) {
+            if (is_array($this->target) && !is_object($this->target[0])) {
                 list($class, $method) = $this->target;
 
                 $class = new \ReflectionClass($class);
-
-                $controller = $class->hasMethod('__construct') ? $class->newInstanceArgs($request, $response, $stack) : $class->newInstance();
-
+                $controller = $class->newInstance($request, $response, $stack);
                 $return = $class->getMethod($method)->invoke($controller, $request, $response, $stack);
 
                 unset($controller);
+            } elseif (is_callable($this->target)) {
+                $return = call_user_func($this->target, $request, $response, $stack);
             } else {
                 throw new \Exception("Invalid target for the route {$this->name}");
             }

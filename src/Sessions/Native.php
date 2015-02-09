@@ -6,7 +6,8 @@
  */
 namespace Fol\Http\Sessions;
 
-use Fol\Http\Handler;
+use Fol\Http\MiddlewareStack;
+use Fol\Http\Request;
 use Fol\Http\Response;
 
 class Native extends Session
@@ -75,7 +76,7 @@ class Native extends Session
             'expires' => ini_get('session.cookie_lifetime')
         ];
 
-        $this->start();
+        $this->start($cookie);
 
         $request->attributes->set('session', $this);
 
