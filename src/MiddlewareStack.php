@@ -6,8 +6,6 @@
  */
 namespace Fol\Http;
 
-use Fol\App;
-
 class MiddlewareStack
 {
     protected $app;
@@ -23,7 +21,7 @@ class MiddlewareStack
      */
     public function __construct($app = null)
     {
-        $this->setBaseUrl(($app instanceof Fol\App) ? $app->getUrl() : '');
+        $this->setBaseUrl(($app instanceof \Fol\App) ? $app->getUrl() : '');
         $this->app = $app;
     }
 

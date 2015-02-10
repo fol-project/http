@@ -29,27 +29,27 @@ abstract class Route
     /**
      * Run the route as a middleware
      *
-     * @param Request         $request
-     * @param Response        $response
-     * @param MiddlewareStack $stack
+     * @param Request  $request
+     * @param Response $response
+     * @param mixed    $app
      *
      * @return Response
      */
-    public function __invoke(Request $request, Response $response, MiddlewareStack $stack)
+    public function __invoke(Request $request, Response $response, $app = null)
     {
-        return $this->run($request, $response, $stack);
+        return $this->run($request, $response, $app);
     }
 
     /**
      * Execute the route
      *
-     * @param Request         $request
-     * @param Response        $response
-     * @param MiddlewareStack $stack
+     * @param Request  $request
+     * @param Response $response
+     * @param mixed    $app
      *
      * @return Response
      */
-    public function run(Request $request, Response $response, MiddlewareStack $stack)
+    public function run(Request $request, Response $response, $app = null)
     {
         $request->attributes->set('route', $this);
 
@@ -60,12 +60,12 @@ abstract class Route
                 list($class, $method) = $this->target;
 
                 $class = new \ReflectionClass($class);
-                $controller = $class->newInstance($request, $response, $stack);
-                $return = $class->getMethod($method)->invoke($controller, $request, $response, $stack);
+                $controller = $class->newInstance($request, $response, $app);
+                $return = $class->getMethod($method)->invoke($controller, $request, $response, $app);
 
                 unset($controller);
             } elseif (is_callable($this->target)) {
-                $return = call_user_func($this->target, $request, $response, $stack);
+                $return = call_user_func($this->target, $request, $response, $app);
             } else {
                 throw new \Exception("Invalid target for the route {$this->name}");
             }
