@@ -141,7 +141,7 @@ class Router
             $response = new Response('', $exception->getCode() ?: 500);
             $stack->setResponse($response);
 
-            $this->errorRoute($request, $response, $stack->getApp());
+            call_user_func($this->errorRoute, $request, $response, $stack->getApp());
         }
 
         $this->baseUrl = $previousBaseUrl;
