@@ -60,7 +60,7 @@ abstract class Route
                 list($class, $method) = $this->target;
 
                 $class = new \ReflectionClass($class);
-                $controller = $class->newInstance($request, $response, $app);
+                $controller = $class->hasMethod('__construct') ? $class->newInstance($request, $response, $app) : $class->newInstance();
                 $return = $class->getMethod($method)->invoke($controller, $request, $response, $app);
 
                 unset($controller);
