@@ -1,8 +1,6 @@
 <?php
 use Fol\Http\RequestCookies;
 
-require_once dirname(__DIR__).'/src/autoload.php';
-
 class RequestCookiesTest extends PHPUnit_Framework_TestCase
 {
     public function testCookies()

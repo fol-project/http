@@ -2,8 +2,6 @@
 use Fol\Http\Request;
 use Fol\Http\Globals;
 
-require_once dirname(__DIR__).'/src/autoload.php';
-
 class RequestTest extends PHPUnit_Framework_TestCase
 {
     public function testRequest()

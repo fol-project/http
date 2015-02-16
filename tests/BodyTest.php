@@ -1,8 +1,6 @@
 <?php
 use Fol\Http\Body;
 
-require_once dirname(__DIR__).'/src/autoload.php';
-
 class BodyTest extends PHPUnit_Framework_TestCase
 {
     public function testParser()

@@ -29,29 +29,30 @@ abstract class Route
     /**
      * Run the route as a middleware
      *
-     * @param Request  $request
-     * @param Response $response
-     * @param mixed    $app
+     * @param Request         $request
+     * @param Response        $response
+     * @param MiddlewareStack $stack
      *
      * @return Response
      */
-    public function __invoke(Request $request, Response $response, $app = null)
+    public function __invoke(Request $request, Response $response, MiddlewareStack $stack)
     {
-        return $this->run($request, $response, $app);
+        return $this->run($request, $response, $stack);
     }
 
     /**
      * Execute the route
      *
-     * @param Request  $request
-     * @param Response $response
-     * @param mixed    $app
+     * @param Request         $request
+     * @param Response        $response
+     * @param MiddlewareStack $stack
      *
      * @return Response
      */
-    public function run(Request $request, Response $response, $app = null)
+    public function run(Request $request, Response $response, MiddlewareStack $stack)
     {
         $request->attributes->set('route', $this);
+        $app = $stack->getApp();
 
         try {
             ob_start();
@@ -60,12 +61,12 @@ abstract class Route
                 list($class, $method) = $this->target;
 
                 $class = new \ReflectionClass($class);
-                $controller = $class->hasMethod('__construct') ? $class->newInstance($request, $response, $app) : $class->newInstance();
-                $return = $class->getMethod($method)->invoke($controller, $request, $response, $app);
+                $controller = $class->hasMethod('__construct') ? $class->newInstance($request, $response, $app, $stack) : $class->newInstance();
+                $return = $class->getMethod($method)->invoke($controller, $request, $response, $app, $stack);
 
                 unset($controller);
             } elseif (is_callable($this->target)) {
-                $return = call_user_func($this->target, $request, $response, $app);
+                $return = call_user_func($this->target, $request, $response, $app, $stack);
             } else {
                 throw new \Exception("Invalid target for the route {$this->name}");
             }

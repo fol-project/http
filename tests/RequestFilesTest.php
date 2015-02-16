@@ -1,8 +1,6 @@
 <?php
 use Fol\Http\RequestFiles;
 
-require_once dirname(__DIR__).'/src/autoload.php';
-
 class RequestFilesTest extends PHPUnit_Framework_TestCase
 {
     public function testOne()

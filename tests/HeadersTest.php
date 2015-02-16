@@ -1,8 +1,6 @@
 <?php
 use Fol\Http\Headers;
 
-require_once dirname(__DIR__).'/src/autoload.php';
-
 class HeadersTest extends PHPUnit_Framework_TestCase
 {
     public function testValues()

@@ -38,12 +38,10 @@ class Router
      * @param Request         $request
      * @param Response        $response
      * @param MiddlewareStack $stack
-     *
-     * @return Response
      */
     public function __invoke(Request $request, Response $response, MiddlewareStack $stack)
     {
-        return $this->run($request, $response, $stack);
+        $this->run($request, $response, $stack);
     }
 
     /**
@@ -117,8 +115,6 @@ class Router
      * @param Request         $request
      * @param Response        $response
      * @param MiddlewareStack $stack
-     *
-     * @return Response
      */
     public function run(Request $request, Response $response, MiddlewareStack $stack)
     {
@@ -130,7 +126,7 @@ class Router
                 throw new HttpException('Not found', 404);
             }
             
-            $route($request, $response, $stack->getApp());
+            $route($request, $response, $stack);
 
         } catch (HttpException $exception) {
             if (!$this->errorRoute) {
@@ -141,7 +137,7 @@ class Router
             $response = new Response('', $exception->getCode() ?: 500);
             $stack->setResponse($response);
 
-            call_user_func($this->errorRoute, $request, $response, $stack->getApp());
+            call_user_func($this->errorRoute, $request, $response, $stack);
         }
 
         $this->baseUrl = $previousBaseUrl;

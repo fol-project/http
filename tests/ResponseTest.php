@@ -1,8 +1,6 @@
 <?php
 use Fol\Http\Response;
 
-require_once dirname(__DIR__).'/src/autoload.php';
-
 class ResponseTest extends PHPUnit_Framework_TestCase
 {
     public function testResponse()
