@@ -1,11 +1,10 @@
 # Fol\Http
 
-Biblioteca Http para PHP 5.5
+Biblioteca Http para PHP 5.5. Aínda que esta dentro do proxecto FOL, pódese usar de xeito independente
 
 [![Build Status](https://travis-ci.org/fol-project/http.svg?branch=master)](https://travis-ci.org/fol-project/http)
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/fol-project/http/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/fol-project/http/?branch=master)
 
-Aínda que esta dentro do proxecto FOL, pódese usar de xeito independente
 
 ## Exemplos
 
@@ -20,12 +19,14 @@ use Fol\Http\MiddlewareStack;
 $stack = new MiddlewareStack();
 
 //Engade alguns middlewares
-$stack->push(function ($request, $response) {
+$stack->push(function ($request, $response, $stack) {
 	$response->getBody()->write('Hello world');
+	$stack->next();
 });
 
-$stack->push(function ($request, $response) {
+$stack->push(function ($request, $response, $stack) {
 	$response->getBody()->setStatus(200);
+	$stack->next();
 });
 
 //Executaos
