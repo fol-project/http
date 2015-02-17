@@ -1,23 +1,25 @@
-Fol\Http
-========
+# Fol\Http
+
+Biblioteca Http para PHP 5.5
 
 [![Build Status](https://travis-ci.org/fol-project/http.svg?branch=master)](https://travis-ci.org/fol-project/http)
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/fol-project/http/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/fol-project/http/?branch=master)
 
+Aínda que esta dentro do proxecto FOL, pódese usar de xeito independente
 
-Http library for PHP 5.5
+## Exemplos
 
-## Basic usage demo
+### Uso básico
 
 ```php
 use Fol\Http\Request;
 use Fol\Http\Response;
 use Fol\Http\MiddlewareStack;
 
-//Init a http middleware stack
+//Inicia unha instancia de MiddlewareStack
 $stack = new MiddlewareStack();
 
-//Push some middlewares
+//Engade alguns middlewares
 $stack->push(function ($request, $response) {
 	$response->getBody()->write('Hello world');
 });
@@ -26,16 +28,16 @@ $stack->push(function ($request, $response) {
 	$response->getBody()->setStatus(200);
 });
 
-//Run
+//Executaos
 $stack->run(new Request('http://domain.com'), new Response());
 
-//Send the response to the client browser
+//Envía a resposta ao navegador
 $stack->getResponse()->send();
 ```
 
-## Usage with sessions and routes
+### Uso con sesións e rutas
 
-Sessions and routes are like any other middleware that you can push to the stack
+As sesións e rutas son como outros "middlewares" que podes engadir ao MiddlewareStack
 
 ```php
 use Fol\Http\Request;
@@ -45,23 +47,14 @@ use Fol\Http\MiddlewareStack;
 use Fol\Http\Sessions\Native;
 use Fol\Http\Routes\Router;
 
-
-$handler = new Handler(new Request('http://domain.com/about'));
-
-// Register and configure some services, for example, a session
-$handler->register('session', function ($handler) {
-	return new Native($handler);
-});
-
-//Init the router
+//Inicia o router
 $router = new Router();
 
-//Add some routes:
 $router->map([
 	'index' => [
 		'path' => '/',
 		'target' => function ($request, $response) {
-			$response->getBody()->write('This is the index');
+			$response->getBody()->write('Esta é a portada');
 		}
 	],
 	'about' => [
@@ -69,60 +62,61 @@ $router->map([
 		'target' => function ($request, $response) {
 			$session = $request->attributes->get('session');
 
-			$response->getBody()->write('You are '.$session->get('username'));
+			$response->getBody()->write('Ola, ti eres '.$session->get('username'));
 		}
 	]
 ]);
 
-//Init the stack
+//Inicia o MiddlewareStack
 $stack = new MiddlewareStack();
 
-//Push the router and session middleware
+//Engade a middleware da sesión
 $stack->push(new Native());
+
+//E tamén a do router
 $stack->push($router);
 
-//Run all
+//Executa
 $stack->run(new Request('http://domain.com'), new Response());
 
-//Send the response
+//Envía a resposta
 $stack->getResponse()->send();
 ```
-
 
 ## Classes
 
 ### Request
 
-Manage the data from a request
+Xestiona os datos dunha petición http
 
 ```php
 use Fol\Http\Request;
 
-//Create from global
+//Crear dende as variables globais ($_SERVER, $_FILES, etc)
 $request = Request::createFromGlobals();
 
-//Or custom request
+//Ou podes crear a túa petición personalizada
 $request = new Request('http://blog.com/?page=2', 'GET', ['Accept' => 'text/html']);
 
-//Object to manage the url data (host, path, query, fragment, etc)
+//Obxecto para acceder aos datos da url (host, path, query, fragment, etc)
 $request->url;
 
-//Manage the query (alias of $request->url->query):
+//Accede á "query" (alias de $request->url->query):
 $request->query;
 
-//Manage the headers
+//Xestiona cabeceiras
 $request->headers
 
-//Manage the cookies
+//Xestiona cookies
 $request->cookies
 
-//Manage the body data
+//Xestiona os datos parseados do body
 $request->data
 
-//Manage the uploaded files
+//Xestiona os arquivos subidos
 $request->files
 
-//Get the body (streamable)
+//Devolve o body (streamable)
 $body = $response->getBody();
 ```
 
@@ -131,30 +125,30 @@ $body = $response->getBody();
 ```php
 use Fol\Http\Response;
 
-//Create a response
+//Crea unha resposta
 $response = new Response('Hello world', 200, ['Content-Type' => 'text/html']);
 
-//Manage the headers
+//Xestiona as cabeceiras
 $request->headers
 
-//Manage the cookies
+//Xestiona as cookies
 $request->cookies
 
-//Get the body (streamable)
+//Devolve o body (streamable)
 $body = $response->getBody();
 ```
 
 ### MiddlewareStack
 
-Manages all middlewares in a request/response cycle:
+Xestiona todos os middlewares en todo o ciclo petición/resposta de http. Para entender mellor o concepto dos middlewares, [recomendo ler este artigo](https://mwop.net/blog/2015-01-08-on-http-middleware-and-psr-7.html)
 
 ### Sessions
 
-Provides an easy interface to work with sessions. There are two types of sessions:
+Proporciona unha interface sinxela para traballar con sesións. Hai dous tipos de sesións:
 
-* Native (use the native implementation of PHP)
-* Session (to work with fake or custom sessions)
+* Native (usa a implementación nativa de PHP)
+* Session (para traballar con sesións de proba)
 
 ### Router
 
-Provides a simple router system for MVC.
+Proporciona un sinxelo sistema de enrutamento para MVC.
