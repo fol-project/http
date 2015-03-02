@@ -60,7 +60,7 @@ class BasicAuthentication extends Authentication
      */
     protected function checkAuthentication($username, $password)
     {
-        if (!isset($this->users[$user]) || $this->users[$user] !== $password) {
+        if (!isset($this->users[$username]) || $this->users[$username] !== $password) {
             return false;
         }
 

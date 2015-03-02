@@ -5,11 +5,12 @@ use Fol\Http\Url;
 use Fol\Http\Request;
 use Fol\Http\Response;
 use Fol\Http\MiddlewareStack;
+use Fol\Http\MiddlewareInterface;
 
 /**
  * Middleware used to define a baseurl used by cookies, routers, etc
  */
-class BaseUrl
+class BaseUrl implements MiddlewareInterface
 {
     protected $url;
 

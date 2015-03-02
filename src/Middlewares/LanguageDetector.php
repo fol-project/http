@@ -4,13 +4,14 @@ namespace Fol\Http\Middlewares;
 use Fol\Http\Request;
 use Fol\Http\Response;
 use Fol\Http\MiddlewareStack;
+use Fol\Http\MiddlewareInterface;
 use Fol\Http\Utils;
 
 /**
  * Middleware to get the preferred language
  * using the Accept-Language header
  */
-class LanguageDetector
+class LanguageDetector implements MiddlewareInterface
 {
     protected $availableLanguages;
 

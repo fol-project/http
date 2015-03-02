@@ -97,7 +97,7 @@ trait ContainerTrait
     /**
      * Sets one parameter or various new parameters
      *
-     * @param string|array $name  The parameter name. You can define an array with name => value to insert various parameters
+     * @param null|string|array $name  The parameter name. You can define an array with name => value to insert various parameters
      * @param mixed        $value The parameter value.
      *
      * @return $this
@@ -106,10 +106,10 @@ trait ContainerTrait
     {
         if (is_array($name)) {
             $this->items = array_replace($this->items, $name);
-        } elseif ($name) {
-            $this->items[$name] = $value;
-        } else {
+        } elseif ($name === null) {
             $this->items[] = $value;
+        } else {
+            $this->items[$name] = $value;
         }
 
         return $this;

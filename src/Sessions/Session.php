@@ -11,8 +11,10 @@ use Fol\Http\Url;
 use Fol\Http\Request;
 use Fol\Http\Response;
 use Fol\Http\MiddlewareStack;
+use Fol\Http\MiddlewareInterface;
+use ArrayAccess;
 
-class Session implements \ArrayAccess
+class Session implements ArrayAccess, MiddlewareInterface
 {
     use ContainerTrait;
 

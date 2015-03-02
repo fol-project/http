@@ -191,7 +191,7 @@ class Globals
      */
     public function getPost()
     {
-        if ($this->post) {
+        if (!empty($this->post)) {
             return $this->post;
         }
 

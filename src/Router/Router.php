@@ -13,8 +13,9 @@ use Fol\Http\Body;
 use Fol\Http\Url;
 use Fol\Http\HttpException;
 use Fol\Http\MiddlewareStack;
+use Fol\Http\MiddlewareInterface;
 
-class Router
+class Router implements MiddlewareInterface
 {
     use ContainerTrait;
 

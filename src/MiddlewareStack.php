@@ -6,7 +6,7 @@
  */
 namespace Fol\Http;
 
-class MiddlewareStack
+class MiddlewareStack implements MiddlewareInterface
 {
     protected $app;
     protected $request;

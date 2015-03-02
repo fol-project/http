@@ -4,11 +4,12 @@ namespace Fol\Http\Middlewares;
 use Fol\Http\Request;
 use Fol\Http\Response;
 use Fol\Http\MiddlewareStack;
+use Fol\Http\MiddlewareInterface;
 
 /**
  * Middleware to get the client ip
  */
-class IpDetector
+class IpDetector implements MiddlewareInterface
 {
     protected $headers = [
         'Client-Ip',

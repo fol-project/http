@@ -4,13 +4,14 @@ namespace Fol\Http\Middlewares;
 use Fol\Http\Request;
 use Fol\Http\Response;
 use Fol\Http\MiddlewareStack;
+use Fol\Http\MiddlewareInterface;
 use Fol\Http\Utils;
 
 /**
  * Middleware to get the format mime-type
  * using the Content-Type header
  */
-class FormatDetector
+class FormatDetector implements MiddlewareInterface
 {
     protected $availableFormats;
     protected $defaultFormat = 'html';
