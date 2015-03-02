@@ -30,10 +30,10 @@ $stack->push(function ($request, $response, $stack) {
 });
 
 //Executaos
-$stack->run(new Request('http://domain.com'), new Response());
+$response = $stack->run(new Request('http://domain.com'));
 
 //Envía a resposta ao navegador
-$stack->getResponse()->send();
+$response->send();
 ```
 
 ### Uso con sesións e rutas
@@ -78,10 +78,10 @@ $stack->push(new Native());
 $stack->push($router);
 
 //Executa
-$stack->run(new Request('http://domain.com'), new Response());
+$response = $stack->run(new Request('http://domain.com'));
 
 //Envía a resposta
-$stack->getResponse()->send();
+$response->send();
 ```
 
 ## Classes
@@ -143,13 +143,23 @@ $body = $response->getBody();
 
 Xestiona todos os middlewares en todo o ciclo petición/resposta de http. Para entender mellor o concepto dos middlewares, [recomendo ler este artigo](https://mwop.net/blog/2015-01-08-on-http-middleware-and-psr-7.html)
 
+### Middlewares
+
+Esta libraría trae consigo unha serie de middlewares por defecto coas funcionalidades máis comúns:
+
+* **BaseUrl:** Útil para definir por defecto unha url base, que se usaría tanto para cookies como para o router. Para acceder á url: `$request->attributes->get('BASE_URL')`
+* **BasicAuthentication:** Para crear unha autentificación http básica
+* **DigestAuthentication:** Para crear unha autentificación http de tipo "digest"
+* **FormatDetection:** Para detectar e normalizar automaticamente o formato da petición (json, txt, html, png, etc). Para acceder ao formato: `$request->attributes->get('FORMAT')`
+* **IpDetection:** Detecta a ip do cliente. Para acceder a ela: `$request->attributes->get('IP')`
+
 ### Sessions
 
-Proporciona unha interface sinxela para traballar con sesións. Hai dous tipos de sesións:
+Proporciona unha interface sinxela para traballar con sesións. Para acceder á sesion: `$request->attributes->get('SESSION')`. Hai dous tipos de sesións:
 
 * Native (usa a implementación nativa de PHP)
 * Session (para traballar con sesións de proba)
 
 ### Router
 
-Proporciona un sinxelo sistema de enrutamento para MVC.
+Proporciona un sinxelo sistema de enrutamento para MVC. Para acceder á ruta: `$request->attributes->get('ROUTE')`

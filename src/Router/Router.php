@@ -8,8 +8,8 @@ namespace Fol\Http\Router;
 
 use Fol\Http\ContainerTrait;
 use Fol\Http\Request;
-use Fol\Http\Handler;
 use Fol\Http\Response;
+use Fol\Http\Body;
 use Fol\Http\Url;
 use Fol\Http\HttpException;
 use Fol\Http\MiddlewareStack;
@@ -119,23 +119,24 @@ class Router
     public function run(Request $request, Response $response, MiddlewareStack $stack)
     {
         $previousBaseUrl = $this->baseUrl;
-        $this->baseUrl = $stack->getBaseUrl()->toArray();
+        $baseUrl = $request->attributes->get('BASE_URL') ?: new Url('');
+        $this->baseUrl = $baseUrl->toArray();
 
         try {
             if (!($route = $this->match($request))) {
                 throw new HttpException('Not found', 404);
             }
-            
-            $route($request, $response, $stack);
+
+            call_user_func($route, $request, $response, $stack);
 
         } catch (HttpException $exception) {
             if (!$this->errorRoute) {
                 throw $exception;
             }
 
-            $request->attributes->set('error', $exception);
-            $response = new Response('', $exception->getCode() ?: 500);
-            $stack->setResponse($response);
+            $request->attributes->set('ERROR', $exception);
+            $response->setStatus($exception->getCode() ?: 500);
+            $response->setBody(new Body());
 
             call_user_func($this->errorRoute, $request, $response, $stack);
         }

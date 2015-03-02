@@ -136,44 +136,6 @@ class Utils
     }
 
     /**
-     * Parses the authorization header
-     *
-     * @param string $authorization
-     *
-     * @return boolean|array
-     */
-    public static function parseAuthorizationHeader($authorization)
-    {
-        if (strpos($authorization, 'Basic') === 0) {
-            $authorization = explode(':', base64_decode(substr($authorization, 6)), 2);
-
-            return [
-                'type' => 'Basic',
-                'username' => $authorization[0],
-                'password' => isset($authorization[1]) ? $authorization[1] : null
-            ];
-        }
-
-        if (strpos($authorization, 'Digest') === 0) {
-            $needed_parts = ['nonce' => 1, 'nc' => 1, 'cnonce' => 1, 'qop' => 1, 'username' => 1, 'uri' => 1, 'response' => 1];
-            $data = ['type' => 'Digest'];
-
-            preg_match_all('@('.implode('|', array_keys($needed_parts)).')=(?:([\'"])([^\2]+?)\2|([^\s,]+))@', substr($authorization, 7), $matches, PREG_SET_ORDER);
-
-            foreach ($matches as $m) {
-                $data[$m[1]] = $m[3] ? $m[3] : $m[4];
-                unset($needed_parts[$m[1]]);
-            }
-
-            if (!$needed_parts) {
-                return $data;
-            }
-        }
-
-        return false;
-    }
-
-    /**
      * Parse and return http values
      *
      * Utils::parseHeader('text/html,application/xhtml+xml,application/xml;q=0.9,* /*;q=0.8')

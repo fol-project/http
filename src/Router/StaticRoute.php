@@ -14,13 +14,11 @@ class StaticRoute extends Route
     public $name;
     public $target;
 
-    public $ip;
     public $method;
     public $scheme;
     public $host;
     public $port;
     public $path;
-    public $language;
 
     /**
      * Check whether or not the route match with the request
@@ -33,9 +31,7 @@ class StaticRoute extends Route
     public function match(Request $request, array $baseUrl)
     {
         return (
-               self::check($this->ip, $request->getIp())
-            && self::check($this->method, $request->getMethod())
-            && self::check($this->language, $request->getLanguage())
+               self::check($this->method, $request->getMethod())
             && self::check($this->scheme, $request->url->getScheme(), $baseUrl['scheme'])
             && self::check($this->host, $request->url->getHost(), $baseUrl['host'])
             && self::check($this->port, $request->url->getPort(), $baseUrl['port'])

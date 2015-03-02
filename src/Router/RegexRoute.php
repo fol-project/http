@@ -68,9 +68,7 @@ class RegexRoute extends StaticRoute
     public function match(Request $request, array $baseUrl)
     {
         $match = (
-               self::check($this->ip, $request->getIp())
-            && self::check($this->method, $request->getMethod())
-            && self::check($this->language, $request->getLanguage())
+               self::check($this->method, $request->getMethod())
             && self::check($this->scheme, $request->url->getScheme(), $baseUrl['scheme'])
             && self::check($this->host, $request->url->getHost(), $baseUrl['host'])
             && self::check($this->port, $request->url->getPort(), $baseUrl['port'])

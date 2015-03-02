@@ -3,6 +3,7 @@ use Fol\Http\Request;
 use Fol\Http\Response;
 use Fol\Http\MiddlewareStack;
 use Fol\Http\Sessions\Session;
+use Fol\Http\Middlewares;
 
 class MiddlewareStackTest extends PHPUnit_Framework_TestCase
 {
@@ -10,52 +11,35 @@ class MiddlewareStackTest extends PHPUnit_Framework_TestCase
     {
         $stack = new MiddlewareStack();
 
-        $stack->push(new Session(23, 'name'));
+        $request = new Request('http://domain.com');
+        $response = new Response();
+        $session = new Session(23, 'name');
 
-        $stack->run(new Request('http://domain.com'), new Response);
+        $stack->push($session);
 
-        $this->assertInstanceOf('Fol\\Http\\Request', $stack->getRequest());
-        $this->assertInstanceOf('Fol\\Http\\Response', $stack->getResponse());
+        $result = $stack->run($request, $response);
 
-        return $stack;
+        $this->assertInstanceOf('Fol\\Http\\Response', $result);
+        $this->assertSame($response, $result);
+        $this->assertSame($request->attributes->get('SESSION'), $session);
+
+        return [$request, $response];
     }
 
     /**
      * @depends testOne
      */
-    public function testSession(MiddlewareStack $stack)
+    public function testSession(array $arguments)
     {
-        $session = $stack->getRequest()->attributes->get('session');
+        list($request, $response) = $arguments;
+
+        $session = $request->attributes->get('SESSION');
 
         $this->assertInstanceOf('Fol\\Http\\Sessions\\Session', $session);
 
         $this->assertEquals(23, $session->getId());
         $this->assertEquals('name', $session->getName());
 
-        $response = $stack->getResponse();
         $this->assertEquals($session->getId(), $response->cookies->get($session->getName())['value']);
-    }
-
-    public function testPrepare()
-    {
-        $stack = new MiddlewareStack();
-        $stack->setBaseUrl('http://domain.com/my-new-site');
-
-        $stack->push(function ($request, $response, $stack) {
-            $response->cookies->set('My-cookie', 'value');
-            $stack->next();
-        });
-
-        $stack->run(new Request('http://domain.com/index.json', 'HEAD'), new Response('This is a response'));
-
-        $response = $stack->getResponse();
-
-        $this->assertEquals($response->headers->get('Content-Type'), 'application/json; charset=UTF-8');
-
-        $this->assertEquals($response->headers->get('Date'), (new \Datetime('now', new \DateTimeZone('GMT')))->format('D, d M Y H:i:s').' GMT');
-        $this->assertEquals('', (string) $response->getBody());
-
-        $this->assertEquals('/my-new-site', $response->cookies->get('My-cookie')['path']);
-        $this->assertEquals('domain.com', $response->cookies->get('My-cookie')['domain']);
     }
 }

@@ -66,7 +66,7 @@ class Native extends Session
             $this->id = $request->cookies->get($this->name);
         }
 
-        $baseUrl = $stack->getBaseUrl();
+        $baseUrl = $request->attributes->get('BASE_URL') ?: new Url('');
 
         $cookie = [
             'domain' => $baseUrl->getHost(),
@@ -78,7 +78,7 @@ class Native extends Session
 
         $this->start($cookie);
 
-        $request->attributes->set('session', $this);
+        $request->attributes->set('SESSION', $this);
 
         $stack->next();
 

@@ -8,8 +8,6 @@ namespace Fol\Http;
 
 class Response extends Message
 {
-    protected static $constructors = [];
-
     public $cookies;
 
     private $statusCode;
@@ -59,56 +57,6 @@ class Response extends Message
     }
 
     /**
-     * Sets the request format
-     *
-     * @param string $format The new format value
-     */
-    public function setFormat($format)
-    {
-        if ($mimetype = Utils::formatToMimeType($format)) {
-            $this->headers->set('Content-Type', "{$mimetype}; charset=UTF-8");
-        }
-    }
-
-    /**
-     * Sets the request language
-     *
-     * @param string $language The new language
-     */
-    public function setLanguage($language)
-    {
-        $this->headers->set('Content-Language', $language);
-    }
-
-    /**
-     * Set basic authentication
-     *
-     * @param string $realm
-     */
-    public function setBasicAuthentication($realm)
-    {
-        $this->setStatus(401);
-        $this->headers->set('WWW-Authenticate', 'Basic realm="'.$realm.'"');
-    }
-
-    /**
-     * Set digest authentication
-     *
-     * @param string      $realm
-     * @param string|null $nonce
-     */
-    public function setDigestAuthentication($realm, $nonce = null)
-    {
-        $this->setStatus(401);
-
-        if (!$nonce) {
-            $nonce = uniqid();
-        }
-
-        $this->headers->set('WWW-Authenticate', 'Digest realm="'.$realm.'",qop="auth",nonce="'.$nonce.'",opaque="'.md5($realm).'"');
-    }
-
-    /**
      * {@inheritDoc}
      */
     public function setStatus($code, $reasonPhrase = null)
@@ -143,38 +91,6 @@ class Response extends Message
     {
         $this->setStatus($status);
         $this->headers->set('location', $url);
-    }
-
-    /**
-     * Prepare the response according with the middleware stack
-     *
-     * @param MiddlewareStack $stack
-     */
-    public function prepare(MiddlewareStack $stack)
-    {
-        $request = $stack->getRequest();
-
-        if (!$request->headers->has('Content-Type') && ($format = $request->getFormat())) {
-            $this->setFormat($format);
-        }
-
-        if (!$request->headers->has('Content-Language') && ($language = $request->getLanguage())) {
-            $this->setLanguage($language);
-        }
-
-        if ($request->headers->has('Transfer-Encoding')) {
-            $this->headers->delete('Content-Length');
-        }
-
-        if (!$this->headers->has('Date')) {
-            $this->headers->setDateTime('Date', new \DateTime());
-        }
-
-        if ($request->getMethod() === 'HEAD') {
-            $this->setBody(new Body());
-        }
-
-        $this->cookies->prepare($stack);
     }
 
     /**

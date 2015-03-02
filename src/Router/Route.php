@@ -51,7 +51,7 @@ abstract class Route
      */
     public function run(Request $request, Response $response, MiddlewareStack $stack)
     {
-        $request->attributes->set('route', $this);
+        $request->attributes->set('ROUTE', $this);
         $app = $stack->getApp();
 
         try {
@@ -61,24 +61,17 @@ abstract class Route
                 list($class, $method) = $this->target;
 
                 $class = new \ReflectionClass($class);
-                $controller = $class->hasMethod('__construct') ? $class->newInstance($request, $response, $app, $stack) : $class->newInstance();
-                $return = $class->getMethod($method)->invoke($controller, $request, $response, $app, $stack);
+                $controller = $class->hasMethod('__construct') ? $class->newInstance($request, $response, $app) : $class->newInstance();
+                $return = $class->getMethod($method)->invoke($controller, $request, $response, $app);
 
                 unset($controller);
             } elseif (is_callable($this->target)) {
-                $return = call_user_func($this->target, $request, $response, $app, $stack);
+                $return = call_user_func($this->target, $request, $response, $app);
             } else {
                 throw new \Exception("Invalid target for the route {$this->name}");
             }
 
-            if ($return instanceof Response) {
-                $response = $return;
-                $response->getBody()->write(ob_get_contents());
-            } else {
-                $response->getBody()->write(ob_get_contents().$return);
-            }
-
-            return $response;
+            $response->getBody()->write(ob_get_contents().$return);
         } catch (\Exception $exception) {
             throw $exception;
         } finally {

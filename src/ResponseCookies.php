@@ -11,21 +11,12 @@ class ResponseCookies implements \ArrayAccess
     use ContainerTrait;
 
     /**
-     * Prepare the response according with the middleware stack
+     * Set the default config for cookies
      *
-     * @param MiddlewareStack $stack
+     * @param array $config
      */
-    public function prepare(MiddlewareStack $stack)
+    public function setDefaultConfig(array $config)
     {
-        $baseUrl = $stack->getBaseUrl();
-
-        $config = [
-            'domain' => $baseUrl->getHost(),
-            'path' => $baseUrl->getPath(false),
-            'secure' => ($baseUrl->getScheme() === 'https'),
-            'httponly' => true,
-        ];
-
         foreach ($this->items as &$cookie) {
             foreach ($config as $name => $value) {
                 if (!isset($cookie[$name])) {

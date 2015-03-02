@@ -9,7 +9,6 @@ namespace Fol\Http;
 class MiddlewareStack
 {
     protected $app;
-    protected $baseUrl;
     protected $request;
     protected $response;
     protected $middlewares = [];
@@ -21,21 +20,23 @@ class MiddlewareStack
      */
     public function __construct($app = null)
     {
-        $this->setBaseUrl(($app instanceof \Fol\App) ? $app->getUrl() : '');
         $this->app = $app;
     }
 
     /**
      * Magic method to execute this middleware stack as middleware
      * 
-     * @param Request  $request
-     * @param Response $response
+     * @param Request         $request
+     * @param Response        $response
+     * @param Middlewarestack $stack
      * 
      * @return Response
      */
-    public function __invoke($request, $response)
+    public function __invoke(Request $request, Response $response, MiddlewareStack $stack)
     {
-        return $this->run($request, $response);
+        $this->run($request, $response);
+
+        $stack->next();
     }
 
     /**
@@ -46,70 +47,6 @@ class MiddlewareStack
     public function getApp()
     {
         return $this->app;
-    }
-
-    /**
-     * Set the base url used in this stack
-     *
-     * @param string|Url $url
-     */
-    public function setBaseUrl($url)
-    {
-        if (!($url instanceof Url)) {
-            $this->baseUrl = new Url($url);
-        } else {
-            $this->baseUrl = $url;
-        }
-    }
-
-    /**
-     * Returns the base url used in this stack
-     *
-     * @return Url
-     */
-    public function getBaseUrl()
-    {
-        return $this->baseUrl;
-    }
-
-    /**
-     * Changes the request of the middleware stack
-     *
-     * @param Request $request
-     */
-    public function setRequest(Request $request)
-    {
-        $this->request = $request;
-    }
-
-    /**
-     * Changes the response of the middleware stack
-     *
-     * @param Request $request
-     */
-    public function setResponse(Response $response)
-    {
-        $this->response = $response;
-    }
-
-    /**
-     * Returns the request of the middleware stack
-     *
-     * @return null|Request
-     */
-    public function getRequest()
-    {
-        return $this->request;
-    }
-
-    /**
-     * Returns the response of the middleware stack
-     *
-     * @return null|Request
-     */
-    public function getResponse()
-    {
-        return $this->response;
     }
 
     /**
@@ -166,20 +103,20 @@ class MiddlewareStack
     /**
      * Run middleware stack
      *
-     * @param Request  $request
-     * @param Response $response
+     * @param Request         $request
+     * @param null|Response   $response
      * 
      * @return Response
      */
-    public function run(Request $request, Response $response)
+    public function run(Request $request, Response $response = null)
     {
-        $this->setRequest($request);
-        $this->setResponse($response);
+        $this->request = $request;
+        $this->response = $response ?: new Response;
 
         if (($middleware = reset($this->middlewares))) {
             call_user_func($middleware, $this->request, $this->response, $this);
         }
 
-        $this->response->prepare($this);
+        return $this->response;
     }
 }

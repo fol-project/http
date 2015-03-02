@@ -7,6 +7,14 @@ use Fol\Http\Router\Router;
 
 class RouterTest extends PHPUnit_Framework_TestCase
 {
+    private function execute(Router $router, Request $request)
+    {
+        $stack = new MiddlewareStack();
+        $stack->push($router);
+
+        return $stack->run($request, new Response());
+    }
+
     public function testOne()
     {
         $router = new Router();
@@ -47,14 +55,14 @@ class RouterTest extends PHPUnit_Framework_TestCase
 
         $router->map('subrequest', [
             'path' => '/subrequest',
-            'target' => function ($request, $response, $app, $stack) {
+            'target' => function ($request, $response, $app) use ($router) {
                 $response->getBody()->write('This is a subrequest: ');
 
-                $newStack = clone $stack;
+                $this->assertInstanceOf('Fol\\Http\\Router\\StaticRoute', $request->attributes->get('ROUTE'));
 
-                $newStack->run(new Request('http://domain.com/post', 'POST'), new Response());
+                $subresponse = $this->execute($router, new Request('http://domain.com/post', 'POST'));
 
-                $response->getBody()->write((string) $newStack->getResponse()->getBody());
+                $response->getBody()->write((string) $subresponse->getBody());
             }
         ]);
 
@@ -78,36 +86,34 @@ class RouterTest extends PHPUnit_Framework_TestCase
         ]);
 
         $router->setError(function ($request, $response) {
-            $error = $request->attributes->get('error');
+            $error = $request->attributes->get('ERROR');
 
             return 'Error '.$error->getCode().'/'.$error->getMessage();
         });
 
-        $stack = new MiddlewareStack();
-        $stack->push($router);
+        
+        $response = $this->execute($router, new Request('http://domain.com'));
+        $this->assertEquals('This is the index', (string) $response->getBody());
 
-        $stack->run(new Request('http://domain.com'), new Response);
-        $this->assertEquals('This is the index', (string) $stack->getResponse()->getBody());
+        $response = $this->execute($router, new Request('/'));
+        $this->assertEquals('This is the index', (string) $response->getBody());
 
-        $stack->run(new Request('/'), new Response);
-        $this->assertEquals('This is the index', (string) $stack->getResponse()->getBody());
+        $response = $this->execute($router, new Request('http://domain.com/post', 'POST'));
+        $this->assertEquals('This is POST', (string) $response->getBody());
 
-        $stack->run(new Request('http://domain.com/post', 'POST'), new Response);
-        $this->assertEquals('This is POST', (string) $stack->getResponse()->getBody());
+        $response = $this->execute($router, new Request('http://domain.com/put/23', 'PUT'));
+        $this->assertEquals('This is PUT/23', (string) $response->getBody());
 
-        $stack->run(new Request('http://domain.com/put/23', 'PUT'), new Response);
-        $this->assertEquals('This is PUT/23', (string) $stack->getResponse()->getBody());
+        $response = $this->execute($router, new Request('http://domain.com/put/2.3', 'PUT'));
+        $this->assertEquals('Error 404/Not found', (string) $response->getBody());
 
-        $stack->run(new Request('http://domain.com/put/2.3', 'PUT'), new Response);
-        $this->assertEquals('Error 404/Not found', (string) $stack->getResponse()->getBody());
+        $response = $this->execute($router, new Request('http://domain.com/subrequest'));
+        $this->assertEquals('This is a subrequest: This is POST', (string) $response->getBody());
 
-        $stack->run(new Request('http://domain.com/subrequest'), new Response);
-        $this->assertEquals('This is a subrequest: This is POST', (string) $stack->getResponse()->getBody());
+        $response = $this->execute($router, new Request('http://domain.com/post', 'GET'));
+        $this->assertEquals('Error 404/Not found', (string) $response->getBody());
 
-        $stack->run(new Request('http://domain.com/post', 'GET'), new Response);
-        $this->assertEquals('Error 404/Not found', (string) $stack->getResponse()->getBody());
-
-        $stack->run(new Request('http://domain.com/error', 'GET'), new Response);
-        $this->assertEquals('Error 500/This is an error!!', (string) $stack->getResponse()->getBody());
+        $response = $this->execute($router, new Request('http://domain.com/error', 'GET'));
+        $this->assertEquals('Error 500/This is an error!!', (string) $response->getBody());
     }
 }

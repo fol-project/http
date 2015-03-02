@@ -7,6 +7,7 @@
 namespace Fol\Http\Sessions;
 
 use Fol\Http\ContainerTrait;
+use Fol\Http\Url;
 use Fol\Http\Request;
 use Fol\Http\Response;
 use Fol\Http\MiddlewareStack;
@@ -166,11 +167,11 @@ class Session implements \ArrayAccess
             $this->id = $request->cookies->get($this->name);
         }
 
-        $request->attributes->set('session', $this);
+        $request->attributes->set('SESSION', $this);
 
         $stack->next();
 
-        $baseUrl = $stack->getBaseUrl();
+        $baseUrl = $request->attributes->get('BASE_URL') ?: new Url('');
 
         $cookie = [
             'domain' => $baseUrl->getHost(),
