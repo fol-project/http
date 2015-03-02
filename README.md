@@ -61,7 +61,7 @@ $router->map([
 	'about' => [
 		'path' => '/about',
 		'target' => function ($request, $response) {
-			$session = $request->attributes->get('session');
+			$session = $request->attributes->get('SESSION');
 
 			$response->getBody()->write('Ola, ti eres '.$session->get('username'));
 		}
@@ -145,7 +145,7 @@ Xestiona todos os middlewares en todo o ciclo petición/resposta de http. Para e
 
 ### Middlewares
 
-Esta libraría trae consigo unha serie de middlewares por defecto coas funcionalidades máis comúns:
+Esta biblioteca trae consigo unha serie de middlewares por defecto coas funcionalidades máis comúns:
 
 * **BaseUrl:** Útil para definir por defecto unha url base, que se usaría tanto para cookies como para o router. Para acceder á url: `$request->attributes->get('BASE_URL')`
 * **BasicAuthentication:** Para crear unha autentificación http básica
