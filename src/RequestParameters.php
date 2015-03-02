@@ -1,9 +1,10 @@
 <?php
 /**
- * Fol\Http\RequestParameters
+ * Fol\Http\RequestParameters.
  *
  * Class to store request variables
  */
+
 namespace Fol\Http;
 
 class RequestParameters implements \ArrayAccess
@@ -11,7 +12,7 @@ class RequestParameters implements \ArrayAccess
     use ContainerTrait { get as private parentGet; }
 
     /**
-     * Gets one or all parameters. You can gets the subvalues using brackets:
+     * Gets one or all parameters. You can gets the subvalues using brackets:.
      *
      * $input->get('user') Returns, for example: array('name' => 'xan', 'age' => 34)
      * $input->get('user[age]') Returns 34

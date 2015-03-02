@@ -1,9 +1,10 @@
 <?php
 /**
- * Fol\Http\Response
+ * Fol\Http\Response.
  *
  * Class to manage the http response data
  */
+
 namespace Fol\Http;
 
 class Response extends Message
@@ -14,7 +15,7 @@ class Response extends Message
     private $reasonPhrase;
 
     /**
-     * Constructor
+     * Constructor.
      *
      * @param string  $content The body of the response
      * @param integer $status  The status code (200 by default)
@@ -35,7 +36,7 @@ class Response extends Message
     }
 
     /**
-     * Magic function to clone the internal objects
+     * Magic function to clone the internal objects.
      */
     public function __clone()
     {
@@ -44,7 +45,7 @@ class Response extends Message
     }
 
     /**
-     * Magic function to converts the current response to a string
+     * Magic function to converts the current response to a string.
      */
     public function __toString()
     {
@@ -82,7 +83,7 @@ class Response extends Message
     }
 
     /**
-     * Set the status code and header needle to redirect to another url
+     * Set the status code and header needle to redirect to another url.
      *
      * @param string  $url    The url of the new location
      * @param integer $status The http code to redirect (302 by default)
@@ -94,7 +95,7 @@ class Response extends Message
     }
 
     /**
-     * Send the response to the client
+     * Send the response to the client.
      */
     public function send()
     {

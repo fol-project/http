@@ -138,5 +138,5 @@ return [
     'xh' => 'Xhosa',
     'yo' => 'Yoruba',
     'zh' => 'Chinese',
-    'zu' => 'Zulu'
+    'zu' => 'Zulu',
 ];

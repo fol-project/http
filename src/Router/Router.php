@@ -1,9 +1,10 @@
 <?php
 /**
- * Fol\Http\Router\Router
+ * Fol\Http\Router\Router.
  *
  * Class to manage all routes
  */
+
 namespace Fol\Http\Router;
 
 use Fol\Http\ContainerTrait;
@@ -24,7 +25,7 @@ class Router implements MiddlewareInterface
     private $routeFactory;
 
     /**
-     * Constructor function. Defines the base url
+     * Constructor function. Defines the base url.
      *
      * @param null|RouteFactory $routeFactory
      */
@@ -34,7 +35,7 @@ class Router implements MiddlewareInterface
     }
 
     /**
-     * Run the router as a middleware
+     * Run the router as a middleware.
      *
      * @param Request         $request
      * @param Response        $response
@@ -66,7 +67,7 @@ class Router implements MiddlewareInterface
     }
 
     /**
-     * Define the router used on errors
+     * Define the router used on errors.
      *
      * @param mixed $target The target of this route
      */
@@ -76,7 +77,7 @@ class Router implements MiddlewareInterface
     }
 
     /**
-     * Match given request url and request method and see if a route has been defined for it
+     * Match given request url and request method and see if a route has been defined for it.
      *
      * @param Request $request
      *
@@ -94,7 +95,7 @@ class Router implements MiddlewareInterface
     }
 
     /**
-     * Reverse route a named route
+     * Reverse route a named route.
      *
      * @param string $name   The name of the route to reverse route.
      * @param array  $params Optional array of parameters to use in URL
@@ -111,7 +112,7 @@ class Router implements MiddlewareInterface
     }
 
     /**
-     * Run the route
+     * Run the route.
      *
      * @param Request         $request
      * @param Response        $response
@@ -129,7 +130,6 @@ class Router implements MiddlewareInterface
             }
 
             call_user_func($route, $request, $response, $stack);
-
         } catch (HttpException $exception) {
             if (!$this->errorRoute) {
                 throw $exception;

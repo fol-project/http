@@ -2,7 +2,6 @@
 use Fol\Http\Request;
 use Fol\Http\Response;
 use Fol\Http\MiddlewareStack;
-use Fol\Http\Sessions\Session;
 use Fol\Http\Middlewares;
 
 class IpDetectorTest extends PHPUnit_Framework_TestCase
@@ -15,7 +14,7 @@ class IpDetectorTest extends PHPUnit_Framework_TestCase
 
         $request = new Request('/', 'get', [
             'Client-Ip' => 'unknow,123.456.789.10',
-            'X-Forwarded' => '123.234.123.10'
+            'X-Forwarded' => '123.234.123.10',
         ]);
         $response = $stack->run($request);
 

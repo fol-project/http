@@ -4,10 +4,9 @@ namespace Fol\Http\Middlewares;
 use Fol\Http\Request;
 use Fol\Http\Response;
 use Fol\Http\MiddlewareStack;
-use Fol\Http\Utils;
 
 /**
- * Middleware to create a digest authentication
+ * Middleware to create a digest authentication.
  */
 class DigestAuthentication extends Authentication
 {
@@ -16,7 +15,7 @@ class DigestAuthentication extends Authentication
     protected $nonce;
 
     /**
-     * Constructor. Defines de users
+     * Constructor. Defines de users.
      *
      * @param array $users [username => password]
      */
@@ -38,10 +37,10 @@ class DigestAuthentication extends Authentication
     }
 
     /**
-     * Login
+     * Login.
      *
      * @param Request $request
-     * 
+     *
      * @return boolean
      */
     protected function login(Request $request)
@@ -64,10 +63,10 @@ class DigestAuthentication extends Authentication
     }
 
     /**
-     * Detect and return the format
+     * Detect and return the format.
      *
-     * @param string         $user
-     * 
+     * @param string $user
+     *
      * @return string|null
      */
     protected function getPassword($user)
@@ -76,12 +75,12 @@ class DigestAuthentication extends Authentication
     }
 
     /**
-     * Validate the user and password
-     * 
+     * Validate the user and password.
+     *
      * @param array  $authorization
      * @param string $method
      * @param string $password
-     * 
+     *
      * @return boolean
      */
     protected function checkAuthentication(array $authorization, $method, $password)
@@ -95,7 +94,7 @@ class DigestAuthentication extends Authentication
     }
 
     /**
-     * Parses the authorization header
+     * Parses the authorization header.
      *
      * @param string $authorization
      *

@@ -1,9 +1,10 @@
 <?php
 /**
- * Fol\Http\RequestCookies
+ * Fol\Http\RequestCookies.
  *
  * Class to store incoming cookies
  */
+
 namespace Fol\Http;
 
 class RequestCookies implements \ArrayAccess
@@ -11,7 +12,7 @@ class RequestCookies implements \ArrayAccess
     use ContainerTrait;
 
     /**
-     * Returns the cookies as a header as string
+     * Returns the cookies as a header as string.
      *
      * @param string $name       The cookie name
      * @param string $headerName The cookie header name
@@ -42,7 +43,7 @@ class RequestCookies implements \ArrayAccess
     }
 
     /**
-     * Adds new cookies from a header string
+     * Adds new cookies from a header string.
      *
      * @param string $string     The cookie header value
      * @param string $headerName The cookie header name

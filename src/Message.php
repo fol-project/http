@@ -1,9 +1,10 @@
 <?php
 /**
- * Fol\Http\Message
+ * Fol\Http\Message.
  *
  * Class to manage a http message
  */
+
 namespace Fol\Http;
 
 abstract class Message
@@ -14,7 +15,7 @@ abstract class Message
     protected $body;
 
     /**
-     * {inheritDoc}
+     * {inheritDoc}.
      */
     public function getProtocolVersion()
     {
@@ -30,7 +31,7 @@ abstract class Message
     }
 
     /**
-     * Returns the message body
+     * Returns the message body.
      *
      * @return Body
      */
@@ -40,7 +41,7 @@ abstract class Message
     }
 
     /**
-     * Sets the message body
+     * Sets the message body.
      *
      * @param Body $body
      */

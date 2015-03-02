@@ -1,9 +1,10 @@
 <?php
 /**
- * Fol\Http\Router\ErrorRoute
+ * Fol\Http\Router\ErrorRoute.
  *
  * Class to manage an error route
  */
+
 namespace Fol\Http\Router;
 
 class ErrorRoute extends Route
@@ -11,7 +12,7 @@ class ErrorRoute extends Route
     public $target;
 
     /**
-     * Constructor
+     * Constructor.
      *
      * @param array $config One available configuration: target
      */

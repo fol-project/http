@@ -1,9 +1,10 @@
 <?php
 /**
- * Fol\Http\ContainerTrait
+ * Fol\Http\ContainerTrait.
  *
  * Trait with utilities to store and retrieve variables
  */
+
 namespace Fol\Http;
 
 trait ContainerTrait
@@ -11,7 +12,7 @@ trait ContainerTrait
     protected $items = [];
 
     /**
-     * Constructor class. You can define the items directly
+     * Constructor class. You can define the items directly.
      *
      * @param array $items The items to store
      */
@@ -23,7 +24,7 @@ trait ContainerTrait
     }
 
     /**
-     * ArrayAcces interface methods
+     * ArrayAcces interface methods.
      */
     public function offsetExists($offset)
     {
@@ -46,7 +47,7 @@ trait ContainerTrait
     }
 
     /**
-     * Converts all items to a string
+     * Converts all items to a string.
      */
     public function __toString()
     {
@@ -64,7 +65,7 @@ trait ContainerTrait
     }
 
     /**
-     * Counts all stored parameteres
+     * Counts all stored parameteres.
      *
      * @return int The total number of parameters
      */
@@ -95,10 +96,10 @@ trait ContainerTrait
     }
 
     /**
-     * Sets one parameter or various new parameters
+     * Sets one parameter or various new parameters.
      *
      * @param null|string|array $name  The parameter name. You can define an array with name => value to insert various parameters
-     * @param mixed        $value The parameter value.
+     * @param mixed             $value The parameter value.
      *
      * @return $this
      */
@@ -116,7 +117,7 @@ trait ContainerTrait
     }
 
     /**
-     * Deletes one or all parameters
+     * Deletes one or all parameters.
      *
      * $params->delete('name') Deletes one parameter
      * $params->delete() Deletes all parameter
@@ -137,7 +138,7 @@ trait ContainerTrait
     }
 
     /**
-     * Checks if a parameter exists
+     * Checks if a parameter exists.
      *
      * @param string $name The parameter name
      *

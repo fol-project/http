@@ -7,7 +7,7 @@ use Fol\Http\MiddlewareStack;
 use Fol\Http\MiddlewareInterface;
 
 /**
- * Middleware to get the client ip
+ * Middleware to get the client ip.
  */
 class IpDetector implements MiddlewareInterface
 {
@@ -21,7 +21,7 @@ class IpDetector implements MiddlewareInterface
     ];
 
     /**
-     * Run the middleware
+     * Run the middleware.
      *
      * @param Request         $request
      * @param Response        $response
@@ -39,10 +39,10 @@ class IpDetector implements MiddlewareInterface
     }
 
     /**
-     * Detect and return all ips found
+     * Detect and return all ips found.
      *
-     * @param Request         $request
-     * 
+     * @param Request $request
+     *
      * @return array
      */
     protected function getIps(Request $request)

@@ -1,9 +1,10 @@
 <?php
 /**
- * Fol\Http\Request
+ * Fol\Http\Request.
  *
  * Class to manage the http request data
  */
+
 namespace Fol\Http;
 
 class Request extends Message
@@ -18,7 +19,7 @@ class Request extends Message
     public $attributes;
 
     /**
-     * Creates a new request object from global values
+     * Creates a new request object from global values.
      *
      * @param Globals $globals
      *
@@ -40,7 +41,7 @@ class Request extends Message
     }
 
     /**
-     * Constructor
+     * Constructor.
      *
      * @param string $url     The request url
      * @param string $method  The request method
@@ -66,7 +67,7 @@ class Request extends Message
     }
 
     /**
-     * Magic function to clone the internal objects
+     * Magic function to clone the internal objects.
      */
     public function __clone()
     {
@@ -80,7 +81,7 @@ class Request extends Message
     }
 
     /**
-     * Magic function to convert the request to a string
+     * Magic function to convert the request to a string.
      */
     public function __toString()
     {
@@ -97,7 +98,7 @@ class Request extends Message
     }
 
     /**
-     * Detects if the request has been made by ajax or not
+     * Detects if the request has been made by ajax or not.
      *
      * @return boolean TRUE if the request if ajax, FALSE if not
      */
@@ -107,7 +108,7 @@ class Request extends Message
     }
 
     /**
-     * Gets the request method
+     * Gets the request method.
      *
      * @return string The request method (in uppercase: GET, POST, etc)
      */
@@ -117,7 +118,7 @@ class Request extends Message
     }
 
     /**
-     * Set the request method
+     * Set the request method.
      *
      * @param string $method The request method (GET, POST, etc)
      */

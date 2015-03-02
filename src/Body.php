@@ -1,9 +1,10 @@
 <?php
 /**
- * Fol\Http\Body
+ * Fol\Http\Body.
  *
  * Class store a message body
  */
+
 namespace Fol\Http;
 
 class Body
@@ -17,7 +18,7 @@ class Body
     ];
 
     /**
-     * Constructor
+     * Constructor.
      *
      * @param string|resource $stream The stream resouce opened with fopen or the path
      * @param string          $mode   If you provide a path, the open mode used
@@ -32,7 +33,7 @@ class Body
     }
 
     /**
-     * Open and returns the stream resource
+     * Open and returns the stream resource.
      *
      * @return resource
      */

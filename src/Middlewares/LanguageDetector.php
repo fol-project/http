@@ -9,14 +9,14 @@ use Fol\Http\Utils;
 
 /**
  * Middleware to get the preferred language
- * using the Accept-Language header
+ * using the Accept-Language header.
  */
 class LanguageDetector implements MiddlewareInterface
 {
     protected $availableLanguages;
 
     /**
-     * Constructor. Defines de available languages
+     * Constructor. Defines de available languages.
      *
      * @param array $availableLanguages
      */
@@ -26,7 +26,7 @@ class LanguageDetector implements MiddlewareInterface
     }
 
     /**
-     * Run the middleware
+     * Run the middleware.
      *
      * @param Request         $request
      * @param Response        $response
@@ -48,7 +48,7 @@ class LanguageDetector implements MiddlewareInterface
     }
 
     /**
-     * Run as a middleware
+     * Run as a middleware.
      *
      * @param Request         $request
      * @param Response        $response

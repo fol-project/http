@@ -1,9 +1,10 @@
 <?php
 /**
- * Fol\Http\Router\RouteFactory
+ * Fol\Http\Router\RouteFactory.
  *
  * Class to instantiate routes
  */
+
 namespace Fol\Http\Router;
 
 class RouteFactory
@@ -11,7 +12,7 @@ class RouteFactory
     private $namespace;
 
     /**
-     * Constructor
+     * Constructor.
      *
      * @param string $namespace The namespace where the controllers are located
      */
@@ -21,7 +22,7 @@ class RouteFactory
     }
 
     /**
-     * Generates the target of the route
+     * Generates the target of the route.
      *
      * @param string $target (For example: ControllerClass::method)
      *
@@ -52,7 +53,7 @@ class RouteFactory
     }
 
     /**
-     * Creates a new route instance
+     * Creates a new route instance.
      *
      * @param string $name   Route name
      * @param array  $config Route configuration (path, target, etc)
@@ -73,7 +74,7 @@ class RouteFactory
     }
 
     /**
-     * Creates a new error route instance
+     * Creates a new error route instance.
      *
      * @param mixed $target The error target
      *

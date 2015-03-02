@@ -1,9 +1,10 @@
 <?php
 /**
- * Fol\Http\Utils
+ * Fol\Http\Utils.
  *
  * Some http utilities
  */
+
 namespace Fol\Http;
 
 class Utils
@@ -13,7 +14,7 @@ class Utils
     private static $statuses;
 
     /**
-     * Returns all available formats
+     * Returns all available formats.
      *
      * @return array
      */
@@ -27,7 +28,7 @@ class Utils
     }
 
     /**
-     * Returns all available languages
+     * Returns all available languages.
      *
      * @return array
      */
@@ -41,7 +42,7 @@ class Utils
     }
 
     /**
-     * Returns all available statuses
+     * Returns all available statuses.
      *
      * @return array
      */
@@ -56,7 +57,7 @@ class Utils
 
     /**
      * Gets the format related with a mimetype.
-     * Utils::getFormat('text/css') => css
+     * Utils::getFormat('text/css') => css.
      *
      * @param string $mimetype The mimetype to search
      *
@@ -75,7 +76,7 @@ class Utils
 
     /**
      * Gets the mimetype related with a format.
-     * Utils::getMimetype('css') => text/css
+     * Utils::getMimetype('css') => text/css.
      *
      * @param string $format The format to search
      *
@@ -90,7 +91,7 @@ class Utils
 
     /**
      * Gets the language
-     * Utils::getLanguage('gl-es') => gl
+     * Utils::getLanguage('gl-es') => gl.
      *
      * @param string $language The raw language code
      *
@@ -106,7 +107,7 @@ class Utils
 
     /**
      * Gets the language name
-     * Utils::getLanguageName('gl-es') => Galician
+     * Utils::getLanguageName('gl-es') => Galician.
      *
      * @param string $language The raw language code
      *
@@ -122,7 +123,7 @@ class Utils
 
     /**
      * Gets the default reason phrase related with a status code.
-     * Utils::getReasonPhrase(200) => OK
+     * Utils::getReasonPhrase(200) => OK.
      *
      * @param integer $code The Http code
      *
@@ -136,7 +137,7 @@ class Utils
     }
 
     /**
-     * Parse and return http values
+     * Parse and return http values.
      *
      * Utils::parseHeader('text/html,application/xhtml+xml,application/xml;q=0.9,* /*;q=0.8')
      * Array (
@@ -184,7 +185,7 @@ class Utils
     }
 
     /**
-     * Convert a parsed http value to string (the opposite of Utils::parseHeader)
+     * Convert a parsed http value to string (the opposite of Utils::parseHeader).
      *
      * @param array $header The parsed header
      *

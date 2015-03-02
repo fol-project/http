@@ -1,9 +1,10 @@
 <?php
 /**
- * Fol\Http\Cookies
+ * Fol\Http\Cookies.
  *
  * Class to manage cookies response cookies
  */
+
 namespace Fol\Http;
 
 class ResponseCookies implements \ArrayAccess
@@ -11,7 +12,7 @@ class ResponseCookies implements \ArrayAccess
     use ContainerTrait;
 
     /**
-     * Set the default config for cookies
+     * Set the default config for cookies.
      *
      * @param array $config
      */
@@ -27,7 +28,7 @@ class ResponseCookies implements \ArrayAccess
     }
 
     /**
-     * Magic function to converts all cookies to a string
+     * Magic function to converts all cookies to a string.
      */
     public function __toString()
     {
@@ -41,7 +42,7 @@ class ResponseCookies implements \ArrayAccess
     }
 
     /**
-     * Sets a new cookie
+     * Sets a new cookie.
      *
      * @param string                   $name     The cookie name
      * @param string                   $value    The cookie value
@@ -71,7 +72,7 @@ class ResponseCookies implements \ArrayAccess
     }
 
     /**
-     * Deletes a cookie
+     * Deletes a cookie.
      *
      * @param string  $name     The cookie name
      * @param string  $path     The cookie path
@@ -85,7 +86,7 @@ class ResponseCookies implements \ArrayAccess
     }
 
     /**
-     * Returns a cookie as string
+     * Returns a cookie as string.
      *
      * @param string $name The cookie name
      *
@@ -135,7 +136,7 @@ class ResponseCookies implements \ArrayAccess
     }
 
     /**
-     * Adds a new cookie from a Set-Cookie header string
+     * Adds a new cookie from a Set-Cookie header string.
      *
      * @param string $string
      *

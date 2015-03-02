@@ -19,7 +19,7 @@ class RequestFilesTest extends PHPUnit_Framework_TestCase
                     'tmp_name' => 'efghij',
                     'size' => 2555,
                     'type' => 'image/png',
-                    'error' => 1
+                    'error' => 1,
                 ],
             ],
             'avatar' => [

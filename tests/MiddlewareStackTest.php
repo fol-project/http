@@ -3,7 +3,6 @@ use Fol\Http\Request;
 use Fol\Http\Response;
 use Fol\Http\MiddlewareStack;
 use Fol\Http\Sessions\Session;
-use Fol\Http\Middlewares;
 
 class MiddlewareStackTest extends PHPUnit_Framework_TestCase
 {

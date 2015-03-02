@@ -23,7 +23,7 @@ class RouterTest extends PHPUnit_Framework_TestCase
             'path' => '/',
             'target' => function ($request, $response) {
                 $response->getBody()->write('This is the index');
-            }
+            },
         ]);
 
         $router->map('post', [
@@ -31,7 +31,7 @@ class RouterTest extends PHPUnit_Framework_TestCase
             'method' => 'POST',
             'target' => function ($request, $response) {
                 $response->getBody()->write('This is POST');
-            }
+            },
         ]);
 
         $router->map('get-post', [
@@ -39,7 +39,7 @@ class RouterTest extends PHPUnit_Framework_TestCase
             'method' => ['POST', 'GET'],
             'target' => function ($request, $response) {
                 $response->getBody()->write('This is GET/POST');
-            }
+            },
         ]);
 
         $router->map('put', [
@@ -50,7 +50,7 @@ class RouterTest extends PHPUnit_Framework_TestCase
             'method' => ['PUT'],
             'target' => function ($request, $response) {
                 $response->getBody()->write('This is PUT/'.$request->attributes['id']);
-            }
+            },
         ]);
 
         $router->map('subrequest', [
@@ -63,15 +63,15 @@ class RouterTest extends PHPUnit_Framework_TestCase
                 $subresponse = $this->execute($router, new Request('http://domain.com/post', 'POST'));
 
                 $response->getBody()->write((string) $subresponse->getBody());
-            }
+            },
         ]);
 
         $router->map('error', [
             'path' => '/error',
             'target' => function ($request, $response) {
                 throw new HttpException("This is an error!!");
-                
-            }
+
+            },
         ]);
 
         $router->map('routes', [
@@ -82,7 +82,7 @@ class RouterTest extends PHPUnit_Framework_TestCase
                 $this->assertEquals('http://domain.com/get/post', $router->getUrl('get-post'));
                 $this->assertEquals('http://domain.com/put/34', $router->getUrl('put', ['id' => '34']));
                 $this->assertEquals('http://domain.com/put/34?name=oscar', $router->getUrl('put', ['id' => '34', 'name' => 'oscar']));
-            }
+            },
         ]);
 
         $router->setError(function ($request, $response) {
@@ -91,7 +91,6 @@ class RouterTest extends PHPUnit_Framework_TestCase
             return 'Error '.$error->getCode().'/'.$error->getMessage();
         });
 
-        
         $response = $this->execute($router, new Request('http://domain.com'));
         $this->assertEquals('This is the index', (string) $response->getBody());
 

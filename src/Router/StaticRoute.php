@@ -1,9 +1,10 @@
 <?php
 /**
- * Fol\Http\Router\StaticRoute
+ * Fol\Http\Router\StaticRoute.
  *
  * Class to manage a http static route (the path is a string, not a regex)
  */
+
 namespace Fol\Http\Router;
 
 use Fol\Http\Url;
@@ -21,7 +22,7 @@ class StaticRoute extends Route
     public $path;
 
     /**
-     * Check whether or not the route match with the request
+     * Check whether or not the route match with the request.
      *
      * @param Request $request The request to check
      * @param array   $baseUrl The base url components used
@@ -40,7 +41,7 @@ class StaticRoute extends Route
     }
 
     /**
-     * Get the route properties
+     * Get the route properties.
      *
      * @param array $defaults   Default values on null
      * @param array $properties The properties to return
@@ -63,7 +64,7 @@ class StaticRoute extends Route
     }
 
     /**
-     * Returns the normalized path
+     * Returns the normalized path.
      *
      * @param null|string $basePath
      *
@@ -87,7 +88,7 @@ class StaticRoute extends Route
     }
 
     /**
-     * Reverse the route
+     * Reverse the route.
      *
      * @param array $baseUrl    The base url components used
      * @param array $parameters Optional array of parameters to use in URL
@@ -102,7 +103,7 @@ class StaticRoute extends Route
     }
 
     /**
-     * Check two values
+     * Check two values.
      *
      * @param mixed $routeValue
      * @param mixed $requestValue

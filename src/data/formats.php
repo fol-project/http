@@ -17,5 +17,5 @@ return [
     'rss' => ['application/rss+xml'],
     'txt' => ['text/plain'],
     'xml' => ['text/xml', 'application/xml', 'application/x-xml'],
-    'zip' => ['application/zip', 'application/x-zip', 'application/x-zip-compressed']
+    'zip' => ['application/zip', 'application/x-zip', 'application/x-zip-compressed'],
 ];

@@ -4,10 +4,9 @@ namespace Fol\Http\Middlewares;
 use Fol\Http\Request;
 use Fol\Http\Response;
 use Fol\Http\MiddlewareStack;
-use Fol\Http\Utils;
 
 /**
- * Middleware to create a basic authentication
+ * Middleware to create a basic authentication.
  */
 class BasicAuthentication extends Authentication
 {
@@ -15,9 +14,9 @@ class BasicAuthentication extends Authentication
     protected $realm;
 
     /**
-     * Constructor. Defines de users
+     * Constructor. Defines de users.
      *
-     * @param array $users [username => password]
+     * @param array  $users [username => password]
      * @param string $realm
      */
     public function __construct(array $users = null, $realm = 'Login')
@@ -51,11 +50,11 @@ class BasicAuthentication extends Authentication
     }
 
     /**
-     * Validate the user and password
-     * 
+     * Validate the user and password.
+     *
      * @param string $username
      * @param string $password
-     * 
+     *
      * @return boolean
      */
     protected function checkAuthentication($username, $password)
@@ -68,7 +67,7 @@ class BasicAuthentication extends Authentication
     }
 
     /**
-     * Parses the authorization header
+     * Parses the authorization header.
      *
      * @param string $authorization
      *
@@ -79,12 +78,12 @@ class BasicAuthentication extends Authentication
         if (strpos($authorization, 'Basic') !== 0) {
             return false;
         }
-        
+
         $authorization = explode(':', base64_decode(substr($authorization, 6)), 2);
 
         return [
             'username' => $authorization[0],
-            'password' => isset($authorization[1]) ? $authorization[1] : null
+            'password' => isset($authorization[1]) ? $authorization[1] : null,
         ];
     }
 }

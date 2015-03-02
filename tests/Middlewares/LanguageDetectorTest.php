@@ -2,7 +2,6 @@
 use Fol\Http\Request;
 use Fol\Http\Response;
 use Fol\Http\MiddlewareStack;
-use Fol\Http\Sessions\Session;
 use Fol\Http\Middlewares;
 
 class LanguageDetectorTest extends PHPUnit_Framework_TestCase
@@ -14,7 +13,7 @@ class LanguageDetectorTest extends PHPUnit_Framework_TestCase
 
         $request = new Request('/', 'get', ['Accept-Language' => $header]);
         $response = $stack->run($request);
-        
+
         $this->assertSame($assert, $request->attributes->get('LANGUAGE'));
         $this->assertSame($assert, $response->headers->get('Content-Language'));
     }
@@ -27,6 +26,5 @@ class LanguageDetectorTest extends PHPUnit_Framework_TestCase
         $this->execute(null, null, null);
         $this->execute(null, ['es', 'en'], 'es');
         $this->execute(null, ['en', 'es'], 'en');
-
     }
 }

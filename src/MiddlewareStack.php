@@ -1,9 +1,10 @@
 <?php
 /**
- * Fol\Http\Middleware
+ * Fol\Http\Middleware.
  *
  * Middleware
  */
+
 namespace Fol\Http;
 
 class MiddlewareStack implements MiddlewareInterface
@@ -24,12 +25,12 @@ class MiddlewareStack implements MiddlewareInterface
     }
 
     /**
-     * Magic method to execute this middleware stack as middleware
-     * 
+     * Magic method to execute this middleware stack as middleware.
+     *
      * @param Request         $request
      * @param Response        $response
      * @param Middlewarestack $stack
-     * 
+     *
      * @return Response
      */
     public function __invoke(Request $request, Response $response, MiddlewareStack $stack)
@@ -40,7 +41,7 @@ class MiddlewareStack implements MiddlewareInterface
     }
 
     /**
-     * Returns the app
+     * Returns the app.
      *
      * @return mixed
      */
@@ -60,7 +61,7 @@ class MiddlewareStack implements MiddlewareInterface
     }
 
     /**
-     * Unshift a middleware in the stack
+     * Unshift a middleware in the stack.
      *
      * @param callable
      */
@@ -70,7 +71,7 @@ class MiddlewareStack implements MiddlewareInterface
     }
 
     /**
-     * Removes the last middleware and returns it
+     * Removes the last middleware and returns it.
      *
      * @return callable|null
      */
@@ -80,7 +81,7 @@ class MiddlewareStack implements MiddlewareInterface
     }
 
     /**
-     * Removes the first middleware and returns it
+     * Removes the first middleware and returns it.
      *
      * @return callable|null
      */
@@ -90,8 +91,7 @@ class MiddlewareStack implements MiddlewareInterface
     }
 
     /**
-     * Run the next middleware
-     *
+     * Run the next middleware.
      */
     public function next()
     {
@@ -101,17 +101,17 @@ class MiddlewareStack implements MiddlewareInterface
     }
 
     /**
-     * Run middleware stack
+     * Run middleware stack.
      *
-     * @param Request         $request
-     * @param null|Response   $response
-     * 
+     * @param Request       $request
+     * @param null|Response $response
+     *
      * @return Response
      */
     public function run(Request $request, Response $response = null)
     {
         $this->request = $request;
-        $this->response = $response ?: new Response;
+        $this->response = $response ?: new Response();
 
         if (($middleware = reset($this->middlewares))) {
             call_user_func($middleware, $this->request, $this->response, $this);

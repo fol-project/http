@@ -7,12 +7,12 @@ use Fol\Http\MiddlewareStack;
 use Fol\Http\MiddlewareInterface;
 
 /**
- * Abstract class used for authentication middlewares
+ * Abstract class used for authentication middlewares.
  */
 abstract class Authentication implements MiddlewareInterface
 {
     /**
-     * Run the middleware
+     * Run the middleware.
      *
      * @param Request         $request
      * @param Response        $response
@@ -30,7 +30,7 @@ abstract class Authentication implements MiddlewareInterface
     }
 
     /**
-     * Function executed on success
+     * Function executed on success.
      *
      * @param Request         $request
      * @param Response        $response
@@ -42,7 +42,7 @@ abstract class Authentication implements MiddlewareInterface
     }
 
     /**
-     * Function executed on error
+     * Function executed on error.
      *
      * @param Request         $request
      * @param Response        $response
@@ -55,10 +55,10 @@ abstract class Authentication implements MiddlewareInterface
     }
 
     /**
-     * Login function
+     * Login function.
      *
      * @param Request $request
-     * 
+     *
      * @return boolean
      */
     abstract protected function login(Request $request);

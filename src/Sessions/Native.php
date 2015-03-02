@@ -1,9 +1,10 @@
 <?php
 /**
- * Fol\Http\Sessions\Native
+ * Fol\Http\Sessions\Native.
  *
  * Class to manage the PHP native session
  */
+
 namespace Fol\Http\Sessions;
 
 use Fol\Http\MiddlewareStack;
@@ -13,7 +14,7 @@ use Fol\Http\Response;
 class Native extends Session
 {
     /**
-     * Regenerate the id for the current session
+     * Regenerate the id for the current session.
      */
     public function regenerate($destroy = false, $lifetime = null)
     {
@@ -36,7 +37,7 @@ class Native extends Session
     }
 
     /**
-     * Destroy the current session deleting the data
+     * Destroy the current session deleting the data.
      */
     public function destroy()
     {
@@ -48,7 +49,7 @@ class Native extends Session
     }
 
     /**
-     * Run the session
+     * Run the session.
      *
      * @param Request         $request
      * @param Response        $response
@@ -73,7 +74,7 @@ class Native extends Session
             'path' => $baseUrl->getPath(false),
             'secure' => ($baseUrl->getScheme() === 'https'),
             'httponly' => true,
-            'expires' => ini_get('session.cookie_lifetime')
+            'expires' => ini_get('session.cookie_lifetime'),
         ];
 
         $this->start($cookie);
@@ -92,7 +93,7 @@ class Native extends Session
     }
 
     /**
-     * Starts the session
+     * Starts the session.
      *
      * @param Handler $handler
      *

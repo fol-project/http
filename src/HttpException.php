@@ -1,9 +1,10 @@
 <?php
 /**
- * Fol\Http\HttpException
+ * Fol\Http\HttpException.
  *
  * Exception to throw if an http error happens (for example 404, 500, etc)
  */
+
 namespace Fol\Http;
 
 class HttpException extends \Exception

@@ -1,9 +1,10 @@
 <?php
 /**
- * Fol\Http\Headers
+ * Fol\Http\Headers.
  *
  * Manage http headers
  */
+
 namespace Fol\Http;
 
 use DateTime;
@@ -15,7 +16,7 @@ class Headers implements \ArrayAccess
 
     /**
      * Normalize the name of the parameters.
-     * self::normalize('CONTENT type') Returns "Content-Type"
+     * self::normalize('CONTENT type') Returns "Content-Type".
      *
      * @param string $string The text to normalize
      *
@@ -27,7 +28,7 @@ class Headers implements \ArrayAccess
     }
 
     /**
-     * Converts all headers to a string
+     * Converts all headers to a string.
      */
     public function __toString()
     {
@@ -43,7 +44,7 @@ class Headers implements \ArrayAccess
     }
 
     /**
-     * Stores new headers. You can define an array to store more than one at the same time
+     * Stores new headers. You can define an array to store more than one at the same time.
      *
      * @param string|array   $name    The header name
      * @param string|boolean $value   The header value
@@ -71,7 +72,7 @@ class Headers implements \ArrayAccess
     }
 
     /**
-     * Gets one or all parameters
+     * Gets one or all parameters.
      *
      * @param string  $name  The header name
      * @param boolean $first Set true to return just the value of the first header with this name. False to return an array with all values.
@@ -93,7 +94,7 @@ class Headers implements \ArrayAccess
 
     /**
      * Gets one parameter as a getDateTime object
-     * Useful for datetime values (Expires, Last-Modification, etc)
+     * Useful for datetime values (Expires, Last-Modification, etc).
      *
      * @param string $name The header name
      *
@@ -107,7 +108,7 @@ class Headers implements \ArrayAccess
     }
 
     /**
-     * Define a header using a Datetime object and returns it
+     * Define a header using a Datetime object and returns it.
      *
      * @param string          $name     The header name
      * @param DateTime|string $datetime The datetime object. You can define also an string so the Datetime object will be created
@@ -127,7 +128,7 @@ class Headers implements \ArrayAccess
     }
 
     /**
-     * Deletes one or all headers
+     * Deletes one or all headers.
      *
      * $headers->delete('content-type') Deletes one header
      * $headers->delete() Deletes all headers
@@ -146,7 +147,7 @@ class Headers implements \ArrayAccess
     }
 
     /**
-     * Checks if a header exists
+     * Checks if a header exists.
      *
      * @param string $name The header name
      *
@@ -158,7 +159,7 @@ class Headers implements \ArrayAccess
     }
 
     /**
-     * Returns a header as string
+     * Returns a header as string.
      *
      * @param string  $name  The header name
      * @param boolean $first Set true to return just the value of the first header with this name. False to return an array with all values.
@@ -197,7 +198,7 @@ class Headers implements \ArrayAccess
     }
 
     /**
-     * Adds a new header from a header string
+     * Adds a new header from a header string.
      *
      * @param string  $string
      * @param boolean $replace

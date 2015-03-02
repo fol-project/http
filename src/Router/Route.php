@@ -1,9 +1,10 @@
 <?php
 /**
- * Fol\Http\Router\Route
+ * Fol\Http\Router\Route.
  *
  * Base class for all routes
  */
+
 namespace Fol\Http\Router;
 
 use Fol\Http\Request;
@@ -13,7 +14,7 @@ use Fol\Http\MiddlewareStack;
 abstract class Route
 {
     /**
-     * Constructor
+     * Constructor.
      *
      * @param array $config The available options
      */
@@ -27,7 +28,7 @@ abstract class Route
     }
 
     /**
-     * Run the route as a middleware
+     * Run the route as a middleware.
      *
      * @param Request         $request
      * @param Response        $response
@@ -41,7 +42,7 @@ abstract class Route
     }
 
     /**
-     * Execute the route
+     * Execute the route.
      *
      * @param Request         $request
      * @param Response        $response

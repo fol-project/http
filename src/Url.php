@@ -1,9 +1,10 @@
 <?php
 /**
- * Fol\Http\Url
+ * Fol\Http\Url.
  *
  * Class to represent and manipulate urls
  */
+
 namespace Fol\Http;
 
 class Url
@@ -26,7 +27,7 @@ class Url
     public $query;
 
     /**
-     * Generates an url using its parts
+     * Generates an url using its parts.
      *
      * @param string      $scheme
      * @param string      $host
@@ -57,7 +58,7 @@ class Url
     }
 
     /**
-     * Constructor
+     * Constructor.
      *
      * @param string $url
      */
@@ -68,7 +69,7 @@ class Url
     }
 
     /**
-     * Set a new url
+     * Set a new url.
      *
      * @param string $url The new url
      */
@@ -92,7 +93,7 @@ class Url
     }
 
     /**
-     * Magic method to stringify the url
+     * Magic method to stringify the url.
      *
      * @return string
      */
@@ -102,7 +103,7 @@ class Url
     }
 
     /**
-     * Gets the url
+     * Gets the url.
      *
      * @param boolean $query    True to add the query to the url (false by default)
      * @param boolean $fragment True to add the fragment to the url (false by default)
@@ -115,7 +116,7 @@ class Url
     }
 
     /**
-     * Gets the url directory
+     * Gets the url directory.
      *
      * @return string
      */
@@ -125,7 +126,7 @@ class Url
     }
 
     /**
-     * Sets the url directory
+     * Sets the url directory.
      *
      * @param string $directory
      */
@@ -143,7 +144,7 @@ class Url
     }
 
     /**
-     * Gets the url path (directory + filename [+ extension])
+     * Gets the url path (directory + filename [+ extension]).
      *
      * @return string
      */
@@ -167,7 +168,7 @@ class Url
     }
 
     /**
-     * Sets the url path
+     * Sets the url path.
      *
      * @param string $path
      */
@@ -181,7 +182,7 @@ class Url
     }
 
     /**
-     * Gets the url scheme (for example: http)
+     * Gets the url scheme (for example: http).
      *
      * @return null|string
      */
@@ -191,7 +192,7 @@ class Url
     }
 
     /**
-     * Sets the url scheme
+     * Sets the url scheme.
      *
      * @param null|string $scheme
      */
@@ -201,7 +202,7 @@ class Url
     }
 
     /**
-     * Gets the url host
+     * Gets the url host.
      *
      * @return null|string
      */
@@ -211,7 +212,7 @@ class Url
     }
 
     /**
-     * Sets the url host
+     * Sets the url host.
      *
      * @param null|string $host
      */
@@ -221,7 +222,7 @@ class Url
     }
 
     /**
-     * Gets the url port
+     * Gets the url port.
      *
      * @return null|integer
      */
@@ -231,7 +232,7 @@ class Url
     }
 
     /**
-     * Sets the url port
+     * Sets the url port.
      *
      * @param null|integer $port
      */
@@ -241,7 +242,7 @@ class Url
     }
 
     /**
-     * Gets the url user
+     * Gets the url user.
      *
      * @return null|string
      */
@@ -251,7 +252,7 @@ class Url
     }
 
     /**
-     * Sets the url user
+     * Sets the url user.
      *
      * @param null|string $user
      */
@@ -261,7 +262,7 @@ class Url
     }
 
     /**
-     * Gets the url password
+     * Gets the url password.
      *
      * @return null|string
      */
@@ -271,7 +272,7 @@ class Url
     }
 
     /**
-     * Sets the url password
+     * Sets the url password.
      *
      * @param null|string $password
      */
@@ -281,7 +282,7 @@ class Url
     }
 
     /**
-     * Gets the url fragment
+     * Gets the url fragment.
      *
      * @return null|string
      */
@@ -291,7 +292,7 @@ class Url
     }
 
     /**
-     * Sets the url fragment
+     * Sets the url fragment.
      *
      * @param null|string $fragment
      */
@@ -305,7 +306,7 @@ class Url
     }
 
     /**
-     * Gets the url extension
+     * Gets the url extension.
      *
      * @return string
      */
@@ -315,7 +316,7 @@ class Url
     }
 
     /**
-     * Sets the url extension
+     * Sets the url extension.
      *
      * @param string $extension
      */
@@ -325,7 +326,7 @@ class Url
     }
 
     /**
-     * Gets the url filename
+     * Gets the url filename.
      *
      * @return string
      */
@@ -335,7 +336,7 @@ class Url
     }
 
     /**
-     * Sets the url filename
+     * Sets the url filename.
      *
      * @param string $filename
      */
@@ -345,7 +346,7 @@ class Url
     }
 
     /**
-     * Returns the url parameters as array
+     * Returns the url parameters as array.
      *
      * @return array
      */
@@ -359,7 +360,7 @@ class Url
             'password' => $this->getPassword(),
             'path' => $this->getPath(true),
             'query' => $this->query->get(),
-            'fragment' => $this->getFragment()
+            'fragment' => $this->getFragment(),
         ];
     }
 }

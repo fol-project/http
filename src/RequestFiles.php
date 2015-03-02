@@ -1,9 +1,10 @@
 <?php
 /**
- * Fol\Http\RequestFiles
+ * Fol\Http\RequestFiles.
  *
  * Class to store the incoming files ($_FILES)
  */
+
 namespace Fol\Http;
 
 class RequestFiles extends RequestParameters
@@ -17,7 +18,7 @@ class RequestFiles extends RequestParameters
     ];
 
     /**
-     * Check if an uploaded file has any error
+     * Check if an uploaded file has any error.
      *
      * @param string $name The name of the uploaded file
      *
@@ -35,7 +36,7 @@ class RequestFiles extends RequestParameters
     }
 
     /**
-     * Returns the error code
+     * Returns the error code.
      *
      * @param string $name The name of the uploaded file
      *
@@ -53,7 +54,7 @@ class RequestFiles extends RequestParameters
     }
 
     /**
-     * Returns the error message
+     * Returns the error message.
      *
      * @param string $name The name of the uploaded file
      *

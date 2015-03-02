@@ -8,15 +8,15 @@ use Fol\Http\MiddlewareStack;
 use Fol\Http\MiddlewareInterface;
 
 /**
- * Middleware used to define a baseurl used by cookies, routers, etc
+ * Middleware used to define a baseurl used by cookies, routers, etc.
  */
 class BaseUrl implements MiddlewareInterface
 {
     protected $url;
 
     /**
-     * Set the base url
-     * 
+     * Set the base url.
+     *
      * @param string|Url $url
      */
     public function __construct($url)
@@ -25,7 +25,7 @@ class BaseUrl implements MiddlewareInterface
     }
 
     /**
-     * Run the middleware
+     * Run the middleware.
      *
      * @param Request         $request
      * @param Response        $response

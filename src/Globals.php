@@ -1,9 +1,10 @@
 <?php
 /**
- * Fol\Http\Globals
+ * Fol\Http\Globals.
  *
  * Class to detect and return http data from global $_SERVER/$_POST/$_GET/$_FILES arrays
  */
+
 namespace Fol\Http;
 
 class Globals
@@ -36,7 +37,7 @@ class Globals
     }
 
     /**
-     * Gets a value from $server variable
+     * Gets a value from $server variable.
      *
      * @param string $name The parameter name
      *
@@ -48,7 +49,7 @@ class Globals
     }
 
     /**
-     * Checks a value from $_SERVER
+     * Checks a value from $_SERVER.
      *
      * @param string $name The parameter name
      *
@@ -60,7 +61,7 @@ class Globals
     }
 
     /**
-     * Gets the global request scheme
+     * Gets the global request scheme.
      *
      * @return string
      */
@@ -70,7 +71,7 @@ class Globals
     }
 
     /**
-     * Gets the global request port
+     * Gets the global request port.
      *
      * @return integer
      */
@@ -80,7 +81,7 @@ class Globals
     }
 
     /**
-     * Gets the global request path (with no query)
+     * Gets the global request path (with no query).
      *
      * @return string
      */
@@ -90,7 +91,7 @@ class Globals
     }
 
     /**
-     * Gets the global request host
+     * Gets the global request host.
      *
      * @return string
      */
@@ -100,7 +101,7 @@ class Globals
     }
 
     /**
-     * Gets the global request url
+     * Gets the global request url.
      *
      * @return string
      */
@@ -110,7 +111,7 @@ class Globals
     }
 
     /**
-     * Gets the global request method
+     * Gets the global request method.
      *
      * @return string
      */
@@ -126,7 +127,7 @@ class Globals
     }
 
     /**
-     * Gets the global headers
+     * Gets the global headers.
      *
      * @return array
      */
@@ -165,7 +166,7 @@ class Globals
     }
 
     /**
-     * Gets the $_SERVER values
+     * Gets the $_SERVER values.
      *
      * @return array
      */
@@ -175,7 +176,7 @@ class Globals
     }
 
     /**
-     * Gets the $_GET values
+     * Gets the $_GET values.
      *
      * @return array
      */
@@ -185,7 +186,7 @@ class Globals
     }
 
     /**
-     * Gets the $_POST values
+     * Gets the $_POST values.
      *
      * @return array
      */
@@ -213,7 +214,7 @@ class Globals
     }
 
     /**
-     * Gets the $_COOKIE values
+     * Gets the $_COOKIE values.
      *
      * @return array
      */
@@ -223,7 +224,7 @@ class Globals
     }
 
     /**
-     * Gets the $_FILES values (and normalizes its structure)
+     * Gets the $_FILES values (and normalizes its structure).
      *
      * @param boolean $fixed
      *
@@ -239,7 +240,7 @@ class Globals
     }
 
     /**
-     * Gets the raw input stream path
+     * Gets the raw input stream path.
      *
      * @return string
      */
@@ -272,7 +273,7 @@ class Globals
     }
 
     /**
-     * Private function used by fixArray
+     * Private function used by fixArray.
      *
      * @param array $files An array with all files values
      *

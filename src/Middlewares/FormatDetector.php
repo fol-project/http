@@ -9,7 +9,7 @@ use Fol\Http\Utils;
 
 /**
  * Middleware to get the format mime-type
- * using the Content-Type header
+ * using the Content-Type header.
  */
 class FormatDetector implements MiddlewareInterface
 {
@@ -17,7 +17,7 @@ class FormatDetector implements MiddlewareInterface
     protected $defaultFormat = 'html';
 
     /**
-     * Constructor. Defines de available languages
+     * Constructor. Defines de available languages.
      *
      * @param array $availableFormats
      */
@@ -31,7 +31,7 @@ class FormatDetector implements MiddlewareInterface
     }
 
     /**
-     * Run the middleware
+     * Run the middleware.
      *
      * @param Request         $request
      * @param Response        $response
@@ -54,10 +54,10 @@ class FormatDetector implements MiddlewareInterface
     }
 
     /**
-     * Detect and return the format
+     * Detect and return the format.
      *
-     * @param Request         $request
-     * 
+     * @param Request $request
+     *
      * @return string
      */
     protected function getPreferredFormat(Request $request)
@@ -76,10 +76,10 @@ class FormatDetector implements MiddlewareInterface
     }
 
     /**
-     * Check if a format is valid or not
-     * 
+     * Check if a format is valid or not.
+     *
      * @param string $format
-     * 
+     *
      * @return boolean
      */
     protected function isValid($format)

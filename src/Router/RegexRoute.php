@@ -1,9 +1,10 @@
 <?php
 /**
- * Fol\Http\Router\RegexRoute
+ * Fol\Http\Router\RegexRoute.
  *
  * Class to manage a http route using regular expressions for the path
  */
+
 namespace Fol\Http\Router;
 
 use Fol\Http\Request;
@@ -15,7 +16,7 @@ class RegexRoute extends StaticRoute
     protected $filters;
 
     /**
-     * Generates and return the regex
+     * Generates and return the regex.
      *
      * @param null|string $basePath
      *
@@ -36,7 +37,7 @@ class RegexRoute extends StaticRoute
     }
 
     /**
-     * Check the regex of the request
+     * Check the regex of the request.
      *
      * @param string      $path     The path
      * @param null|string $basePath The path

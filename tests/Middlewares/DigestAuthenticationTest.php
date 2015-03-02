@@ -2,7 +2,6 @@
 use Fol\Http\Request;
 use Fol\Http\Response;
 use Fol\Http\MiddlewareStack;
-use Fol\Http\Sessions\Session;
 use Fol\Http\Middlewares;
 
 class DigestAuthenticationTest extends PHPUnit_Framework_TestCase
@@ -14,7 +13,7 @@ class DigestAuthenticationTest extends PHPUnit_Framework_TestCase
 
         $request = new Request('/');
         $response = $stack->run($request);
-        
+
         $this->assertSame(401, $response->getStatusCode());
         $this->assertSame('Digest realm="Login",qop="auth",nonce="xxx",opaque="'.md5('Login').'"', $response->headers->get('WWW-Authenticate'));
     }

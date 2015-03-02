@@ -1,9 +1,10 @@
 <?php
 /**
- * Fol\Http\Sessions\Session
+ * Fol\Http\Sessions\Session.
  *
  * Class to manage the session
  */
+
 namespace Fol\Http\Sessions;
 
 use Fol\Http\ContainerTrait;
@@ -22,10 +23,10 @@ class Session implements ArrayAccess, MiddlewareInterface
     protected $name;
 
     /**
-     * Construct and loads the session data
+     * Construct and loads the session data.
      *
-     * @param string  $id
-     * @param string  $name
+     * @param string $id
+     * @param string $name
      */
     public function __construct($id = null, $name = null)
     {
@@ -34,7 +35,7 @@ class Session implements ArrayAccess, MiddlewareInterface
     }
 
     /**
-     * Run the session as a middleware
+     * Run the session as a middleware.
      *
      * @param Request         $request
      * @param Response        $response
@@ -55,7 +56,7 @@ class Session implements ArrayAccess, MiddlewareInterface
     }
 
     /**
-     * Destroy the current session deleting the data
+     * Destroy the current session deleting the data.
      */
     public function destroy()
     {
@@ -63,7 +64,7 @@ class Session implements ArrayAccess, MiddlewareInterface
     }
 
     /**
-     * Get the current session id
+     * Get the current session id.
      *
      * @return string The id
      */
@@ -73,7 +74,7 @@ class Session implements ArrayAccess, MiddlewareInterface
     }
 
     /**
-     * Get the session name
+     * Get the session name.
      *
      * @return string The name
      */
@@ -83,7 +84,7 @@ class Session implements ArrayAccess, MiddlewareInterface
     }
 
     /**
-     * Regenerate the id for the current session
+     * Regenerate the id for the current session.
      *
      * @param boolean $destroy  Set true to destroy the current data
      * @param integer $lifetime The new session duration
@@ -98,9 +99,9 @@ class Session implements ArrayAccess, MiddlewareInterface
     }
 
     /**
-     * Get a flash value (read only once)
+     * Get a flash value (read only once).
      *
-     * @param string $name    The value name. If it is not defined, returns all stored variables
+     * @param string $name The value name. If it is not defined, returns all stored variables
      *
      * @return string The value of the variable or the default value.
      * @return array  All stored variables in case no name is defined.
@@ -120,7 +121,7 @@ class Session implements ArrayAccess, MiddlewareInterface
     }
 
     /**
-     * Set a new flash value
+     * Set a new flash value.
      *
      * @param string|array $name  The variable name or an array of variables
      * @param string       $value The value of the variable
@@ -139,7 +140,7 @@ class Session implements ArrayAccess, MiddlewareInterface
     }
 
     /**
-     * Check if a flash variable is defined or not (but does not remove it)
+     * Check if a flash variable is defined or not (but does not remove it).
      *
      * @param string $name The variable name.
      *
@@ -151,7 +152,7 @@ class Session implements ArrayAccess, MiddlewareInterface
     }
 
     /**
-     * Run the session
+     * Run the session.
      *
      * @param Request         $request
      * @param Response        $response
