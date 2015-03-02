@@ -4,13 +4,13 @@ use Fol\Http\Response;
 use Fol\Http\MiddlewareStack;
 use Fol\Http\Middlewares;
 
-class IpDetectorTest extends PHPUnit_Framework_TestCase
+class IpDetectionTest extends PHPUnit_Framework_TestCase
 {
     public function testBaseUrl()
     {
         $stack = new MiddlewareStack();
 
-        $stack->push(new Middlewares\IpDetector());
+        $stack->push(new Middlewares\IpDetection());
 
         $request = new Request('/', 'get', [
             'Client-Ip' => 'unknow,123.456.789.10',

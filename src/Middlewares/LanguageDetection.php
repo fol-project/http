@@ -11,7 +11,7 @@ use Fol\Http\Utils;
  * Middleware to get the preferred language
  * using the Accept-Language header.
  */
-class LanguageDetector implements MiddlewareInterface
+class LanguageDetection implements MiddlewareInterface
 {
     protected $availableLanguages;
 

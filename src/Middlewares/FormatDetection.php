@@ -11,7 +11,7 @@ use Fol\Http\Utils;
  * Middleware to get the format mime-type
  * using the Content-Type header.
  */
-class FormatDetector implements MiddlewareInterface
+class FormatDetection implements MiddlewareInterface
 {
     protected $availableFormats;
     protected $defaultFormat = 'html';

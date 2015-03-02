@@ -4,12 +4,12 @@ use Fol\Http\Response;
 use Fol\Http\MiddlewareStack;
 use Fol\Http\Middlewares;
 
-class FormatDetectorTest extends PHPUnit_Framework_TestCase
+class FormatDetectionTest extends PHPUnit_Framework_TestCase
 {
     private function execute($url, $header, $availables, $assertFormat, $assertMime)
     {
         $stack = new MiddlewareStack();
-        $stack->push(new Middlewares\FormatDetector($availables));
+        $stack->push(new Middlewares\FormatDetection($availables));
 
         $request = new Request($url, 'get', ['Accept' => $header]);
         $response = $stack->run($request);

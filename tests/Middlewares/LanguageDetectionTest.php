@@ -9,7 +9,7 @@ class LanguageDetectorTest extends PHPUnit_Framework_TestCase
     private function execute($header, $available, $assert)
     {
         $stack = new MiddlewareStack();
-        $stack->push(new Middlewares\LanguageDetector($available));
+        $stack->push(new Middlewares\LanguageDetection($available));
 
         $request = new Request('/', 'get', ['Accept-Language' => $header]);
         $response = $stack->run($request);
