@@ -95,7 +95,7 @@ class Native extends Session
     /**
      * Starts the session.
      *
-     * @param Handler $handler
+     * @param array $cookies
      *
      * @throws \RuntimeException if session cannot be started
      */

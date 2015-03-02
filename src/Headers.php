@@ -113,7 +113,7 @@ class Headers implements \ArrayAccess
      * @param string          $name     The header name
      * @param DateTime|string $datetime The datetime object. You can define also an string so the Datetime object will be created
      *
-     * @return Datetime The datetime object
+     * @return DateTime The datetime object
      */
     public function setDateTime($name, $datetime = null)
     {

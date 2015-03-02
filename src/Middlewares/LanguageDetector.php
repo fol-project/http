@@ -50,11 +50,9 @@ class LanguageDetector implements MiddlewareInterface
     /**
      * Run as a middleware.
      *
-     * @param Request         $request
-     * @param Response        $response
-     * @param MiddlewareStack $stack
+     * @param Request $request
      *
-     * @return Response
+     * @return null|string
      */
     protected function getPreferredLanguage(Request $request)
     {

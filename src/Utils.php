@@ -61,7 +61,7 @@ class Utils
      *
      * @param string $mimetype The mimetype to search
      *
-     * @return boolean|string
+     * @return false|string
      */
     public static function mimetypeToFormat($mimetype)
     {
@@ -80,7 +80,7 @@ class Utils
      *
      * @param string $format The format to search
      *
-     * @return boolean|string
+     * @return false|string
      */
     public static function formatToMimetype($format)
     {
@@ -95,7 +95,7 @@ class Utils
      *
      * @param string $language The raw language code
      *
-     * @return boolean|string
+     * @return false|string
      */
     public static function getLanguage($language)
     {
@@ -111,7 +111,7 @@ class Utils
      *
      * @param string $language The raw language code
      *
-     * @return boolean|string
+     * @return false|string
      */
     public static function getLanguageName($language)
     {
@@ -127,7 +127,7 @@ class Utils
      *
      * @param integer $code The Http code
      *
-     * @return boolean|string
+     * @return false|string
      */
     public static function getReasonPhrase($code)
     {
