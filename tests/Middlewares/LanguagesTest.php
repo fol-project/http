@@ -4,12 +4,12 @@ use Fol\Http\Response;
 use Fol\Http\MiddlewareStack;
 use Fol\Http\Middlewares;
 
-class LanguageDetectorTest extends PHPUnit_Framework_TestCase
+class LanguagesTest extends PHPUnit_Framework_TestCase
 {
     private function execute($header, $available, $assert)
     {
         $stack = new MiddlewareStack();
-        $stack->push(new Middlewares\LanguageDetection($available));
+        $stack->push(new Middlewares\Languages($available));
 
         $request = new Request('/', 'get', ['Accept-Language' => $header]);
         $response = $stack->run($request);

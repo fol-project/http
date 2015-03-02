@@ -9,7 +9,7 @@ use Fol\Http\MiddlewareInterface;
 /**
  * Middleware to get the client ip.
  */
-class IpDetection implements MiddlewareInterface
+class Ips implements MiddlewareInterface
 {
     protected $headers = [
         'Client-Ip',

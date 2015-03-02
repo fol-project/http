@@ -14,11 +14,15 @@ Biblioteca Http para PHP 5.5. Aínda que esta dentro do proxecto FOL, pódese us
 use Fol\Http\Request;
 use Fol\Http\Response;
 use Fol\Http\MiddlewareStack;
+use Fol\Http\Middlewares;
 
 //Inicia unha instancia de MiddlewareStack
 $stack = new MiddlewareStack();
 
 //Engade alguns middlewares
+$stack->push(new Middlewares\Languages());
+$stack->push(new Middlewares\Ips());
+
 $stack->push(function ($request, $response, $stack) {
 	$response->getBody()->write('Hello world');
 	$stack->next();
@@ -150,8 +154,9 @@ Esta biblioteca trae consigo unha serie de middlewares por defecto coas funciona
 * **BaseUrl:** Útil para definir por defecto unha url base, que se usaría tanto para cookies como para o router. Para acceder á url: `$request->attributes->get('BASE_URL')`
 * **BasicAuthentication:** Para crear unha autentificación http básica
 * **DigestAuthentication:** Para crear unha autentificación http de tipo "digest"
-* **FormatDetection:** Para detectar e normalizar automaticamente o formato da petición (json, txt, html, png, etc). Para acceder ao formato: `$request->attributes->get('FORMAT')`
-* **IpDetection:** Detecta a ip do cliente. Para acceder a ela: `$request->attributes->get('IP')`
+* **Formats:** Para detectar e normalizar automaticamente o formato da petición (json, txt, html, png, etc). Para acceder ao formato: `$request->attributes->get('FORMAT')`
+* **Ips:** Detecta a ip do cliente. Para acceder a ela: `$request->attributes->get('IP')`
+* **Languages:** Detecta o idioma preferido polo cliente. Para acceder a el: `$request->attributes->get('LANGUAGE')`
 
 ### Sessions
 
