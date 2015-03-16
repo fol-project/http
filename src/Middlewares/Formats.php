@@ -41,14 +41,18 @@ class Formats implements MiddlewareInterface
      */
     public function __invoke(Request $request, Response $response, MiddlewareStack $stack)
     {
-        $format = $this->getPreferredFormat($request);
+        $format = $request->url->getExtension();
+
+        if (!$this->isValid($format)) {
+            $format = $this->getPreferredFormat($request);
+        }
 
         $request->attributes->set('FORMAT', $format);
 
         $stack->next();
 
         if (!$response->headers->has('Content-Type')) {
-            $mimetype = Utils::formatToMimeType($format);
+            $mimetype = Utils::formatToMimeType($request->attributes->get('FORMAT') ?: 'html');
             $response->headers->set('Content-Type', "{$mimetype}; charset=UTF-8");
         }
     }

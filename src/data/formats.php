@@ -8,6 +8,7 @@ return [
     'html' => ['text/html', 'application/xhtml+xml'],
     'gif' => ['image/gif'],
     'jpg' => ['image/jpeg', 'image/jpg'],
+    'jpeg' => ['image/jpeg', 'image/jpg'],
     'js'  => ['text/javascript', 'application/javascript', 'application/x-javascript'],
     'jsonp'  => ['text/javascript', 'application/javascript', 'application/x-javascript'],
     'json' => ['application/json', 'text/json', 'application/x-json'],
