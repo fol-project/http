@@ -63,7 +63,7 @@ class Headers extends Bag
         $text = '';
 
         foreach (array_keys($this->items) as $name) {
-            foreach ($this->getAsString($name, false) as $header) {
+            foreach ($this->getAsString($name) as $header) {
                 $text .= "$header\n";
             }
         }

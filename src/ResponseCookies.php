@@ -162,20 +162,22 @@ class ResponseCookies extends Bag
             return false;
         }
 
+        $name = null;
+
         foreach ($pieces as $part) {
             $cookieParts = explode('=', $part, 2);
             $key = trim($cookieParts[0]);
             $value = isset($cookieParts[1]) ? trim($cookieParts[1], " \n\r\t\0\x0B\"") : true;
 
-            if (empty($data['name'])) {
-                $data['name'] = $key;
+            if (!isset($name)) {
+                $name = $key;
                 $data['value'] = $value;
             } else {
                 $data[strtolower($key)] = $value;
             }
         }
 
-        $this->set($data['name'], $data['value'], $data['expires'], $data['path'], $data['domain'], $data['secure'], $data['httponly']);
+        $this->set($name, $data);
 
         return true;
     }

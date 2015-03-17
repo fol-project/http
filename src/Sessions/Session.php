@@ -178,9 +178,10 @@ class Session extends Bag implements MiddlewareInterface
         ];
 
         if (!$this->id) {
-            $response->cookies->setDelete($this->name, $cookie['path'], $cookie['domain'], $cookie['secure'], $cookie['httponly']);
+            $response->cookies->setDelete($this->name, $cookie);
         } else {
-            $response->cookies->set($this->name, $this->id, null, $cookie['path'], $cookie['domain'], $cookie['secure'], $cookie['httponly']);
+            $cookie['value'] = $this->id;
+            $response->cookies->set($this->name, $cookie);
         }
     }
 }
