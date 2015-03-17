@@ -58,7 +58,7 @@ class Utils
      *
      * @param string $mimetype The mimetype to search
      *
-     * @return false|string
+     * @return null|string
      */
     public static function mimetypeToFormat($mimetype)
     {
@@ -67,8 +67,6 @@ class Utils
                 return $format;
             }
         }
-
-        return false;
     }
 
     /**

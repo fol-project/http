@@ -4,4 +4,5 @@ php:
   - 5.5
 
 script:
+  - composer update
   - phpunit
