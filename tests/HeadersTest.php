@@ -19,6 +19,11 @@ class HeadersTest extends PHPUnit_Framework_TestCase
 
         $headers->setFromString('accept-language: en-US');
 
+        $this->assertEquals($headers->getAsString(), [
+            'Accept: text/plain',
+            'Accept-Language: en-US'
+        ]);
+
         $this->assertEquals('en-US', $headers->get('Accept-Language'));
 
         $headers->delete('Accept-Language');

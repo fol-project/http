@@ -133,16 +133,18 @@ class Headers extends Bag
      */
     public function getAsString($name = null)
     {
-        $header = ($name === null) ? $this->items : $this[$name];
+        if ($name !== null) {
+            $value = $this[$name];
 
-        if (!$header) {
-            return [];
+            return $value ? ["{$name}: {$value}"] : [];
         }
 
         $headers = [];
 
-        foreach ((array) $header as $value) {
-            $headers[] = "{$name}: {$value}";
+        foreach ($this->items as $name => $value) {
+            foreach ((array) $value as $v) {
+                $headers[] = "{$name}: {$v}";
+            }
         }
 
         return $headers;
