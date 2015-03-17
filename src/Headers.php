@@ -74,7 +74,7 @@ class Headers extends Bag
     /**
      * Gets one or all header.
      *
-     * @param string  $name  The header name
+     * @param string $name The header name
      *
      * @return null|string|array
      */
@@ -127,7 +127,7 @@ class Headers extends Bag
     /**
      * Returns a header as string.
      *
-     * @param string  $name  The header name
+     * @param string $name The header name
      *
      * @return string[]
      */
@@ -151,7 +151,7 @@ class Headers extends Bag
     /**
      * Adds a new header from a header string.
      *
-     * @param string  $string
+     * @param string $string
      *
      * @return boolean
      */

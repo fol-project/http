@@ -43,7 +43,7 @@ class ResponseCookies extends Bag
      *
      * @param string|array $name
      * @param string|array $value Value or an array with expires, path, domain, secure an httponly keys
-     * 
+     *
      * @return $this
      */
     public function set($name, $value = null)
@@ -72,8 +72,8 @@ class ResponseCookies extends Bag
     /**
      * Deletes a cookie.
      *
-     * @param string  $name    The cookie name
-     * @param array   $options Array with path, domain, secure an httponly keys
+     * @param string $name    The cookie name
+     * @param array  $options Array with path, domain, secure an httponly keys
      */
     public function setDelete($name, array $options = array())
     {

@@ -28,7 +28,7 @@ class Response extends Message
 
         $this->setStatus($status);
 
-        $this->headers = (new Headers)->set($headers);
+        $this->headers = (new Headers())->set($headers);
         $this->cookies = new ResponseCookies();
     }
 

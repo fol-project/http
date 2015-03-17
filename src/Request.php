@@ -59,10 +59,10 @@ class Request extends Message
         $this->query->set($query);
 
         $this->attributes = new Bag();
-        $this->data = (new Bag)->set($data);
-        $this->files = (new Bag)->set($files);
-        $this->headers = (new Headers)->set($headers);
-        $this->cookies = (new RequestCookies)->set($cookies);
+        $this->data = (new Bag())->set($data);
+        $this->files = (new Bag())->set($files);
+        $this->headers = (new Headers())->set($headers);
+        $this->cookies = (new RequestCookies())->set($cookies);
     }
 
     /**
