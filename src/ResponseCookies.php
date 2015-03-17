@@ -1,16 +1,13 @@
 <?php
-/**
- * Fol\Http\Cookies.
- *
- * Class to manage cookies response cookies
- */
-
 namespace Fol\Http;
 
-class ResponseCookies implements \ArrayAccess
-{
-    use ContainerTrait;
+use Fol\Bag;
 
+/**
+ * Class to manage response cookies
+ */
+class ResponseCookies extends Bag
+{
     /**
      * Set the default config for cookies.
      *
@@ -44,45 +41,46 @@ class ResponseCookies implements \ArrayAccess
     /**
      * Sets a new cookie.
      *
-     * @param string                   $name     The cookie name
-     * @param string                   $value    The cookie value
-     * @param integer|string|\Datetime $expires  The cookie expiration time. It can be a number or a DateTime instance
-     * @param string                   $path     The cookie path
-     * @param string                   $domain   The cookie domain
-     * @param boolean                  $secure   If the cookie is secure, only will be send in secure connection (https)
-     * @param boolean                  $httponly If is set true, the cookie only will be accessed via http, so javascript cannot access to it.
+     * @param string|array $name
+     * @param string|array $value Value or an array with expires, path, domain, secure an httponly keys
+     * 
+     * @return $this
      */
-    public function set($name, $value = null, $expires = null, $path = null, $domain = null, $secure = null, $httponly = null)
+    public function set($name, $value = null)
     {
-        if ($expires instanceof \DateTime) {
-            $expires = $expires->format('U');
-        } elseif (is_string($expires)) {
-            $expires = strtotime($expires);
+        if (is_array($name)) {
+            foreach ($name as $n => $v) {
+                $this->set($n, $v);
+            }
+
+            return $this;
         }
 
-        $this->items[$name] = [
-            'name' => $name,
-            'value' => $value,
-            'expires' => $expires,
-            'path' => $path,
-            'domain' => $domain,
-            'secure' => $secure,
-            'httponly' => $httponly,
-        ];
+        if (!is_array($value)) {
+            $value = ['value' => $value];
+        } elseif (isset($value['expires'])) {
+            if ($value['expires'] instanceof \DateTime) {
+                $value['expires'] = $value['expires']->format('U');
+            } elseif (is_string($value['expires'])) {
+                $value['expires'] = strtotime($value['expires']);
+            }
+        }
+
+        return parent::set($name, $value);
     }
 
     /**
      * Deletes a cookie.
      *
-     * @param string  $name     The cookie name
-     * @param string  $path     The cookie path
-     * @param string  $domain   The cookie domain
-     * @param boolean $secure   If the cookie is secure, only will be send in secure connection (https)
-     * @param boolean $httponly If is set true, the cookie only will be accessed via http, so javascript cannot access to it.
+     * @param string  $name    The cookie name
+     * @param array   $options Array with path, domain, secure an httponly keys
      */
-    public function setDelete($name, $path = null, $domain = null, $secure = null, $httponly = null)
+    public function setDelete($name, array $options = array())
     {
-        $this->set($name, '', 1, $path, $domain, $secure, $httponly);
+        $options['value'] = '';
+        $options['expires'] = 1;
+
+        $this->set($name, $options);
     }
 
     /**
@@ -108,7 +106,15 @@ class ResponseCookies implements \ArrayAccess
             return;
         }
 
-        $string = urlencode($cookie['name']).'='.urlencode($cookie['value']).';';
+        $cookie += [
+            'expires' => null,
+            'path' => null,
+            'domain' => null,
+            'secure' => null,
+            'httponly' => null,
+        ];
+
+        $string = urlencode($name).'='.urlencode($cookie['value']).';';
 
         if ($cookie['expires'] < time()) {
             $string .= ' deleted;';

@@ -1,12 +1,9 @@
 <?php
-/**
- * Fol\Http\Body.
- *
- * Class store a message body
- */
-
 namespace Fol\Http;
 
+/**
+ * Class store a message body stream
+ */
 class Body
 {
     protected $stream;

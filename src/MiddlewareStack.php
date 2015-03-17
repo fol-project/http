@@ -1,12 +1,9 @@
 <?php
-/**
- * Fol\Http\Middleware.
- *
- * Middleware
- */
-
 namespace Fol\Http;
 
+/**
+ * Execute a stack of middlewares
+ */
 class MiddlewareStack implements MiddlewareInterface
 {
     protected $app;

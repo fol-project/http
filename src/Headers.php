@@ -1,19 +1,15 @@
 <?php
-/**
- * Fol\Http\Headers.
- *
- * Manage http headers
- */
-
 namespace Fol\Http;
 
+use Fol\Bag;
 use DateTime;
 use DateTimeZone;
 
-class Headers implements \ArrayAccess
+/**
+ * Http headers bag
+ */
+class Headers extends Bag
 {
-    use ContainerTrait;
-
     /**
      * Normalize the name of the parameters.
      * self::normalize('CONTENT type') Returns "Content-Type".
@@ -25,6 +21,38 @@ class Headers implements \ArrayAccess
     public static function normalize($string)
     {
         return str_replace(' ', '-', ucwords(strtolower(str_replace('-', ' ', $string))));
+    }
+
+    /**
+     * @see ArrayAccess
+     */
+    public function offsetExists($offset)
+    {
+        return parent::offsetExists(self::normalize($offset));
+    }
+
+    /**
+     * @see ArrayAccess
+     */
+    public function offsetGet($offset)
+    {
+        return parent::offsetGet(self::normalize($offset));
+    }
+
+    /**
+     * @see ArrayAccess
+     */
+    public function offsetSet($offset, $value)
+    {
+        return parent::offsetSet(self::normalize($offset), $value);
+    }
+
+    /**
+     * @see ArrayAccess
+     */
+    public function offsetUnset($offset)
+    {
+        return parent::offsetUnset(self::normalize($offset));
     }
 
     /**
@@ -44,61 +72,30 @@ class Headers implements \ArrayAccess
     }
 
     /**
-     * Stores new headers. You can define an array to store more than one at the same time.
-     *
-     * @param string|array   $name    The header name
-     * @param string|boolean $value   The header value
-     * @param boolean        $replace True to replace a previous header with the same name
-     */
-    public function set($name, $value = true, $replace = true)
-    {
-        if (is_array($name)) {
-            $replace = (bool) $value;
-
-            foreach ($name as $n => $value) {
-                $this->set($n, $value, $replace);
-            }
-
-            return;
-        }
-
-        $name = self::normalize($name);
-
-        if ($replace || !isset($this->items[$name])) {
-            $this->items[$name] = [$value];
-        } else {
-            $this->items[$name][] = $value;
-        }
-    }
-
-    /**
-     * Gets one or all parameters.
+     * Gets one or all header.
      *
      * @param string  $name  The header name
-     * @param boolean $first Set true to return just the value of the first header with this name. False to return an array with all values.
      *
-     * @return null|string|array The header value or an array with all values
+     * @return null|string|array
      */
-    public function get($name = null, $first = true)
+    public function get($name = null)
     {
-        if (func_num_args() === 0) {
+        if ($name === null) {
             return $this->items;
         }
 
-        $name = self::normalize($name);
+        $value = parent::get($name);
 
-        if (isset($this->items[$name])) {
-            return $first ? $this->items[$name][0] : $this->items[$name];
-        }
+        return is_array($value) ? implode(', ', $value) : $value;
     }
 
     /**
      * Gets one parameter as a getDateTime object
      * Useful for datetime values (Expires, Last-Modification, etc).
      *
-     * @param string $name The header name
+     * @param string $name
      *
-     * @return null|DateTime The value in a datetime object or false
+     * @return null|DateTime
      */
     public function getDateTime($name)
     {
@@ -110,7 +107,7 @@ class Headers implements \ArrayAccess
     /**
      * Define a header using a Datetime object and returns it.
      *
-     * @param string          $name     The header name
+     * @param string          $name
      * @param DateTime|string $datetime The datetime object. You can define also an string so the Datetime object will be created
      *
      * @return DateTime The datetime object
@@ -128,69 +125,23 @@ class Headers implements \ArrayAccess
     }
 
     /**
-     * Deletes one or all headers.
-     *
-     * $headers->delete('content-type') Deletes one header
-     * $headers->delete() Deletes all headers
-     *
-     * @param string $name The header name
-     */
-    public function delete($name = null)
-    {
-        if (func_num_args() === 0) {
-            $this->items = array();
-        } else {
-            $name = self::normalize($name);
-
-            unset($this->items[$name]);
-        }
-    }
-
-    /**
-     * Checks if a header exists.
-     *
-     * @param string $name The header name
-     *
-     * @return boolean True if the header exists, false if not
-     */
-    public function has($name)
-    {
-        return array_key_exists(self::normalize($name), $this->items);
-    }
-
-    /**
      * Returns a header as string.
      *
      * @param string  $name  The header name
-     * @param boolean $first Set true to return just the value of the first header with this name. False to return an array with all values.
      *
-     * @return array|string|null
+     * @return string[]
      */
-    public function getAsString($name = null, $first = true)
+    public function getAsString($name = null)
     {
-        if ($name === null) {
-            $headers = [];
+        $header = ($name === null) ? $this->items : $this[$name];
 
-            foreach (array_keys($this->items) as $name) {
-                foreach ($this->getAsString($name, false) as $header) {
-                    $headers[] = $header;
-                }
-            }
-
-            return $headers;
-        }
-
-        if (!($value = $this->get($name, $first))) {
-            return;
-        }
-
-        if ($first) {
-            return "{$name}: {$value}";
+        if (!$header) {
+            return [];
         }
 
         $headers = [];
 
-        foreach ($value as $value) {
+        foreach ((array) $header as $value) {
             $headers[] = "{$name}: {$value}";
         }
 
@@ -201,11 +152,10 @@ class Headers implements \ArrayAccess
      * Adds a new header from a header string.
      *
      * @param string  $string
-     * @param boolean $replace
      *
      * @return boolean
      */
-    public function setFromString($string, $replace = true)
+    public function setFromString($string)
     {
         if (strpos($string, ':') === false) {
             return false;
@@ -213,7 +163,7 @@ class Headers implements \ArrayAccess
 
         $header = array_map('trim', explode(':', $string, 2));
 
-        $this->set($header[0], $header[1], $replace);
+        $this->set($header[0], $header[1]);
 
         return true;
     }

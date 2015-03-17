@@ -1,12 +1,11 @@
 <?php
-/**
- * Fol\Http\Url.
- *
- * Class to represent and manipulate urls
- */
-
 namespace Fol\Http;
 
+use Fol\Bag;
+
+/**
+ * Class to represent and manipulate urls
+ */
 class Url
 {
     protected static $defaultPorts = [
@@ -64,7 +63,7 @@ class Url
      */
     public function __construct($url)
     {
-        $this->query = new RequestParameters();
+        $this->query = new Bag();
         $this->setUrl($url);
     }
 

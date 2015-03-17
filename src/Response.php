@@ -1,12 +1,9 @@
 <?php
-/**
- * Fol\Http\Response.
- *
- * Class to manage the http response data
- */
-
 namespace Fol\Http;
 
+/**
+ * Class to manage the http response data
+ */
 class Response extends Message
 {
     public $cookies;
@@ -31,7 +28,7 @@ class Response extends Message
 
         $this->setStatus($status);
 
-        $this->headers = new Headers($headers);
+        $this->headers = (new Headers)->set($headers);
         $this->cookies = new ResponseCookies();
     }
 

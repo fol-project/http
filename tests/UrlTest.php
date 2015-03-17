@@ -57,7 +57,7 @@ class UrlTest extends PHPUnit_Framework_TestCase
     {
         $url = new Url('http://blog.com?sort=latest&page=1');
 
-        $this->assertEquals(2, $url->query->length());
+        $this->assertCount(2, $url->query);
         $this->assertEquals('latest', $url->query->get('sort'));
         $this->assertEquals('1', $url->query['page']);
         $this->assertNull($url->query->get('no-defined'));

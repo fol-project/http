@@ -1,12 +1,11 @@
 <?php
-/**
- * Fol\Http\Request.
- *
- * Class to manage the http request data
- */
-
 namespace Fol\Http;
 
+use Fol\Bag;
+
+/**
+ * Class to manage the http request data
+ */
 class Request extends Message
 {
     protected $method;
@@ -33,7 +32,7 @@ class Request extends Message
 
         $request = new static($globals->getUrl(), $globals->getMethod(), $globals->getHeaders(), $globals->getGet(), $globals->getPost(), $globals->getFiles(), $globals->getCookies());
 
-        if (!$request->data->length()) {
+        if (!$request->data->count()) {
             $request->setBody(new Body($globals->getInput(), 'r'));
         }
 
@@ -59,11 +58,11 @@ class Request extends Message
         $this->setMethod($method);
         $this->query->set($query);
 
-        $this->attributes = new RequestParameters();
-        $this->data = new RequestParameters($data);
-        $this->files = new RequestFiles($files);
-        $this->headers = new Headers($headers);
-        $this->cookies = new RequestCookies($cookies);
+        $this->attributes = new Bag();
+        $this->data = (new Bag)->set($data);
+        $this->files = (new Bag)->set($files);
+        $this->headers = (new Headers)->set($headers);
+        $this->cookies = (new RequestCookies)->set($cookies);
     }
 
     /**

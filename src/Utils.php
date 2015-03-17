@@ -1,12 +1,9 @@
 <?php
-/**
- * Fol\Http\Utils.
- *
- * Some http utilities
- */
-
 namespace Fol\Http;
 
+/**
+ * Some http utilities
+ */
 class Utils
 {
     private static $formats;

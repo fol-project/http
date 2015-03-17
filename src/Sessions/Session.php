@@ -1,24 +1,18 @@
 <?php
-/**
- * Fol\Http\Sessions\Session.
- *
- * Class to manage the session
- */
-
 namespace Fol\Http\Sessions;
 
-use Fol\Http\ContainerTrait;
+use Fol\Bag;
 use Fol\Http\Url;
 use Fol\Http\Request;
 use Fol\Http\Response;
 use Fol\Http\MiddlewareStack;
 use Fol\Http\MiddlewareInterface;
-use ArrayAccess;
 
-class Session implements ArrayAccess, MiddlewareInterface
+/**
+ * Manage a session
+ */
+class Session extends Bag implements MiddlewareInterface
 {
-    use ContainerTrait;
-
     protected $id;
     protected $name;
 

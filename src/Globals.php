@@ -1,12 +1,9 @@
 <?php
-/**
- * Fol\Http\Globals.
- *
- * Class to detect and return http data from global $_SERVER/$_POST/$_GET/$_FILES arrays
- */
-
 namespace Fol\Http;
 
+/**
+ * Class to detect and return http data from global $_SERVER/$_POST/$_GET/$_FILES arrays
+ */
 class Globals
 {
     protected $server;

@@ -1,18 +1,15 @@
 <?php
-/**
- * Fol\Http\RequestCookies.
- *
- * Class to store incoming cookies
- */
-
 namespace Fol\Http;
 
-class RequestCookies implements \ArrayAccess
-{
-    use ContainerTrait;
+use Fol\Bag;
 
+/**
+ * Class to store incoming cookies
+ */
+class RequestCookies extends Bag
+{
     /**
-     * Returns the cookies as a header as string.
+     * Returns the cookies as a headers.
      *
      * @param string $name       The cookie name
      * @param string $headerName The cookie header name

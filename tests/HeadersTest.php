@@ -13,7 +13,7 @@ class HeadersTest extends PHPUnit_Framework_TestCase
         $this->assertEquals('text/plain', $headers->get('accept'));
         $this->assertEquals('text/plain', $headers->get('AcCePt'));
 
-        $this->assertEquals('Accept: text/plain', $headers->getAsString('Accept'));
+        $this->assertEquals(['Accept: text/plain'], $headers->getAsString('Accept'));
         $this->assertTrue($headers->has('Accept'));
         $this->assertFalse($headers->has('No-Accept'));
 
@@ -31,7 +31,7 @@ class HeadersTest extends PHPUnit_Framework_TestCase
         $headers = new Headers();
         $headers->setDateTime('Date', new \Datetime('31-06-2010 18:35:12', new \DateTimeZone('GMT')));
 
-        $this->assertEquals('Date: Thu, 01 Jul 2010 18:35:12 GMT', $headers->getAsString('Date'));
+        $this->assertEquals(['Date: Thu, 01 Jul 2010 18:35:12 GMT'], $headers->getAsString('Date'));
 
         $headers->setFromString('Date: Tue, 15 Nov 1994 08:12:31 GMT');
         $datetime = $headers->getDateTime('date');

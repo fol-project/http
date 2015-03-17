@@ -1,16 +1,13 @@
 <?php
-/**
- * Fol\Http\Sessions\Native.
- *
- * Class to manage the PHP native session
- */
-
 namespace Fol\Http\Sessions;
 
 use Fol\Http\MiddlewareStack;
 use Fol\Http\Request;
 use Fol\Http\Response;
 
+/**
+ * Manage the PHP native session
+ */
 class Native extends Session
 {
     /**
@@ -88,7 +85,7 @@ class Native extends Session
         }
 
         if (!$this->id) {
-            $response->cookies->setDelete($this->name, $cookie['path'], $cookie['domain'], $cookie['secure'], $cookie['httponly']);
+            $response->cookies->setDelete($this->name, $cookie);
         }
     }
 

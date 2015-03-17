@@ -1,12 +1,9 @@
 <?php
-/**
- * Fol\Http\Message.
- *
- * Class to manage a http message
- */
-
 namespace Fol\Http;
 
+/**
+ * Class to manage a http message
+ */
 abstract class Message
 {
     public $headers;

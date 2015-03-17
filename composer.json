@@ -18,7 +18,8 @@
 		"issues": "https://github.com/fol-project/http/issues"
 	},
 	"require": {
-		"php": ">=5.5.0"
+		"php": ">=5.5.0",
+		"fol/core": "dev-master"
 	},
 	"autoload": {
 		"psr-4": {

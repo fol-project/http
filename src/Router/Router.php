@@ -1,13 +1,7 @@
 <?php
-/**
- * Fol\Http\Router\Router.
- *
- * Class to manage all routes
- */
-
 namespace Fol\Http\Router;
 
-use Fol\Http\ContainerTrait;
+use Fol\Bag;
 use Fol\Http\Request;
 use Fol\Http\Response;
 use Fol\Http\Body;
@@ -16,10 +10,11 @@ use Fol\Http\HttpException;
 use Fol\Http\MiddlewareStack;
 use Fol\Http\MiddlewareInterface;
 
-class Router implements MiddlewareInterface
+/**
+ * Manage all routes
+ */
+class Router extends Bag implements MiddlewareInterface
 {
-    use ContainerTrait;
-
     private $baseUrl;
     private $errorRoute;
     private $routeFactory;
