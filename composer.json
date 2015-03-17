@@ -19,7 +19,7 @@
 	},
 	"require": {
 		"php": ">=5.5.0",
-		"fol/core": "dev-master"
+		"fol/core": "*"
 	},
 	"autoload": {
 		"psr-4": {
