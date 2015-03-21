@@ -126,7 +126,7 @@ class Response extends Message
         $this->body->send();
 
         if ($close) {
-            $body->close();
+            $this->body->close();
         }
     }
 }

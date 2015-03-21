@@ -234,7 +234,9 @@ class BodyStream implements BodyInterface
      */
     public function send()
     {
-        $this->seek($this->sendPosition);
+        if ($this->sendPosition !== false) {
+            $this->seek($this->sendPosition);
+        }
 
         while (!$this->eof()) {
             echo $this->read(1024);
