@@ -33,7 +33,7 @@ class Request extends Message
         $request = new static($globals->getUrl(), $globals->getMethod(), $globals->getHeaders(), $globals->getGet(), $globals->getPost(), $globals->getFiles(), $globals->getCookies());
 
         if (!$request->data->count()) {
-            $request->setBody(new Body($globals->getInput(), 'r'));
+            $request->setBody(new BodyStream($globals->getInput(), 'r'));
         }
 
         return $request;

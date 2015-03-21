@@ -4,10 +4,11 @@ namespace Fol\Http;
 /**
  * Class store a message body stream
  */
-class Body
+class BodyStream implements BodyInterface
 {
     protected $stream;
     protected $source;
+    protected $sendPosition = 0;
 
     private static $readWriteHash = [
         'read' => ['r', 'w+', 'r+', 'x+', 'c+', 'rb', 'w+b', 'r+b', 'x+b', 'c+b', 'rt', 'w+t', 'r+t', 'x+t', 'c+t', 'a+'],
@@ -22,22 +23,22 @@ class Body
      */
     public function __construct($stream = 'php://temp', $mode = 'r+')
     {
-        if (is_resource($stream)) {
-            $this->stream = $stream;
-        } else {
-            $this->source = [$stream, $mode];
-        }
+        $this->attach($stream, $mode);
     }
 
     /**
      * Open and returns the stream resource.
      *
-     * @return resource
+     * @return null|resource
      */
     protected function getStream()
     {
         if ($this->stream) {
             return $this->stream;
+        }
+
+        if (empty($this->source)) {
+            return;
         }
 
         return $this->stream = fopen($this->source[0], $this->source[1]);
@@ -68,6 +69,24 @@ class Body
     {
         $stream = $this->getStream();
         $this->stream = null;
+        $this->source = [];
+
+        return $stream;
+    }
+
+    /**
+     * @param string|resource $stream The stream resouce opened with fopen or the path
+     * @param string          $mode   If you provide a path, the open mode used
+     */
+    public function attach($stream, $mode = 'r')
+    {
+        if (is_resource($stream)) {
+            $this->stream = $stream;
+            $this->source = [];
+        } else {
+            $this->stream = null;
+            $this->source = [$stream, $mode];
+        }
 
         return $stream;
     }
@@ -77,6 +96,10 @@ class Body
      */
     public function getSize()
     {
+        if (!$this->getStream()) {
+            return;
+        }
+
         $stats = fstat($this->getStream());
 
         if (isset($stats['size'])) {
@@ -89,6 +112,10 @@ class Body
      */
     public function tell()
     {
+        if (!$this->getStream()) {
+            return false;
+        }
+
         return ftell($this->getStream());
     }
 
@@ -97,6 +124,10 @@ class Body
      */
     public function eof()
     {
+        if (!$this->getStream()) {
+            return false;
+        }
+
         return feof($this->getStream());
     }
 
@@ -105,6 +136,10 @@ class Body
      */
     public function isSeekable()
     {
+        if (!$this->getStream()) {
+            return false;
+        }
+
         return (bool) $this->getMetadata('seekable');
     }
 
@@ -113,7 +148,11 @@ class Body
      */
     public function seek($offset, $whence = SEEK_SET)
     {
-        return fseek($this->getStream(), $offset, $whence);
+        if ($this->isSeekable()) {
+            return fseek($this->getStream(), $offset, $whence) === 0;
+        }
+
+        return false;
     }
 
     /**
@@ -121,6 +160,10 @@ class Body
      */
     public function isWritable()
     {
+        if (!$this->getStream()) {
+            return false;
+        }
+
         return in_array($this->getMetadata('mode'), self::$readWriteHash['write']);
     }
 
@@ -129,7 +172,11 @@ class Body
      */
     public function write($string)
     {
-        return fwrite($this->getStream(), $string);
+        if ($this->isWritable()) {
+            return fwrite($this->getStream(), $string);
+        }
+
+        return false;
     }
 
     /**
@@ -137,6 +184,10 @@ class Body
      */
     public function isReadable()
     {
+        if (!$this->getStream()) {
+            return false;
+        }
+
         return in_array($this->getMetadata('mode'), self::$readWriteHash['read']);
     }
 
@@ -145,7 +196,11 @@ class Body
      */
     public function read($length)
     {
-        return fread($this->getStream(), $length);
+        if ($this->isReadable()) {
+            return fread($this->getStream(), $length);
+        }
+
+        return false;
     }
 
     /**
@@ -153,7 +208,11 @@ class Body
      */
     public function getContents()
     {
-        return stream_get_contents($this->getStream());
+        if ($this->isReadable()) {
+            return stream_get_contents($this->getStream());
+        }
+
+        return '';
     }
 
     /**
@@ -168,5 +227,20 @@ class Body
         }
 
         return $metadata;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function send()
+    {
+        $this->seek($this->sendPosition);
+
+        while (!$this->eof()) {
+            echo $this->read(1024);
+            flush();
+        }
+
+        $this->sendPosition = $this->tell();
     }
 }

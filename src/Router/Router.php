@@ -4,7 +4,7 @@ namespace Fol\Http\Router;
 use Fol\Bag;
 use Fol\Http\Request;
 use Fol\Http\Response;
-use Fol\Http\Body;
+use Fol\Http\BodyStream;
 use Fol\Http\Url;
 use Fol\Http\HttpException;
 use Fol\Http\MiddlewareStack;
@@ -132,7 +132,7 @@ class Router extends Bag implements MiddlewareInterface
 
             $request->attributes->set('ERROR', $exception);
             $response->setStatus($exception->getCode() ?: 500);
-            $response->setBody(new Body());
+            $response->setBody(new BodyStream());
 
             call_user_func($this->errorRoute, $request, $response, $stack);
         }

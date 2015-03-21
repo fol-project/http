@@ -14,16 +14,20 @@ class Response extends Message
     /**
      * Constructor.
      *
-     * @param string  $content The body of the response
-     * @param integer $status  The status code (200 by default)
-     * @param array   $headers The headers to send in the response
+     * @param string|BodyInterface  $body    The body of the response
+     * @param integer               $status  The status code (200 by default)
+     * @param array                 $headers The headers to send in the response
      */
-    public function __construct($content = '', $status = 200, array $headers = array())
+    public function __construct($body = '', $status = 200, array $headers = array())
     {
-        $this->setBody(new Body());
+        if ($body instanceof BodyInterface) {
+            $this->setBody($body);
+        } else {
+            $this->setBody(new BodyStream());
 
-        if ($content) {
-            $this->getBody()->write($content);
+            if ($body) {
+                $this->body->write($body);
+            }
         }
 
         $this->setStatus($status);
@@ -93,8 +97,10 @@ class Response extends Message
 
     /**
      * Send the response to the client.
+     * 
+     * @param boolean $close
      */
-    public function send()
+    public function send($close = true)
     {
         if (!headers_sent()) {
             header(sprintf('HTTP/%s %s %s', $this->getProtocolVersion(), $this->getStatusCode(), $this->getReasonPhrase()));
@@ -117,14 +123,10 @@ class Response extends Message
             $level--;
         }
 
-        $body = $this->getBody();
-        $body->seek(0);
+        $this->body->send();
 
-        while (!$body->eof()) {
-            echo $body->read(1024);
-            flush();
+        if ($close) {
+            $body->close();
         }
-
-        $body->close();
     }
 }

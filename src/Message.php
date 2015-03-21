@@ -31,7 +31,7 @@ abstract class Message
     /**
      * Returns the message body.
      *
-     * @return Body
+     * @return BodyInterface
      */
     public function getBody()
     {
@@ -41,9 +41,9 @@ abstract class Message
     /**
      * Sets the message body.
      *
-     * @param Body $body
+     * @param BodyInterface $body
      */
-    public function setBody(Body $body)
+    public function setBody(BodyInterface $body)
     {
         $this->body = $body;
     }

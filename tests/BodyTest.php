@@ -1,11 +1,11 @@
 <?php
-use Fol\Http\Body;
+use Fol\Http\BodyStream;
 
 class BodyTest extends PHPUnit_Framework_TestCase
 {
     public function testParser()
     {
-        $body = new Body();
+        $body = new BodyStream();
 
         $this->assertTrue($body->isReadable());
         $this->assertTrue($body->isWritable());
