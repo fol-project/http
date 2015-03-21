@@ -6,10 +6,11 @@ namespace Fol\Http;
  */
 abstract class Message
 {
-    public $headers;
-
     protected $protocol = '1.1';
-    protected $body;
+
+    public $headers;
+    public $body;
+
 
     /**
      * {inheritDoc}.
