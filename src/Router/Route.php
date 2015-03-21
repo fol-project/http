@@ -76,7 +76,9 @@ abstract class Route
         } catch (\Exception $exception) {
             throw $exception;
         } finally {
-            ob_end_clean();
+            if (ob_get_level() > 0) {
+                ob_end_clean();
+            }
         }
     }
 }
