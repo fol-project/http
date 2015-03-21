@@ -133,13 +133,19 @@ class Globals
         $headers = [];
 
         foreach ($this->server as $name => $value) {
+            //Cookies are managed by $_COOKIES
+            if ($name === 'HTTP_COOKIE') {
+                continue;
+            }
+
             if (strpos($name, 'HTTP_') === 0) {
                 $headers[str_replace('_', '-', substr($name, 5))] = $value;
                 continue;
             }
 
-            if (in_array($name, array('CONTENT_LENGTH', 'CONTENT_MD5', 'CONTENT_TYPE'))) {
-                $headers[str_replace('_', '-', $name)] = $value;
+            if (strpos($name, 'CONTENT_') === 0) {
+                $headers[str_replace('_', '-', substr($name, 8))] = $value;
+                continue;
             }
         }
 
