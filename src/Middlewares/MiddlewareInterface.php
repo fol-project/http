@@ -1,5 +1,5 @@
 <?php
-namespace Fol\Http;
+namespace Fol\Http\Middlewares;
 
 /**
  * Interface used by all class-based middlewares.

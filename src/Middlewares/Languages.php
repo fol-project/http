@@ -6,68 +6,121 @@ use Fol\Http\Response;
 use Fol\Http\MiddlewareStack;
 use Fol\Http\MiddlewareInterface;
 use Fol\Http\Utils;
+use Fol\Http\Url;
 
 /**
- * Middleware to get the preferred language
- * using the Accept-Language header.
+ * Middleware to get the language from the path
+ * Available configuration:
+ * 
+ * $languages array   List of available languages
+ * $fromPath  boolean Check the language from the first directory
+ * $redirect  boolean Redirect if the path has not the language included
  */
-class Languages implements MiddlewareInterface
+class Languages extends Middleware
 {
-    protected $availableLanguages;
+    protected $languages = [];
+    protected $redirect = false;
 
     /**
      * Constructor. Defines de available languages.
      *
-     * @param array $availableLanguages
+     * @param array $config
      */
-    public function __construct(array $availableLanguages = null)
+    public function __construct(array $config)
     {
-        $this->availableLanguages = $availableLanguages ?: array();
-    }
+        if (isset($config['languages'])) {
+            $this->languages = (array) $config['languages'];
+        }
 
-    /**
-     * Run the middleware.
-     *
-     * @param Request         $request
-     * @param Response        $response
-     * @param MiddlewareStack $stack
-     *
-     * @return Response
-     */
-    public function __invoke(Request $request, Response $response, MiddlewareStack $stack)
-    {
-        $language = $this->getPreferredLanguage($request);
+        $this->push([$this, 'getFromHeaders']);
 
-        $request->attributes->set('LANGUAGE', $language);
+        if (isset($config['fromPath'])) {
+            $this->push([$this, 'getFromPath']);
+        }
 
-        $stack->next();
-
-        if (!$response->headers->has('Content-Language')) {
-            $response->headers->set('Content-Language', $language);
+        if (isset($config['redirect'])) {
+            $this->redirect = (boolean) $config['redirect'];
         }
     }
 
     /**
-     * Run as a middleware.
+     * Detect the language using the Content-Language header and set the Content-Language in the response
+     *
+     * @param Request         $request
+     * @param Response        $response
+     * @param MiddlewareStack $stack
+     */
+    public function getFromHeaders(Request $request, Response $response, MiddlewareStack $stack)
+    {
+        $request->attributes['LANGUAGE'] = $this->getPreferredLanguage($request);
+
+        $stack->next();
+
+        if (!$response->headers->has('Content-Language')) {
+            $response->headers->set('Content-Language', $request->attributes['language']);
+        }
+    }
+
+    /**
+     * Get the preferred language using the Accept-Language header
      *
      * @param Request $request
-     *
+     * 
      * @return null|string
      */
     protected function getPreferredLanguage(Request $request)
     {
         $languages = array_keys(Utils::parseHeader($request->headers->get('Accept-Language')));
 
-        if (empty($this->availableLanguages)) {
+        if (empty($this->languages)) {
             return isset($languages[0]) ? Utils::getLanguage($languages[0]) : null;
         }
 
         if (empty($languages)) {
-            return isset($this->availableLanguages[0]) ? Utils::getLanguage($this->availableLanguages[0]) : null;
+            return isset($this->languages[0]) ? Utils::getLanguage($this->languages[0]) : null;
+        }
+        
+        $common = array_values(array_intersect($languages, $this->languages));
+        
+        return = Utils::getLanguage(isset($common[0]) ? $common[0] : $this->languages[0]);
+    }
+
+    /**
+     * Get the language from the path
+     * 
+     * @param Request         $request
+     * @param Response        $response
+     * @param MiddlewareStack $stack
+     */
+    public function getFromPath(Request $request, Response $response, MiddlewareStack $stack)
+        $baseUrl = $request->attributes['BASE_URL'];
+
+        if (!($baseUrl instanceof Url)) {
+            throw new \Exception("BaseUrl middleware is required to get language from path");
         }
 
-        $common = array_values(array_intersect($languages, $this->availableLanguages));
+        $basePath = $baseUrl->getPath();
+        $path = $request->url->getPath();
 
-        return Utils::getLanguage(isset($common[0]) ? $common[0] : $this->availableLanguages[0]);
+        if (strpos($path, $basePath) !== 0) {
+            return $stack->next();
+        }
+
+        $relative = substr($path, strlen($basePath));
+
+        if (preg_match('#^/('.implode('|', $this->languages).')($|/)#', $relative, $match)) {
+            $request->attributes['LANGUAGE'] = $match[1];
+            $baseUrl->setPath($baseUrl->getPath().'/'.$match[1]);
+
+            return $stack->next();
+        }
+
+        if ($this->redirect && !empty($request->attributes['LANGUAGE'])) {
+            $response->redirect($baseUrl->getUrl().'/'.$request->attributes['LANGUAGE'].$relative);
+
+            return false;
+        }
+
+        $stack->next();
     }
 }

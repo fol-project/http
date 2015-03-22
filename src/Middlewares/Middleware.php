@@ -1,28 +1,18 @@
 <?php
-namespace Fol\Http;
+namespace Fol\Http\Middlewares;
 
 /**
- * Execute a stack of middlewares
+ * Base of a middleware that can contains other middlewares
  */
-class MiddlewareStack implements MiddlewareInterface
+class Middleware implements MiddlewareInterface
 {
-    protected $app;
+    protected $parent;
     protected $request;
     protected $response;
     protected $middlewares = [];
 
     /**
-     * Contructor.
-     *
-     * @param mixed $app
-     */
-    public function __construct($app = null)
-    {
-        $this->app = $app;
-    }
-
-    /**
-     * Magic method to execute this middleware stack as middleware.
+     * Magic method to execute this middleware stack as a submiddleware.
      *
      * @param Request         $request
      * @param Response        $response
@@ -32,9 +22,28 @@ class MiddlewareStack implements MiddlewareInterface
      */
     public function __invoke(Request $request, Response $response, MiddlewareStack $stack)
     {
+        $this->parent = $stack;
         $this->run($request, $response);
+    }
 
-        $stack->next();
+    /**
+     * Returns the root middleware.
+     *
+     * @return Middleware
+     */
+    public function getRoot()
+    {
+        return ($this->parent !== null) ? $this->parent->getRoot() : $this;
+    }
+
+    /**
+     * Set the middleware app.
+     *
+     * @param mixed $app
+     */
+    public function setApp($app)
+    {
+        $this->app = $app;
     }
 
     /**
@@ -94,6 +103,8 @@ class MiddlewareStack implements MiddlewareInterface
     {
         if (($middleware = next($this->middlewares))) {
             call_user_func($middleware, $this->request, $this->response, $this);
+        } elseif ($this->parent !== null) {
+            $this->parent->next();
         }
     }
 

@@ -1,12 +1,9 @@
 <?php
-/**
- * Fol\Http\Router\ErrorRoute.
- *
- * Class to manage an error route
- */
-
 namespace Fol\Http\Router;
 
+/**
+ * Class to manage an error route
+ */
 class ErrorRoute extends Route
 {
     public $target;

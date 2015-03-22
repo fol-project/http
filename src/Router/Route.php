@@ -1,18 +1,18 @@
 <?php
-/**
- * Fol\Http\Router\Route.
- *
- * Base class for all routes
- */
-
 namespace Fol\Http\Router;
 
 use Fol\Http\Request;
 use Fol\Http\Response;
 use Fol\Http\MiddlewareStack;
 
+/**
+ * Base class for all routes
+ */
 abstract class Route
 {
+    public $name;
+    public $target;
+
     /**
      * Constructor.
      *

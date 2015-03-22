@@ -19,7 +19,7 @@ class RequestCookies extends Bag
     public function getAsString($name = null, $headerName = 'Cookie: ')
     {
         if ($name === null) {
-            if (!$this->items) {
+            if (empty($this->items)) {
                 return;
             }
 

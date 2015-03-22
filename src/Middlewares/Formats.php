@@ -13,15 +13,17 @@ use Fol\Http\Utils;
  */
 class Formats implements MiddlewareInterface
 {
-    protected $availableFormats;
+    protected $formats = [];
     protected $defaultFormat = 'html';
+    protected $fromExtension = true;
+    protected $redirect = false;
 
     /**
      * Constructor. Defines de available languages.
      *
      * @param array $availableFormats
      */
-    public function __construct(array $availableFormats = null)
+    public function __construct(array $config = null)
     {
         if ($availableFormats) {
             $this->availableFormats = $availableFormats;

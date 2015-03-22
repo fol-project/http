@@ -1,12 +1,9 @@
 <?php
-/**
- * Fol\Http\Router\RouteFactory.
- *
- * Class to instantiate routes
- */
-
 namespace Fol\Http\Router;
 
+/**
+ * Class to instantiate routes
+ */
 class RouteFactory
 {
     private $namespace;

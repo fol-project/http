@@ -1,15 +1,12 @@
 <?php
-/**
- * Fol\Http\Router\StaticRoute.
- *
- * Class to manage a http static route (the path is a string, not a regex)
- */
-
 namespace Fol\Http\Router;
 
 use Fol\Http\Url;
 use Fol\Http\Request;
 
+/**
+ * Class to manage a http static route (the path is a string, not a regex)
+ */
 class StaticRoute extends Route
 {
     public $name;

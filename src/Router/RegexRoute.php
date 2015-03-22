@@ -1,15 +1,12 @@
 <?php
-/**
- * Fol\Http\Router\RegexRoute.
- *
- * Class to manage a http route using regular expressions for the path
- */
-
 namespace Fol\Http\Router;
 
 use Fol\Http\Request;
 use Fol\Http\Url;
 
+/**
+ * Class to manage a http route using regular expressions for the path
+ */
 class RegexRoute extends StaticRoute
 {
     protected $regex;
