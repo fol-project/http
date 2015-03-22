@@ -3,7 +3,6 @@ namespace Fol\Http\Middlewares;
 
 use Fol\Http\Request;
 use Fol\Http\Response;
-use Fol\Http\MiddlewareStack;
 
 /**
  * Middleware to create a digest authentication.
@@ -29,7 +28,7 @@ class DigestAuthentication extends Authentication
     /**
      * {@inheritdoc}
      */
-    protected function onError(Request $request, Response $response, MiddlewareStack $stack)
+    protected function onError(Request $request, Response $response, Middleware $stack)
     {
         $response->headers->set('WWW-Authenticate', 'Digest realm="'.$this->realm.'",qop="auth",nonce="'.$this->nonce.'",opaque="'.md5($this->realm).'"');
 

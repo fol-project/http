@@ -3,7 +3,7 @@ namespace Fol\Http\Router;
 
 use Fol\Http\Request;
 use Fol\Http\Response;
-use Fol\Http\MiddlewareStack;
+use Fol\Http\Middlewares\Middleware;
 
 /**
  * Base class for all routes
@@ -36,7 +36,7 @@ abstract class Route
      *
      * @return Response
      */
-    public function __invoke(Request $request, Response $response, MiddlewareStack $stack)
+    public function __invoke(Request $request, Response $response, Middleware $stack)
     {
         return $this->run($request, $response, $stack);
     }
@@ -50,10 +50,10 @@ abstract class Route
      *
      * @return Response
      */
-    public function run(Request $request, Response $response, MiddlewareStack $stack)
+    public function run(Request $request, Response $response, Middleware $stack)
     {
         $request->attributes->set('ROUTE', $this);
-        $app = $stack->getApp();
+        $app = $stack->getRoot()->getApp();
 
         try {
             ob_start();

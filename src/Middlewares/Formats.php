@@ -3,8 +3,6 @@ namespace Fol\Http\Middlewares;
 
 use Fol\Http\Request;
 use Fol\Http\Response;
-use Fol\Http\MiddlewareStack;
-use Fol\Http\MiddlewareInterface;
 use Fol\Http\Utils;
 
 /**
@@ -23,7 +21,7 @@ class Formats implements MiddlewareInterface
      *
      * @param array $availableFormats
      */
-    public function __construct(array $config = null)
+    public function __construct(array $availableFormats = null)
     {
         if ($availableFormats) {
             $this->availableFormats = $availableFormats;
@@ -41,7 +39,7 @@ class Formats implements MiddlewareInterface
      *
      * @return Response
      */
-    public function __invoke(Request $request, Response $response, MiddlewareStack $stack)
+    public function __invoke(Request $request, Response $response, Middleware $stack)
     {
         $format = $request->url->getExtension();
 

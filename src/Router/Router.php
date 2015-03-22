@@ -7,8 +7,8 @@ use Fol\Http\Response;
 use Fol\Http\BodyStream;
 use Fol\Http\Url;
 use Fol\Http\HttpException;
-use Fol\Http\MiddlewareStack;
-use Fol\Http\MiddlewareInterface;
+use Fol\Http\Middlewares\Middleware;
+use Fol\Http\Middlewares\MiddlewareInterface;
 
 /**
  * Manage all routes
@@ -36,7 +36,7 @@ class Router extends Bag implements MiddlewareInterface
      * @param Response        $response
      * @param MiddlewareStack $stack
      */
-    public function __invoke(Request $request, Response $response, MiddlewareStack $stack)
+    public function __invoke(Request $request, Response $response, Middleware $stack)
     {
         $this->run($request, $response, $stack);
     }
@@ -109,11 +109,11 @@ class Router extends Bag implements MiddlewareInterface
     /**
      * Run the route.
      *
-     * @param Request         $request
-     * @param Response        $response
-     * @param MiddlewareStack $stack
+     * @param Request    $request
+     * @param Response   $response
+     * @param Middleware $stack
      */
-    public function run(Request $request, Response $response, MiddlewareStack $stack)
+    public function run(Request $request, Response $response, Middleware $stack)
     {
         $previousBaseUrl = $this->baseUrl;
         $baseUrl = $request->attributes->get('BASE_URL') ?: new Url('');

@@ -3,8 +3,6 @@ namespace Fol\Http\Middlewares;
 
 use Fol\Http\Request;
 use Fol\Http\Response;
-use Fol\Http\MiddlewareStack;
-use Fol\Http\MiddlewareInterface;
 
 /**
  * Middleware to get the client ip.
@@ -29,7 +27,7 @@ class Ips implements MiddlewareInterface
      *
      * @return Response
      */
-    public function __invoke(Request $request, Response $response, MiddlewareStack $stack)
+    public function __invoke(Request $request, Response $response, Middleware $stack)
     {
         $ips = $this->getIps($request);
 

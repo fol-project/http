@@ -1,6 +1,9 @@
 <?php
 namespace Fol\Http\Middlewares;
 
+use Fol\Http\Request;
+use Fol\Http\Response;
+
 /**
  * Interface used by all class-based middlewares.
  */
@@ -15,5 +18,5 @@ interface MiddlewareInterface
      *
      * @return Response
      */
-    public function __invoke(Request $request, Response $response, MiddlewareStack $stack);
+    public function __invoke(Request $request, Response $response, Middleware $stack);
 }

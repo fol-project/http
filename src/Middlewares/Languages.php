@@ -3,8 +3,6 @@ namespace Fol\Http\Middlewares;
 
 use Fol\Http\Request;
 use Fol\Http\Response;
-use Fol\Http\MiddlewareStack;
-use Fol\Http\MiddlewareInterface;
 use Fol\Http\Utils;
 use Fol\Http\Url;
 
@@ -50,7 +48,7 @@ class Languages extends Middleware
      * @param Response        $response
      * @param MiddlewareStack $stack
      */
-    public function getFromHeaders(Request $request, Response $response, MiddlewareStack $stack)
+    public function getFromHeaders(Request $request, Response $response, Middleware $stack)
     {
         $request->attributes['LANGUAGE'] = $this->getPreferredLanguage($request);
 
@@ -82,7 +80,7 @@ class Languages extends Middleware
         
         $common = array_values(array_intersect($languages, $this->languages));
         
-        return = Utils::getLanguage(isset($common[0]) ? $common[0] : $this->languages[0]);
+        return Utils::getLanguage(isset($common[0]) ? $common[0] : $this->languages[0]);
     }
 
     /**
@@ -92,7 +90,8 @@ class Languages extends Middleware
      * @param Response        $response
      * @param MiddlewareStack $stack
      */
-    public function getFromPath(Request $request, Response $response, MiddlewareStack $stack)
+    public function getFromPath(Request $request, Response $response, Middleware $stack)
+    {
         $baseUrl = $request->attributes['BASE_URL'];
 
         if (!($baseUrl instanceof Url)) {

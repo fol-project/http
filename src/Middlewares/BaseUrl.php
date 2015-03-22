@@ -4,8 +4,6 @@ namespace Fol\Http\Middlewares;
 use Fol\Http\Url;
 use Fol\Http\Request;
 use Fol\Http\Response;
-use Fol\Http\MiddlewareStack;
-use Fol\Http\MiddlewareInterface;
 
 /**
  * Middleware used to define a baseurl used by cookies, routers, etc.
@@ -33,7 +31,7 @@ class BaseUrl implements MiddlewareInterface
      *
      * @return Response
      */
-    public function __invoke(Request $request, Response $response, MiddlewareStack $stack)
+    public function __invoke(Request $request, Response $response, Middleware $stack)
     {
         $request->attributes->set('BASE_URL', $this->url);
 

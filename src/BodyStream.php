@@ -8,7 +8,7 @@ class BodyStream implements BodyInterface
 {
     protected $stream;
     protected $source;
-    protected $sendPosition = false;
+    protected $sendPosition = 0;
 
     private static $readWriteHash = [
         'read' => ['r', 'w+', 'r+', 'x+', 'c+', 'rb', 'w+b', 'r+b', 'x+b', 'c+b', 'rt', 'w+t', 'r+t', 'x+t', 'c+t', 'a+'],

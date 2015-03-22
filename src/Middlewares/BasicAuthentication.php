@@ -3,7 +3,6 @@ namespace Fol\Http\Middlewares;
 
 use Fol\Http\Request;
 use Fol\Http\Response;
-use Fol\Http\MiddlewareStack;
 
 /**
  * Middleware to create a basic authentication.
@@ -28,7 +27,7 @@ class BasicAuthentication extends Authentication
     /**
      * {@inheritdoc}
      */
-    protected function onError(Request $request, Response $response, MiddlewareStack $stack)
+    protected function onError(Request $request, Response $response, Middleware $stack)
     {
         $response->headers->set('WWW-Authenticate', 'Basic realm="'.$this->realm.'"');
 

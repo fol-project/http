@@ -3,8 +3,6 @@ namespace Fol\Http\Middlewares;
 
 use Fol\Http\Request;
 use Fol\Http\Response;
-use Fol\Http\MiddlewareStack;
-use Fol\Http\MiddlewareInterface;
 
 /**
  * Abstract class used for authentication middlewares.
@@ -20,7 +18,7 @@ abstract class Authentication implements MiddlewareInterface
      *
      * @return Response
      */
-    public function __invoke(Request $request, Response $response, MiddlewareStack $stack)
+    public function __invoke(Request $request, Response $response, Middleware $stack)
     {
         if ($this->login($request)) {
             $this->onSuccess($request, $response, $stack);

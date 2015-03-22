@@ -1,11 +1,15 @@
 <?php
 namespace Fol\Http\Middlewares;
 
+use Fol\Http\Request;
+use Fol\Http\Response;
+
 /**
  * Base of a middleware that can contains other middlewares
  */
 class Middleware implements MiddlewareInterface
 {
+    protected $app;
     protected $parent;
     protected $request;
     protected $response;
@@ -20,7 +24,7 @@ class Middleware implements MiddlewareInterface
      *
      * @return Response
      */
-    public function __invoke(Request $request, Response $response, MiddlewareStack $stack)
+    public function __invoke(Request $request, Response $response, Middleware $stack)
     {
         $this->parent = $stack;
         $this->run($request, $response);
