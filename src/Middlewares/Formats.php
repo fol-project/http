@@ -87,7 +87,7 @@ class Formats extends Middleware
             }
         }
 
-        return $this->defaultFormat;
+        return $this->default;
     }
 
     /**
