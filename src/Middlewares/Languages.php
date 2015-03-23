@@ -25,7 +25,7 @@ class Languages extends Middleware
      *
      * @param array $config
      */
-    public function __construct(array $config)
+    public function __construct(array $config = array())
     {
         if (isset($config['languages'])) {
             $this->languages = (array) $config['languages'];
