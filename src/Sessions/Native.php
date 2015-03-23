@@ -1,7 +1,7 @@
 <?php
 namespace Fol\Http\Sessions;
 
-use Fol\Http\MiddlewareStack;
+use Fol\Http\Middlewares\Middleware;
 use Fol\Http\Request;
 use Fol\Http\Response;
 
@@ -54,7 +54,7 @@ class Native extends Session
      *
      * @return Response
      */
-    public function run(Request $request, Response $response, MiddlewareStack $stack)
+    public function run(Request $request, Response $response, Middleware $stack)
     {
         if (!$this->name) {
             $this->name = session_name();

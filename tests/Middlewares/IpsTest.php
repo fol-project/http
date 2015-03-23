@@ -1,14 +1,13 @@
 <?php
 use Fol\Http\Request;
 use Fol\Http\Response;
-use Fol\Http\MiddlewareStack;
 use Fol\Http\Middlewares;
 
 class IpsTest extends PHPUnit_Framework_TestCase
 {
     public function testBaseUrl()
     {
-        $stack = new MiddlewareStack();
+        $stack = new Middlewares\Middleware();
 
         $stack->push(new Middlewares\Ips());
 

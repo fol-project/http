@@ -1,14 +1,13 @@
 <?php
 use Fol\Http\Request;
 use Fol\Http\Response;
-use Fol\Http\MiddlewareStack;
 use Fol\Http\Middlewares;
 
 class FormatsTest extends PHPUnit_Framework_TestCase
 {
     private function execute($url, $header, $availables, $assertFormat, $assertMime)
     {
-        $stack = new MiddlewareStack();
+        $stack = new Middlewares\Middleware();
         $stack->push(new Middlewares\Formats($availables));
 
         $request = new Request($url, 'get', ['Accept' => $header]);

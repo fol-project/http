@@ -5,8 +5,8 @@ use Fol\Bag;
 use Fol\Http\Url;
 use Fol\Http\Request;
 use Fol\Http\Response;
-use Fol\Http\MiddlewareStack;
-use Fol\Http\MiddlewareInterface;
+use Fol\Http\Middlewares\Middleware;
+use Fol\Http\Middlewares\MiddlewareInterface;
 
 /**
  * Manage a session
@@ -37,7 +37,7 @@ class Session extends Bag implements MiddlewareInterface
      *
      * @return Response
      */
-    public function __invoke(Request $request, Response $response, MiddlewareStack $stack)
+    public function __invoke(Request $request, Response $response, Middleware $stack)
     {
         return $this->run($request, $response, $stack);
     }
@@ -154,7 +154,7 @@ class Session extends Bag implements MiddlewareInterface
      *
      * @return Response
      */
-    public function run(Request $request, Response $response, MiddlewareStack $stack)
+    public function run(Request $request, Response $response, Middleware $stack)
     {
         if (!$this->name) {
             $this->name = 'PHPSESSID';

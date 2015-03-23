@@ -63,7 +63,7 @@ class Formats extends Middleware
         $stack->next();
 
         if (!$response->headers->has('Content-Type')) {
-            $mimetype = Utils::formatToMimeType($request->attributes->get('FORMAT') ?: $this->default);
+            $mimetype = Utils::formatToMimeType($request->attributes['FORMAT'] ?: $this->default);
             $response->headers->set('Content-Type', "{$mimetype}; charset=UTF-8");
         }
     }

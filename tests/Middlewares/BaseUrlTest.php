@@ -1,14 +1,13 @@
 <?php
 use Fol\Http\Request;
 use Fol\Http\Response;
-use Fol\Http\MiddlewareStack;
 use Fol\Http\Middlewares;
 
 class BaseUrlTest extends PHPUnit_Framework_TestCase
 {
     public function testBaseUrl()
     {
-        $stack = new MiddlewareStack();
+        $stack = new Middlewares\Middleware();
 
         $stack->push(new Middlewares\BaseUrl('http://domain.com/my-new-site'));
 

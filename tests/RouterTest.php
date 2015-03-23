@@ -1,5 +1,5 @@
 <?php
-use Fol\Http\MiddlewareStack;
+use Fol\Http\Middlewares;
 use Fol\Http\Request;
 use Fol\Http\Response;
 use Fol\Http\HttpException;
@@ -9,7 +9,7 @@ class RouterTest extends PHPUnit_Framework_TestCase
 {
     private function execute(Router $router, Request $request)
     {
-        $stack = new MiddlewareStack();
+        $stack = new Middlewares\Middleware();
         $stack->push($router);
 
         return $stack->run($request, new Response());

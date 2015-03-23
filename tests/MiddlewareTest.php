@@ -1,14 +1,14 @@
 <?php
 use Fol\Http\Request;
 use Fol\Http\Response;
-use Fol\Http\MiddlewareStack;
+use Fol\Http\Middlewares\Middleware;
 use Fol\Http\Sessions\Session;
 
 class MiddlewareStackTest extends PHPUnit_Framework_TestCase
 {
     public function testOne()
     {
-        $stack = new MiddlewareStack();
+        $stack = new Middleware();
 
         $request = new Request('http://domain.com');
         $response = new Response();
