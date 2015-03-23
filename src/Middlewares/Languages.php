@@ -56,7 +56,7 @@ class Languages extends Middleware
         $stack->next();
 
         if (!$response->headers->has('Content-Language')) {
-            $response->headers->set('Content-Language', $request->attributes['language']);
+            $response->headers->set('Content-Language', $request->attributes['LANGUAGE']);
         }
     }
 

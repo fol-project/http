@@ -5,10 +5,10 @@ use Fol\Http\Middlewares;
 
 class LanguagesTest extends PHPUnit_Framework_TestCase
 {
-    private function execute($header, $available, $assert)
+    private function execute($header, $availables, $assert)
     {
         $stack = new Middlewares\Middleware();
-        $stack->push(new Middlewares\Languages($available));
+        $stack->push(new Middlewares\Languages(['languages' => $availables]));
 
         $request = new Request('/', 'get', ['Accept-Language' => $header]);
         $response = $stack->run($request);

@@ -8,7 +8,7 @@ class FormatsTest extends PHPUnit_Framework_TestCase
     private function execute($url, $header, $availables, $assertFormat, $assertMime)
     {
         $stack = new Middlewares\Middleware();
-        $stack->push(new Middlewares\Formats($availables));
+        $stack->push(new Middlewares\Formats(['formats' => $availables]));
 
         $request = new Request($url, 'get', ['Accept' => $header]);
         $response = $stack->run($request);
