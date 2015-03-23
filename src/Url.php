@@ -133,6 +133,7 @@ class Url
     {
         if ($directory === '.' || strlen($directory) === 0) {
             $this->directory = '/';
+
             return;
         }
 

@@ -33,7 +33,7 @@ class LanguagesTest extends PHPUnit_Framework_TestCase
         $stack->push(new Middlewares\BaseUrl(''));
         $stack->push(new Middlewares\Languages([
             'languages' => $availables,
-            'fromPath' => true
+            'fromPath' => true,
         ]));
 
         $request = new Request($path);
