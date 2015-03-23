@@ -109,9 +109,9 @@ class Response extends Message
                 header($header, false);
             }
 
-            foreach ($this->cookies->get() as $cookie) {
-                if (!setcookie($cookie['name'], $cookie['value'], $cookie['expires'], $cookie['path'], $cookie['domain'], $cookie['secure'], $cookie['httponly'])) {
-                    throw new \Exception('Error sending the cookie '.$cookie['name']);
+            foreach ($this->cookies->get() as $name => $cookie) {
+                if (!setcookie($name, $cookie['value'], $cookie['expires'], $cookie['path'], $cookie['domain'], $cookie['secure'], $cookie['httponly'])) {
+                    throw new \Exception("Error sending the cookie '{$name}'");
                 }
             }
         }
