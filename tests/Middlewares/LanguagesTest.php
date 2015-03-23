@@ -26,4 +26,29 @@ class LanguagesTest extends PHPUnit_Framework_TestCase
         $this->execute(null, ['es', 'en'], 'es');
         $this->execute(null, ['en', 'es'], 'en');
     }
+
+    private function executePath($path, $availables, $assert)
+    {
+        $stack = new Middlewares\Middleware();
+        $stack->push(new Middlewares\BaseUrl(''));
+        $stack->push(new Middlewares\Languages([
+            'languages' => $availables,
+            'fromPath' => true
+        ]));
+
+        $request = new Request($path);
+        $response = $stack->run($request);
+
+        $this->assertSame($assert, $request->attributes->get('LANGUAGE'));
+        $this->assertSame($assert, $response->headers->get('Content-Language'));
+    }
+
+    public function testLanguagePath()
+    {
+        $this->executePath('/es', null, null);
+        $this->executePath('/es', ['es', 'gl'], 'es');
+        $this->executePath('/en', ['es', 'gl'], 'es');
+        $this->executePath('/en/es/gl', ['en', 'gl'], 'en');
+        $this->executePath('', ['en', 'gl'], 'en');
+    }
 }
