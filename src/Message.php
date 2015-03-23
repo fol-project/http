@@ -11,7 +11,6 @@ abstract class Message
     public $headers;
     public $body;
 
-
     /**
      * {inheritDoc}.
      */

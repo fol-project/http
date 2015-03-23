@@ -38,7 +38,7 @@ class BodyCallback implements BodyInterface
      */
     public function getSize()
     {
-        return null;
+        return;
     }
 
     /**

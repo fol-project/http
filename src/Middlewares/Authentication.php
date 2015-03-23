@@ -34,7 +34,7 @@ abstract class Authentication implements MiddlewareInterface
      * @param Response        $response
      * @param MiddlewareStack $stack
      */
-    protected function onSuccess(Request $request, Response $response, MiddlewareStack $stack)
+    protected function onSuccess(Request $request, Response $response, Middleware $stack)
     {
         $stack->next();
     }
@@ -46,7 +46,7 @@ abstract class Authentication implements MiddlewareInterface
      * @param Response        $response
      * @param MiddlewareStack $stack
      */
-    protected function onError(Request $request, Response $response, MiddlewareStack $stack)
+    protected function onError(Request $request, Response $response, Middleware $stack)
     {
         $response->setStatus(401);
         $response->getBody()->write('You must login before enter');

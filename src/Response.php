@@ -14,9 +14,9 @@ class Response extends Message
     /**
      * Constructor.
      *
-     * @param string|BodyInterface  $body    The body of the response
-     * @param integer               $status  The status code (200 by default)
-     * @param array                 $headers The headers to send in the response
+     * @param string|BodyInterface $body    The body of the response
+     * @param integer              $status  The status code (200 by default)
+     * @param array                $headers The headers to send in the response
      */
     public function __construct($body = '', $status = 200, array $headers = array())
     {
@@ -97,7 +97,7 @@ class Response extends Message
 
     /**
      * Send the response to the client.
-     * 
+     *
      * @param boolean $close
      */
     public function send($close = true)

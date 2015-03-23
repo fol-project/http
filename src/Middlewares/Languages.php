@@ -9,10 +9,7 @@ use Fol\Http\Url;
 /**
  * Middleware to get the language from the path
  * Available configuration:
- * 
- * $languages array   List of available languages
- * $fromPath  boolean Check the language from the first directory
- * $redirect  boolean Redirect if the path has not the language included
+ *
  */
 class Languages extends Middleware
 {
@@ -20,7 +17,11 @@ class Languages extends Middleware
     protected $redirect = false;
 
     /**
-     * Constructor. Defines de available languages.
+     * Constructor. Defines the middleware configuration:
+     *
+     * $languages array   List of available languages
+     * $fromPath  boolean Get the language from the first directory
+     * $redirect  boolean Redirect if the language is not included in the path ($fromPath must be true)
      *
      * @param array $config
      */
@@ -30,15 +31,15 @@ class Languages extends Middleware
             $this->languages = (array) $config['languages'];
         }
 
-        $this->push([$this, 'getFromHeaders']);
-
-        if (isset($config['fromPath'])) {
-            $this->push([$this, 'getFromPath']);
-        }
-
         if (isset($config['redirect'])) {
             $this->redirect = (boolean) $config['redirect'];
         }
+
+        if (!empty($config['fromPath'])) {
+            $this->push([$this, 'getFromPath']);
+        }
+
+        $this->unshift([$this, 'getFromHeaders']);
     }
 
     /**
@@ -63,7 +64,7 @@ class Languages extends Middleware
      * Get the preferred language using the Accept-Language header
      *
      * @param Request $request
-     * 
+     *
      * @return null|string
      */
     protected function getPreferredLanguage(Request $request)
@@ -77,15 +78,15 @@ class Languages extends Middleware
         if (empty($languages)) {
             return isset($this->languages[0]) ? Utils::getLanguage($this->languages[0]) : null;
         }
-        
+
         $common = array_values(array_intersect($languages, $this->languages));
-        
+
         return Utils::getLanguage(isset($common[0]) ? $common[0] : $this->languages[0]);
     }
 
     /**
      * Get the language from the path
-     * 
+     *
      * @param Request         $request
      * @param Response        $response
      * @param MiddlewareStack $stack
@@ -95,7 +96,7 @@ class Languages extends Middleware
         $baseUrl = $request->attributes['BASE_URL'];
 
         if (!($baseUrl instanceof Url)) {
-            throw new \Exception("BaseUrl middleware is required to get language from path");
+            throw new \Exception("BaseUrl middleware is required to get the language from path");
         }
 
         $basePath = $baseUrl->getPath();
