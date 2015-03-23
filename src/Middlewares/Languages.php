@@ -106,7 +106,7 @@ class Languages extends Middleware
             return $stack->next();
         }
 
-        $relative = substr($path, strlen($basePath));
+        $relative = ($basePath === '/') ? $path : substr($path, strlen($basePath));
 
         if (preg_match('#^/('.implode('|', $this->languages).')($|/)#', $relative, $match)) {
             $request->attributes['LANGUAGE'] = $match[1];
@@ -116,7 +116,8 @@ class Languages extends Middleware
         }
 
         if ($this->redirect && !empty($request->attributes['LANGUAGE'])) {
-            $response->redirect($baseUrl->getUrl().'/'.$request->attributes['LANGUAGE'].$relative);
+            $url = new Url($baseUrl->getUrl().'/'.$request->attributes['LANGUAGE'].'/'.$relative);
+            $response->redirect($url->getUrl());
 
             return false;
         }

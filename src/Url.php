@@ -131,13 +131,13 @@ class Url
      */
     public function setDirectory($directory)
     {
-        $directory = str_replace('\\', '/', $directory);
+        $directory = '/'.str_replace('\\', '/', $directory);
 
-        if ($directory === '.') {
-            $directory = '/';
-        } elseif ($directory[0] !== '/') {
-            $directory = "/{$directory}";
-        }
+        $replace = ['#(/\.?/)#', '#/(?!\.\.)[^/]+/\.\./#'];
+
+        do {
+            $directory = preg_replace($replace, '/', $directory, -1, $n);
+        } while ($n > 0);
 
         $this->directory = $directory;
     }
