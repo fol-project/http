@@ -19,7 +19,8 @@
 	},
 	"require": {
 		"php": ">=5.5.0",
-		"fol/core": "*"
+		"fol/core": "*",
+		"psr/http-message": "~1.0"
 	},
 	"autoload": {
 		"psr-4": {
