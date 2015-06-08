@@ -1,22 +1,61 @@
 <?php
 use Fol\Http\Request;
 use Fol\Http\Globals;
+use Fol\Http\Uri;
 
 class RequestTest extends PHPUnit_Framework_TestCase
 {
-    public function testRequest()
+    public function setUp()
     {
-        $request = new Request('http://mydomain.com?hello=world', 'post', ['Accept' => 'text/plain']);
+        $this->request = new Request();
+    }
 
+    public function testRequestTarget()
+    {
+        $this->assertEquals('/', $this->request->getRequestTarget());
+
+        $request = $this->request->withRequestTarget('/new/value');
+        $this->assertNotSame($this->request, $request);
+        $this->assertEquals('/', $this->request->getRequestTarget());
+        $this->assertEquals('/new/value', $request->getRequestTarget());
+
+        $request->setRequestTarget('/other/value');
+        $this->assertEquals('/other/value', $request->getRequestTarget());
+    }
+
+    public function testMethod()
+    {
+        $this->assertEquals('GET', $this->request->getMethod());
+
+        $request = $this->request->withMethod('POST');
+        $this->assertNotSame($this->request, $request);
+        $this->assertEquals('GET', $this->request->getMethod());
         $this->assertEquals('POST', $request->getMethod());
-        $this->assertEquals('text/plain', $request->headers->get('Accept'));
-        $this->assertEquals('world', $request->query->get('hello'));
+
+        $request->setMethod('GET');
+        $this->assertEquals('GET', $request->getMethod());
+    }
+
+    public function testUri()
+    {
+        $this->assertEquals('/', (string) $this->request->getUri());
+
+        $request = $this->request->withUri(new Uri('https://example.com:10082/foo/bar?baz=bat'));
+        
+        $this->assertNotSame($this->request, $request);
+        $this->assertEquals('/', $this->request->getUri());
+        $this->assertEquals('https://example.com:10082/foo/bar?baz=bat', $request->getUri());
+
+        $request->setUri(new Uri('/baz/bat?foo=bar'));
+        $this->assertEquals('/baz/bat?foo=bar', (string) $request->getUri());
+        $this->assertInstanceOf('Psr\\Http\\Message\\UriInterface', $request->getUri());
     }
 
     public function testAjax()
     {
-        $request = new Request('', 'get', ['X-Requested-With' => 'xmlhttprequest']);
+        $this->assertFalse($this->request->isAjax());
 
+        $request = $this->request->withHeader('X-Requested-With', 'xmlhttprequest');
         $this->assertTrue($request->isAjax());
 
         $request->headers->set('X-Requested-With', 'none');
@@ -24,18 +63,5 @@ class RequestTest extends PHPUnit_Framework_TestCase
 
         $request->headers->delete('X-Requested-With');
         $this->assertFalse($request->isAjax());
-    }
-
-    public function testCreateFromGlobal()
-    {
-        $g = include __DIR__.'/files/global-request.php';
-        $global = new Globals($g['_SERVER'], $g['_GET'], $g['_POST'], $g['_FILES'], $g['_COOKIE'], $g['input']);
-
-        $request = Request::createFromGlobals($global);
-
-        $this->assertEquals('POST', $request->getMethod());
-        $this->assertEquals('http://localhost/test.php', $request->url->getUrl());
-        $this->assertEquals(80, $request->url->getPort());
-        $this->assertEquals('', (string) $request->getBody());
     }
 }

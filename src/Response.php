@@ -1,10 +1,12 @@
 <?php
 namespace Fol\Http;
 
+use Psr\Http\Message\ResponseInterface;
+
 /**
  * Class to manage the http response data
  */
-class Response extends Message
+class Response extends Message implements ResponseInterface
 {
     public $cookies;
 
@@ -42,6 +44,7 @@ class Response extends Message
     public function __clone()
     {
         $this->headers = clone $this->headers;
+        $this->body = clone $this->body;
         $this->cookies = clone $this->cookies;
     }
 
@@ -55,20 +58,38 @@ class Response extends Message
             ."\nHeaders:\n".$this->headers
 
             ."\nBody:\n"
-            ."\n\n".$this->getBody();
+            ."\n\n".$this->body;
     }
 
     /**
-     * {@inheritDoc}
+     * Set a new status
+     * 
+     * @param integer $code
+     * @param string  $reasonPhrase
      */
-    public function setStatus($code, $reasonPhrase = null)
+    public function setStatus($code, $reasonPhrase = '')
     {
         $this->statusCode = $code;
         $this->reasonPhrase = $reasonPhrase ?: Utils::getReasonPhrase($code);
     }
 
     /**
-     * {@inheritDoc}
+     * @see ResponseInterface
+     *
+     * {@inheritdoc}
+     */
+    public function withStatus($code, $reasonPhrase = '')
+    {
+        $copy = clone $this;
+        $copy->setStatus($code, $reasonPhrase);
+
+        return $copy;
+    }
+
+    /**
+     * @see ResponseInterface
+     *
+     * {@inheritdoc}
      */
     public function getStatusCode()
     {
@@ -76,7 +97,9 @@ class Response extends Message
     }
 
     /**
-     * {@inheritDoc}
+     * @see ResponseInterface
+     *
+     * {@inheritdoc}
      */
     public function getReasonPhrase()
     {

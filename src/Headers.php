@@ -44,6 +44,10 @@ class Headers extends Bag
      */
     public function offsetSet($offset, $value)
     {
+        if (!is_array($value)) {
+            throw new \InvalidArgumentException("The value of headers must be array");
+        }
+
         return parent::offsetSet(self::normalize($offset), $value);
     }
 
@@ -72,21 +76,26 @@ class Headers extends Bag
     }
 
     /**
-     * Gets one or all header.
-     *
-     * @param string $name The header name
-     *
-     * @return null|string|array
+     * {@inheritdoc}
      */
-    public function get($name = null)
+    public function set($name, $value = null)
     {
-        if ($name === null) {
-            return $this->items;
-        }
+        return parent::set($name, (array) $value);
+    }
 
-        $value = parent::get($name);
-
-        return is_array($value) ? implode(', ', $value) : $value;
+    /**
+     * Add a new value
+     * 
+     * @param string $name
+     * @param string $value
+     */
+    public function add($name, $value)
+    {
+        $val = $this[$name] ?: [];
+        $val[] = $value;
+        $this[$name] = $val;
+        
+        return $this;
     }
 
     /**

@@ -108,12 +108,7 @@ abstract class Message implements MessageInterface
     public function withAddedHeader($name, $value)
     {
         $copy = clone $this;
-
-        if ($copy->headers->has($name)) {
-            $copy->headers[$name][] = $value;
-        } else {
-            $copy->headers->set($name, $value);
-        }
+        $copy->headers->add($name, $value);
 
         return $copy;
     }
@@ -126,7 +121,7 @@ abstract class Message implements MessageInterface
     public function withoutHeader($name)
     {
         $copy = clone $this;
-        $copy->headers->remove($name);
+        $copy->headers->delete($name);
 
         return $copy;
     }

@@ -3,24 +3,33 @@ use Fol\Http\Response;
 
 class ResponseTest extends PHPUnit_Framework_TestCase
 {
-    public function testResponse()
+    public function setUp()
     {
-        $response = new Response('hello world');
+        $this->response = new Response();
+    }
 
-        $this->assertSame(200, $response->getStatusCode());
-        $this->assertSame('OK', $response->getReasonPhrase());
+    public function testStatus()
+    {
+        $this->assertEquals(200, $this->response->getStatusCode());
+        $this->assertSame('OK', $this->response->getReasonPhrase());
 
-        $body = $response->getBody();
-        $this->assertSame('hello world', (string) $body);
+        $response = $this->response->withStatus(404);
+        $this->assertNotSame($this->response, $response);
+        $this->assertEquals(200, $this->response->getStatusCode());
+        $this->assertEquals(404, $response->getStatusCode());
+
+        $response->setStatus(500, 'foo');
+        $this->assertEquals(500, $response->getStatusCode());
+        $this->assertEquals('foo', $response->getReasonPhrase());
     }
 
     public function testRedirect()
     {
-        $response = new Response();
+        $response = clone $this->response;
 
         $response->redirect('http://domain.com');
 
         $this->assertSame(302, $response->getStatusCode());
-        $this->assertSame('http://domain.com', $response->headers->get('Location'));
+        $this->assertSame('http://domain.com', $response->getHeaderLine('Location'));
     }
 }
